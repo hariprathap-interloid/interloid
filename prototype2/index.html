@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interloid — Prototype 2</title>
+<meta name="description" content="Prototype 2: a clean-slate exploration of the Interloid portfolio. Problem-led narrative, proof-first structure, engagement transparency. Placeholder content pending the content workstream.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script>document.documentElement.classList.replace('no-js','js');</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ================================================================ NAV -->
+<nav class="nav" id="nav" aria-label="Primary">
+  <div class="nav__inner">
+    <a class="logo" href="index.html" aria-label="Interloid home">
+      <span class="logo__mark" aria-hidden="true">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+      </span>
+      Interloid
+    </a>
+
+    <div class="nav__links">
+      <a class="nav__link" href="#problems">Problems</a>
+      <a class="nav__link" href="#solutions">Solutions</a>
+      <a class="nav__link" href="#work">Work</a>
+      <a class="nav__link" href="#process">Process</a>
+      <a class="nav__link" href="why-choose-us.html">Why&nbsp;us</a>
+    </div>
+
+    <a class="btn btn--primary btn--sm nav__cta" href="#contact">Book a free consult <svg aria-hidden="true" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+
+    <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <svg aria-hidden="true" id="navToggleIcon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+    </button>
+  </div>
+</nav>
+
+<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
+  <a href="#problems">Problems</a>
+  <a href="#solutions">Solutions</a>
+  <a href="#work">Work</a>
+  <a href="#process">Process</a>
+  <a href="why-choose-us.html">Why us</a>
+  <hr>
+  <a class="btn btn--primary btn--md btn--block" href="#contact">Book a free 30-min consult <svg aria-hidden="true" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+</nav>
+
+<main id="main">
+
+<!-- ====================================== HERO — left-aligned split -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="line-grid" aria-hidden="true"></div>
+  <div class="orb orb--accent orb--tr" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="hero__grid">
+      <div>
+        <p class="kicker" data-reveal>Product engineering, to production</p>
+        <h1 class="h-hero" id="hero-title" data-reveal style="--delay:80ms">
+          <span>The problem isn't ideas.</span>
+          <span class="grad">It's shipping.</span>
+        </h1>
+        <p class="lead" data-reveal style="--delay:160ms" data-placeholder="Confirm positioning before launch">
+          Interloid is a senior engineering team for founders and product leaders.
+          We take defined problems to deployed software &mdash; in your accounts, on
+          your repos, with a working demo every week. No vendor relationship to manage.
+        </p>
+        <div class="hero__cta" data-reveal style="--delay:240ms">
+          <a class="btn btn--primary btn--lg" href="#contact">
+            Book a free 30-min consult
+            <svg aria-hidden="true" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a class="tlink tlink--down" href="#work">
+            See the proof
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- The engagement receipt: "working with us is straightforward",
+           rendered as an object rather than claimed in a paragraph. -->
+      <div data-reveal="right" style="--delay:200ms">
+        <div class="receipt" role="img" aria-label="A typical engagement at a glance: free discovery call on day one, written proposal within 48 hours, a working demo every week, handover with 30 days of support included. Total ownership of code and IP: 100 percent, yours.">
+          <div class="receipt__head" aria-hidden="true">
+            <span class="receipt__title">Engagement &mdash; at a glance</span>
+            <span class="receipt__badge">Standard</span>
+          </div>
+          <div aria-hidden="true">
+            <div class="receipt__row">
+              <span class="receipt__tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <span><strong>Discovery call</strong><span>Free, no pressure</span></span>
+              <span class="receipt__when">DAY 1</span>
+            </div>
+            <div class="receipt__row">
+              <span class="receipt__tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <span><strong>Written proposal</strong><span>Scope, milestones, price</span></span>
+              <span class="receipt__when">HR 48</span>
+            </div>
+            <div class="receipt__row">
+              <span class="receipt__tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <span><strong>Working demo</strong><span>In your repo, every week</span></span>
+              <span class="receipt__when">WEEKLY</span>
+            </div>
+            <div class="receipt__row">
+              <span class="receipt__tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <span><strong>Handover + support</strong><span>30 days included</span></span>
+              <span class="receipt__when">AT SHIP</span>
+            </div>
+          </div>
+          <div class="receipt__foot" aria-hidden="true">
+            <span>CODE &amp; IP OWNERSHIP</span>
+            <span>100% &mdash; YOURS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================== FACTS STRIP — quiet, verifiable -->
+<div class="facts" role="region" aria-label="Company facts">
+  <div class="container">
+    <div class="facts__row">
+      <span class="facts__item" data-placeholder="Verify + link to AWS Partner Finder">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V6l8-4 8 4Z"/></svg>
+        AWS Partner Network
+      </span>
+      <span class="facts__item">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20Z"/><path d="M2 12h20"/></svg>
+        India-based &middot; US &amp; UK overlap hours
+      </span>
+      <span class="facts__item">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-5 7 5v14"/><path d="M9 21v-6h6v6"/></svg>
+        Interloid Technologies Private Limited
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= ACT 1 — PROBLEMS (sticky storytelling) -->
+<section class="section section--lg section--slate" id="problems">
+  <div class="orb orb--brand orb--tr" aria-hidden="true"></div>
+  <div class="container">
+    <div class="problems">
+      <div class="problems__sticky">
+        <p class="kicker" data-reveal>Act one &mdash; the problem</p>
+        <h2 class="h-section" data-reveal style="--delay:80ms">
+          Sound <span class="grad">familiar?</span>
+        </h2>
+        <p class="intro" data-reveal style="--delay:160ms">
+          Most teams don't come to us for "software development."
+          They come with one of these four sentences. Each has a
+          concrete answer.
+        </p>
+      </div>
+
+      <div>
+        <article class="problem" data-reveal>
+          <h3 class="problem__q">We keep planning features we never ship.</h3>
+          <span class="problem__label">Our answer</span>
+          <p class="problem__a">
+            A small senior team takes one defined slice of your roadmap and ships
+            it in weeks &mdash; then the next slice. Momentum is the deliverable:
+            you see a working demo every week, not a status report.
+          </p>
+          <a class="tlink" href="#s-product">Product engineering
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </article>
+
+        <article class="problem" data-reveal>
+          <h3 class="problem__q">Every release breaks something else.</h3>
+          <span class="problem__label">Our answer</span>
+          <p class="problem__a">
+            That's an architecture problem wearing a testing costume. We stabilise
+            the foundations &mdash; boring architecture, tests that gate deploys,
+            observability that pages a human before your customers notice.
+          </p>
+          <a class="tlink" href="#s-platform">Cloud &amp; platform
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </article>
+
+        <article class="problem" data-reveal>
+          <h3 class="problem__q">We need AI in the product &mdash; but every demo dies in review.</h3>
+          <span class="problem__label">Our answer</span>
+          <p class="problem__a">
+            Demos die because nobody can prove they work. We build AI the other way
+            round: start from the workflow, add retrieval and guardrails, and wrap
+            it in an evaluation harness so "does it work?" has a measured answer.
+          </p>
+          <a class="tlink" href="#s-ai">AI systems
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </article>
+
+        <article class="problem" data-reveal>
+          <h3 class="problem__q">Hiring senior engineers is taking quarters, not weeks.</h3>
+          <span class="problem__label">Our answer</span>
+          <p class="problem__a">
+            Embed ours. Senior engineers join your standups, your repo and your
+            review process within weeks &mdash; and leave with 30 days' notice when
+            you've hired. No bench, no juniors billed as seniors.
+          </p>
+          <a class="tlink" href="#s-teams">Embedded senior teams
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== ACT 2 — SOLUTIONS (numbered index rows) -->
+<section class="section section--lg section--edge" id="solutions">
+  <div class="orb orb--accent orb--bl" aria-hidden="true"></div>
+  <div class="container">
+    <div class="sec-head">
+      <p class="kicker" data-reveal>Act two &mdash; the answer</p>
+      <h2 class="h-section" data-reveal style="--delay:80ms">
+        Four ways we take problems <span class="grad">to production.</span>
+      </h2>
+      <p class="intro" data-reveal style="--delay:160ms">
+        Not a service catalogue &mdash; a short menu of the work we're actually
+        good at, each defined by the outcome it exists to produce.
+      </p>
+    </div>
+
+    <div class="index" data-reveal="fade">
+      <a class="index__row" id="s-product" href="#contact" aria-labelledby="s-product-t">
+        <span class="index__num" aria-hidden="true">/01</span>
+        <div class="index__main">
+          <h3 id="s-product-t">Product engineering</h3>
+          <p>Web, mobile and backend, taken from a written spec to production in weeks &mdash; on a stack your team can maintain.</p>
+        </div>
+        <div class="index__tags" aria-hidden="true">
+          <span class="tag">React / Next.js</span><span class="tag">React Native</span><span class="tag">Node / Python</span><span class="tag">PostgreSQL</span>
+        </div>
+        <span class="index__go"><span class="arrow-circle"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></span>
+      </a>
+
+      <a class="index__row" id="s-ai" href="#contact" aria-labelledby="s-ai-t">
+        <span class="index__num" aria-hidden="true">/02</span>
+        <div class="index__main">
+          <h3 id="s-ai-t">AI systems</h3>
+          <p>AI that survives contact with review &mdash; retrieval, guardrails and evaluation harnesses around a real workflow.</p>
+        </div>
+        <div class="index__tags" aria-hidden="true">
+          <span class="tag">RAG</span><span class="tag">Evals</span><span class="tag">Guardrails</span><span class="tag">Vector search</span>
+        </div>
+        <span class="index__go"><span class="arrow-circle"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></span>
+      </a>
+
+      <a class="index__row" id="s-platform" href="#contact" aria-labelledby="s-platform-t">
+        <span class="index__num" aria-hidden="true">/03</span>
+        <div class="index__main">
+          <h3 id="s-platform-t">Cloud &amp; platform</h3>
+          <p>Boring deploys and visible systems: infrastructure as code, pipelines that gate on tests, monitoring that tells the truth.</p>
+        </div>
+        <div class="index__tags" aria-hidden="true">
+          <span class="tag">AWS</span><span class="tag">Terraform</span><span class="tag">CI/CD</span><span class="tag">Observability</span>
+        </div>
+        <span class="index__go"><span class="arrow-circle"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></span>
+      </a>
+
+      <a class="index__row" id="s-teams" href="#contact" aria-labelledby="s-teams-t">
+        <span class="index__num" aria-hidden="true">/04</span>
+        <div class="index__main">
+          <h3 id="s-teams-t">Embedded senior teams</h3>
+          <p>Senior engineers inside your standups within weeks &mdash; your repo, your process, your review culture. 30-day notice, both ways.</p>
+        </div>
+        <div class="index__tags" aria-hidden="true">
+          <span class="tag">Your repo</span><span class="tag">Your process</span><span class="tag">Overlap hours</span>
+        </div>
+        <span class="index__go"><span class="arrow-circle"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= ACT 3 — PROOF (featured case + rows) -->
+<section class="section section--lg section--slate" id="work">
+  <div class="orb orb--brand orb--bl" aria-hidden="true"></div>
+  <div class="container">
+    <div class="sec-head">
+      <p class="kicker" data-reveal>Act three &mdash; the proof</p>
+      <h2 class="h-section" data-reveal style="--delay:80ms">
+        Shipped, measured, <span class="grad">still running.</span>
+      </h2>
+      <p class="intro" data-reveal style="--delay:160ms" data-placeholder="Frame stands only once real cases replace the placeholders below">
+        One engagement, told properly &mdash; then the shorter list.
+        Outcomes are measured after launch, not projected before it.
+      </p>
+    </div>
+
+    <article class="case-feature" data-reveal data-placeholder="THE critical gap — replace with a real case study">
+      <div>
+        <div class="case-feature__meta">
+          <span>Insurance</span><span class="dot" aria-hidden="true">&bull;</span>
+          <span>Claims platform</span><span class="dot" aria-hidden="true">&bull;</span>
+          <span>Case study</span>
+        </div>
+        <h3>Claims intake, from a paper queue to same-day</h3>
+        <div class="case-feature__story">
+          <p>
+            <strong>The problem.</strong> A regional insurer's claims team was
+            re-keying documents from email into a legacy system &mdash; a backlog
+            measured in days, and error rates nobody wanted to measure.
+          </p>
+          <p>
+            <strong>What we built.</strong> A document-intake pipeline with
+            human-in-the-loop review: extraction, validation against policy data,
+            and a queue UI the team actually liked using. Deployed inside the
+            client's cloud, handed over with docs and tests.
+          </p>
+          <p>
+            <strong>Why it stuck.</strong> The team could operate and extend it
+            without us &mdash; which was the brief.
+          </p>
+        </div>
+      </div>
+      <div class="case-feature__stats">
+        <div><div class="stat__v">Same-day</div><div class="stat__l">Claims intake, from a multi-day backlog</div></div>
+        <div><div class="stat__v">14 wks</div><div class="stat__l">First call to production</div></div>
+        <div><div class="stat__v">0</div><div class="stat__l">Downtime during cutover</div></div>
+      </div>
+    </article>
+
+    <div class="case-rows" data-reveal data-placeholder="Replace with real engagements">
+      <div class="case-row">
+        <span class="case-row__sector">Logistics</span>
+        <h3>Field-ops mobile app, offline-first, both stores</h3>
+        <span class="case-row__note">Store-ready in weeks, not quarters</span>
+      </div>
+      <div class="case-row">
+        <span class="case-row__sector">Fintech</span>
+        <h3>Onboarding pipeline rebuilt around automated checks</h3>
+        <span class="case-row__note">Manual review now the exception</span>
+      </div>
+    </div>
+
+    <figure class="pullquote" data-reveal data-placeholder="Replace with a real, permissioned quote">
+      <div class="pullquote__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2-2-2H4c-1.25 0-2 .75-2 2v7c0 1.25.75 2 2 2h3"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2-2-2h-4c-1.25 0-2 .75-2 2v7c0 1.25.75 2 2 2h3"/></svg>
+      </div>
+      <blockquote>
+        <p>The weekly demo changed how our own team works. We stopped writing
+        status reports and started showing the thing.</p>
+      </blockquote>
+      <figcaption><strong>Placeholder Name</strong> &middot; Head of Product, Placeholder Co</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ==================== ACT 4 — STRAIGHTFORWARD (schedule ledger) -->
+<section class="section section--lg section--edge" id="process">
+  <div class="orb orb--accent orb--tr" aria-hidden="true"></div>
+  <div class="container">
+    <div class="sec-head">
+      <p class="kicker" data-reveal>Act four &mdash; the easy part</p>
+      <h2 class="h-section" data-reveal style="--delay:80ms">
+        Working with us is <span class="grad">deliberately boring.</span>
+      </h2>
+      <p class="intro" data-reveal style="--delay:160ms">
+        The engagement runs on a published schedule. No discovery phases that
+        never end, no invoices that surprise you.
+      </p>
+    </div>
+
+    <div class="sched">
+      <div class="sched__row" data-reveal>
+        <span class="sched__when">DAY 1</span>
+        <div>
+          <h3>A free 30-minute call</h3>
+          <p>Bring the problem, not a brief. We'll tell you whether it needs us,
+             needs less than you think, or needs someone else entirely.</p>
+        </div>
+      </div>
+      <div class="sched__row" data-reveal>
+        <span class="sched__when">HOUR 48</span>
+        <div>
+          <h3>A written proposal</h3>
+          <p>Scope, milestones, and a fixed price or transparent hourly rate.
+             In writing, so you can hold it against any other bid on your desk.</p>
+        </div>
+      </div>
+      <div class="sched__row" data-reveal>
+        <span class="sched__when">EVERY WEEK</span>
+        <div>
+          <h3>A working demo</h3>
+          <p>Short sprints, each ending in software you can click &mdash; plus
+             standing access to the repository and the board. Progress is watched,
+             not reported.</p>
+        </div>
+      </div>
+      <div class="sched__row" data-reveal>
+        <span class="sched__when">AT HANDOVER</span>
+        <div>
+          <h3>Handover, with the keys you already hold</h3>
+          <p>Docs written as we built, tests in the repo, 30 days of support
+             included. A retainer afterwards only if you want one.</p>
+        </div>
+      </div>
+
+      <p class="sched__note" data-reveal>
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Everything &mdash; repos, infrastructure, credentials &mdash; lives in
+        <em>your</em> accounts the whole time. <a class="tlink" style="display:inline-flex" href="why-choose-us.html">Read why teams choose us
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CLOSING SLAB — dark, with the micro-form -->
+<div class="slab-wrap" id="contact">
+  <div class="container">
+    <section class="slab" aria-labelledby="contact-title">
+      <div class="slab__glow" aria-hidden="true"></div>
+      <div class="slab__grid">
+        <div class="slab__copy">
+          <h2 id="contact-title" data-reveal>
+            Tell us the problem.<br>
+            <span class="grad--dark">We'll tell you if we're the fit.</span>
+          </h2>
+          <p data-reveal style="--delay:80ms" data-placeholder="Confirm the 1-business-day reply commitment">
+            Three fields, one business day to a human reply, and a written
+            proposal within 48 hours of the call. If it's not work we'd be
+            great at, we'll say so on the call.
+          </p>
+          <div class="slab__meta" data-reveal style="--delay:160ms">
+            <div><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No obligation</div>
+            <div><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Straight answers</div>
+            <div><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Proposal in 48 hrs</div>
+          </div>
+          <p class="slab__alt" data-reveal style="--delay:240ms">
+            Prefer to talk? <a href="#" data-placeholder="Wire to Cal.com / Calendly">Book 30 minutes directly</a>
+            or write to <a href="mailto:connect@interloid.com">connect@interloid.com</a>.
+          </p>
+        </div>
+
+        <div data-reveal="right" style="--delay:120ms">
+          <form class="mform" id="contactForm" novalidate>
+            <div class="field">
+              <label for="name">Name <span class="req" aria-hidden="true">*</span></label>
+              <input type="text" id="name" name="name" required autocomplete="name" placeholder="Jane Cooper" aria-describedby="err-name">
+              <p class="field__err" id="err-name">Please enter your name</p>
+            </div>
+            <div class="field">
+              <label for="email">Work email <span class="req" aria-hidden="true">*</span></label>
+              <input type="email" id="email" name="email" required autocomplete="email" placeholder="jane@company.com" aria-describedby="err-email">
+              <p class="field__err" id="err-email">Please enter a valid email address</p>
+            </div>
+            <div class="field">
+              <label for="message">What's the problem? <span class="opt">(optional)</span></label>
+              <textarea id="message" name="message" placeholder="A sentence is plenty."></textarea>
+            </div>
+            <button class="btn btn--glow btn--lg btn--block" type="submit" id="submitBtn">
+              Send &mdash; reply within 1 business day <svg aria-hidden="true" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+            <p class="mform__note">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              No sequences, no lists, no data resold.
+            </p>
+          </form>
+          <div class="mform mform__success" id="formSuccess" role="status" tabindex="-1">
+            <div class="ok"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+            <h3>Message sent</h3>
+            <p>Prototype only &mdash; nothing was actually submitted.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+</main>
+
+<!-- ============================================================ FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__main">
+      <div>
+        <a class="logo" href="index.html">
+          <span class="logo__mark" aria-hidden="true">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+          </span>
+          Interloid
+        </a>
+        <p class="footer__about">
+          Senior product engineering. Defined problems, deployed software,
+          everything in your accounts.
+        </p>
+      </div>
+      <div class="footer__col">
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="#solutions">Solutions</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#process">Process</a></li>
+          <li><a href="why-choose-us.html">Why Interloid</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <address class="footer__addr">
+          Interloid Technologies Private Limited<br>
+          Gobichettipalayam, Tamil Nadu 638453, India<br>
+          <a href="mailto:connect@interloid.com">connect@interloid.com</a><br>
+          <a href="tel:+919042032424">+91 90420 32424</a>
+        </address>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <p>&copy; 2026 Interloid Technologies Private Limited. All rights reserved.</p>
+      <div style="display:flex;align-items:center;gap:1.5rem">
+        <a href="#" data-placeholder="Must exist before launch">Privacy</a>
+        <a href="#" data-placeholder="Must exist before launch">Terms</a>
+        <div class="social">
+          <a href="https://www.linkedin.com/company/interloid-technologies" aria-label="LinkedIn" rel="noopener" target="_blank"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM2 9h6v12H2zM9.5 9H15v1.7c.8-1.3 2.3-2 3.9-2 3 0 4.6 1.9 4.6 5.4V21h-6v-6c0-1.5-.5-2.5-1.9-2.5-1 0-1.6.7-1.9 1.4-.1.3-.1.7-.1 1V21h-6s.1-10.8 0-12Z"/></svg></a>
+          <a href="https://x.com/InterloidTech" aria-label="X" rel="noopener" target="_blank"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-7.3L5.9 22H2.8l7.5-8.6L2.4 2h6.6l4.5 6.7L18.9 2Zm-1.1 18h1.7L7.3 3.8H5.5L17.8 20Z"/></svg></a>
+          <a href="https://www.youtube.com/@InterloidTechnologies" aria-label="YouTube" rel="noopener" target="_blank"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.7-.5-5.4a2.8 2.8 0 0 0-2-2C18.8 4 12 4 12 4s-6.8 0-8.5.6a2.8 2.8 0 0 0-2 2C1 8.3 1 12 1 12s0 3.7.5 5.4a2.8 2.8 0 0 0 2 2C5.2 20 12 20 12 20s6.8 0 8.5-.6a2.8 2.8 0 0 0 2-2C23 15.7 23 12 23 12ZM9.8 15.3V8.7l5.7 3.3-5.7 3.3Z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button class="review-toggle" id="reviewToggle">
+  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+  <span id="reviewToggleLabel">Show placeholders</span>
+</button>
+
+<script src="script.js"></script>
+</body>
+</html>
