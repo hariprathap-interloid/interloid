@@ -101,7 +101,7 @@ const DATA = {
     { n:'02', icon:'file', title:'Written proposal', time:'48 hours',
       desc:'Scope, milestones and a fixed price or transparent hourly rate. In writing, so you can compare it against anyone else.', bg:'#eef2ff', fg:'#6366f1' },
     { n:'03', icon:'code', title:'Build in the open', time:'Weekly demos',
-      desc:'Two-week sprints with a working demo at the end of each. You have access to the repo and the board from day one.', bg:'#ecfeff', fg:'#289dbe' },
+      desc:'Short sprints with a working demo every week. You have access to the repo and the board from day one.', bg:'#ecfeff', fg:'#289dbe' },
     { n:'04', icon:'rocket', title:'Launch & handover', time:'30-day support',
       desc:'We ship it, document it and hand over the keys. 30 days of support included, then a retainer only if you want one.', bg:'#f0fdfa', fg:'#14b8a6' },
   ],
@@ -135,7 +135,7 @@ const DATA = {
     { q:'What does a typical project cost?',
       a:'Most full builds land between $25k and $90k depending on scope. Staff augmentation runs monthly per engineer. We give you a fixed number in writing within 48 hours of the first call — and we\'ll tell you upfront if your budget and scope don\'t match.' },
     { q:'How long until we launch?',
-      a:'A focused first version is typically 8–12 weeks. Larger platforms run 14–20. We break it into two-week sprints with a working demo at the end of each, so you see progress rather than waiting for a reveal.' },
+      a:'A focused first version is typically 8–12 weeks. Larger platforms run 14–20. We work in short sprints with a working demo every week, so you see progress rather than waiting for a reveal.' },
     { q:'Who actually writes the code?',
       a:'Senior engineers with 8–12 years of experience each. The people on your discovery call are the people on your project. We don\'t swap in juniors after the contract is signed.' },
     { q:'What happens if we want to leave?',
@@ -359,11 +359,16 @@ const setMenu = (open) => {
   toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
   tIcon.innerHTML = open ? ICON_X : ICON_MENU;
 };
-toggle.addEventListener('click', () => setMenu(!menu.classList.contains('is-open')));
+/* stopPropagation is load-bearing: the icon swap in setMenu detaches the
+   click's original target, so this click must not reach the document-level
+   outside-click handler (it would misread it as 'outside' and re-close). */
+toggle.addEventListener('click', (e) => { e.stopPropagation(); setMenu(!menu.classList.contains('is-open')); });
 menu.addEventListener('click', (e) => { if (e.target.tagName === 'A') setMenu(false); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && menu.classList.contains('is-open')) { setMenu(false); toggle.focus(); }
+});
 document.addEventListener('click', (e) => {
-  if (menu.classList.contains('is-open') && !menu.contains(e.target) && !toggle.contains(e.target)) setMenu(false);
+  if (menu.classList.contains('is-open') && !e.composedPath().includes(menu) && !e.composedPath().includes(toggle)) setMenu(false);
 });
 
 /* --- Scroll reveals (§13.1): once:true, 600ms easeOut, index stagger ----- */

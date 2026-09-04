@@ -1,0 +1,788 @@
+/* ==========================================================================
+   Interloid — "Why Choose Us" page
+   Shares the token layer and shared components with ../prototype/styles.css
+   (kept self-contained so this page runs standalone). Page-specific
+   components: inner-page hero, comparison ledger, commitments band,
+   editorial principle rows, pull quote, numbered accordion.
+   Implements DESIGN-SYSTEM.md; section refs noted inline.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. TOKENS (identical to prototype — do not fork values)
+   -------------------------------------------------------------------------- */
+:root {
+  --primary:        #0b1120;
+  --primary-light:  #1e293b;
+  --brand:          #1f5da0;   /* Interloid blue */
+  --accent:         #289dbe;   /* large text / icons / borders only */
+  --accent-text:    #1b7c99;   /* 4.6:1 — AA-safe accent for body-size text */
+  --accent-teal:    #14b8a6;
+
+  --slate-50:  #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cad5e2;
+  --slate-400: #90a1b9;
+  --slate-500: #62748e;
+  --slate-600: #45556c;
+  --slate-700: #314158;
+  --slate-800: #1d293d;
+  --slate-900: #0f172b;
+  --slate-950: #020618;
+
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    "Inter",  ui-sans-serif, system-ui, sans-serif;
+
+  --r-lg:   0.5rem;
+  --r-xl:   0.75rem;
+  --r-2xl:  1rem;
+  --r-3xl:  1.5rem;
+  --r-2rem: 2rem;
+  --r-25:   2.5rem;
+  --r-3rem: 3rem;
+  --r-full: 9999px;
+
+  --sh-sm:     0 1px 2px rgba(15,23,43,.06);
+  --sh-rest:   0 8px 30px rgba(15,23,43,.04);
+  --sh-card:   0 15px 40px -15px rgba(15,23,43,.10);
+  --sh-hover:  0 20px 40px -12px rgba(15,23,43,.10);
+  --sh-nav:    0 10px 15px -3px rgba(15,23,43,.08);
+  --sh-primary:0 12px 24px -8px rgba(11,17,32,.35);
+  --sh-glow:   0 0 40px -10px rgba(40,157,190,.6);
+
+  --d-fast:  300ms;
+  --d-mid:   500ms;
+  --d-slow:  700ms;
+  --ease-out:cubic-bezier(0,0,.2,1);
+  --ease:    cubic-bezier(.4,0,.2,1);
+
+  --container: 1280px;
+  --gutter: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET / BASE
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 6rem; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--slate-500);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img, svg { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+address { font-style: normal; }
+
+::selection { background: var(--accent); color: #fff; }
+
+/* Custom scrollbar — §15.4 */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--slate-400); }
+* { scrollbar-width: thin; scrollbar-color: var(--slate-300) transparent; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; left: 1rem; top: -100px; z-index: 200;
+  background: var(--primary); color: #fff; padding: .75rem 1.25rem;
+  border-radius: var(--r-full); font-weight: 600; transition: top var(--d-fast);
+}
+.skip-link:focus { top: 1rem; }
+
+/* Focus — §9.9 */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--brand);
+  border-radius: var(--r-lg);
+}
+
+/* --------------------------------------------------------------------------
+   3. LAYOUT PRIMITIVES
+   -------------------------------------------------------------------------- */
+.container { max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); position: relative; z-index: 10; }
+
+.section { position: relative; overflow: hidden; padding-block: 6rem; }
+.section--lg   { padding-block: 8rem; }
+.section--band { padding-block: 5rem; border-block: 1px solid var(--slate-100); }
+.section--slate{ background: var(--slate-50); }
+
+/* Ambient orbs — §2.5 */
+.orb {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  filter: blur(120px); z-index: 0;
+}
+.orb--brand  { background: rgba(31,93,160,.10); }
+.orb--accent { background: rgba(40,157,190,.10); }
+.orb--faint  { background: rgba(31,93,160,.05); }
+.orb--tr { width: 600px; height: 600px; top: 0; right: 0; transform: translate(50%,-50%); }
+.orb--bl { width: 600px; height: 600px; bottom: 0; left: 0; transform: translate(-50%,50%); }
+
+/* Dot-grid backdrop — §2.6 */
+.grid-backdrop {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(var(--slate-200) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 20%, transparent 100%);
+          mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 20%, transparent 100%);
+}
+
+/* --------------------------------------------------------------------------
+   4. TYPOGRAPHY — §3.2
+   -------------------------------------------------------------------------- */
+h1, h2, h3 { font-family: var(--font-display); color: var(--slate-900); letter-spacing: -.025em; }
+
+/* Inner-page H1 — §3.2 "Page H1": bold, one step below the homepage hero */
+.h-page {
+  font-size: clamp(2.5rem, 5.5vw, 4.25rem);
+  font-weight: 700; line-height: 1.05; margin-bottom: 1.5rem;
+}
+.h-page__line { display: block; }
+
+/* §3.2 — weight 500 at display size; size carries the emphasis */
+.h-section {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 500; line-height: 1.1;
+}
+
+/* Two-tone gradient — §2.4-A. Once per heading, never twice. */
+.grad {
+  background: linear-gradient(90deg, var(--brand), var(--accent));
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+}
+.grad--dark {
+  background: linear-gradient(90deg, #38bdf8, #34d399);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+.lead    { font-size: 1.25rem; line-height: 1.65; color: var(--slate-600); max-width: 44rem; }
+.intro   { font-size: 1.125rem; color: var(--slate-500); margin-top: 1.5rem; max-width: 42rem; }
+.body-sm { font-size: .9375rem; color: var(--slate-500); line-height: 1.65; }
+
+/* Section header — §16.4. Left-aligned is the house style. */
+.sec-head { max-width: 42rem; margin-bottom: 4rem; }
+.sec-head--center { text-align: center; margin-inline: auto; }
+.sec-head--center .intro { margin-inline: auto; }
+
+/* --------------------------------------------------------------------------
+   5. BADGES — §8.8
+   -------------------------------------------------------------------------- */
+.badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .5rem 1rem; border-radius: var(--r-full);
+  background: #fff; border: 1px solid var(--slate-200);
+  box-shadow: var(--sh-sm); margin-bottom: 1.5rem;
+  font-size: .875rem; font-weight: 500; color: var(--slate-600);
+}
+.badge svg { width: 1rem; height: 1rem; color: var(--accent-text); }
+
+.badge--dark {
+  background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.12);
+  color: #38bdf8; backdrop-filter: blur(12px);
+  font-size: .6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: .2em;
+}
+.badge--dark svg { color: #38bdf8; }
+
+/* --------------------------------------------------------------------------
+   6. BUTTONS — §9. Always rounded-full, always active:scale-95.
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  border-radius: var(--r-full); font-weight: 500; white-space: nowrap;
+  transition: background-color var(--d-fast), box-shadow var(--d-fast),
+              transform var(--d-fast), color var(--d-fast), border-color var(--d-fast);
+}
+.btn:active { transform: scale(.95); }
+.btn svg { width: 1.125rem; height: 1.125rem; transition: transform var(--d-fast); }
+.btn:hover svg.arrow { transform: translateX(3px); }
+
+.btn--lg { height: 3.5rem; padding-inline: 2.5rem; font-size: 1.0625rem; }
+.btn--md { height: 3rem;   padding-inline: 1.75rem; font-size: .9375rem; }
+.btn--sm { height: 2.5rem; padding-inline: 1.25rem; font-size: .875rem; }
+
+.btn--primary { background: var(--primary); color: #fff; box-shadow: var(--sh-primary); }
+.btn--primary:hover { background: var(--primary-light); box-shadow: 0 16px 32px -8px rgba(11,17,32,.45); }
+
+.btn--outline { border: 1px solid var(--slate-300); color: var(--slate-700); background: transparent; }
+.btn--outline:hover { background: var(--slate-50); border-color: var(--primary); color: var(--primary); }
+
+.btn--glow {
+  background: var(--brand); color: #fff; font-weight: 700;
+  border: 1px solid rgba(255,255,255,.12); box-shadow: var(--sh-glow);
+}
+.btn--glow:hover { background: var(--accent-text); box-shadow: 0 0 60px -10px rgba(40,157,190,1); transform: scale(1.04); }
+.btn--glow:active { transform: scale(.95); }
+
+.btn--block { width: 100%; }
+
+/* --------------------------------------------------------------------------
+   7. NAV — §6.1 morphing nav (identical to the homepage prototype)
+   -------------------------------------------------------------------------- */
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 100;
+  display: flex; justify-content: center;
+  padding: 1.5rem 1rem;
+  transition: padding var(--d-fast) var(--ease);
+}
+.nav__inner {
+  position: relative; width: 100%; max-width: var(--container);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0; background: transparent;
+  border: 1px solid transparent; border-radius: 0;
+  transition: max-width var(--d-fast) var(--ease), padding var(--d-fast) var(--ease),
+              background-color var(--d-fast) var(--ease), box-shadow var(--d-fast) var(--ease),
+              border-radius var(--d-fast) var(--ease), border-color var(--d-fast) var(--ease);
+}
+.nav.is-scrolled { padding-block: .75rem; }
+.nav.is-scrolled .nav__inner {
+  max-width: 1152px; padding: .75rem 1.5rem;
+  background: rgba(255,255,255,.8); backdrop-filter: blur(16px);
+  box-shadow: var(--sh-nav); border-color: rgba(226,232,240,.6);
+  border-radius: var(--r-full);
+}
+
+.logo {
+  display: flex; align-items: center; gap: .5rem; flex-shrink: 0;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.125rem;
+  color: var(--primary); letter-spacing: -.02em;
+}
+.logo__mark {
+  width: 2rem; height: 2rem; border-radius: .625rem;
+  background: linear-gradient(135deg, var(--brand), var(--accent));
+  display: grid; place-items: center; color: #fff; flex-shrink: 0;
+}
+.logo__mark svg { width: 1.125rem; height: 1.125rem; }
+.logo__mark--sm { width: 1.5rem; height: 1.5rem; border-radius: .5rem; }
+.logo__mark--sm svg { width: .875rem; height: .875rem; }
+
+.nav__links {
+  display: none; align-items: center; gap: .25rem;
+  background: rgba(255,255,255,.5); backdrop-filter: blur(8px);
+  padding: .25rem; border-radius: var(--r-full);
+  border: 1px solid rgba(255,255,255,.5); box-shadow: var(--sh-sm);
+}
+@media (min-width: 1024px) { .nav__links { display: flex; } }
+
+.nav__link {
+  padding: .625rem 1.125rem; border-radius: var(--r-full);
+  font-size: .875rem; font-weight: 500; color: var(--slate-700);
+  transition: color var(--d-fast), background-color var(--d-fast);
+}
+.nav__link:hover { color: var(--primary); background: #fff; }
+.nav__link.is-active { color: var(--primary); background: #fff; box-shadow: var(--sh-sm); }
+
+.nav__cta { display: none; }
+@media (min-width: 1024px) { .nav__cta { display: inline-flex; } }
+
+.nav__toggle { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: var(--r-full); color: var(--slate-700); }
+.nav__toggle:hover { background: var(--slate-100); }
+@media (min-width: 1024px) { .nav__toggle { display: none; } }
+
+/* Mobile menu — §6.5: a detached rounded card */
+.mobile-menu {
+  position: fixed; top: 5.5rem; left: 1rem; right: 1rem; z-index: 99;
+  background: #fff; border-radius: var(--r-3xl); border: 1px solid var(--slate-100);
+  box-shadow: 0 25px 50px -12px rgba(15,23,43,.25);
+  padding: 1.5rem; max-height: calc(100vh - 7rem); overflow-y: auto;
+  /* visibility keeps the closed menu's links out of the tab order and the
+     accessibility tree; it transitions so the fade-out still plays */
+  opacity: 0; transform: translateY(-12px) scale(.97);
+  visibility: hidden; pointer-events: none;
+  transition: opacity var(--d-fast) var(--ease), transform var(--d-fast) var(--ease),
+              visibility var(--d-fast);
+}
+.mobile-menu.is-open { opacity: 1; transform: none; visibility: visible; pointer-events: auto; }
+@media (min-width: 1024px) { .mobile-menu { display: none; } }
+.mobile-menu a { display: block; padding: .875rem .25rem; font-family: var(--font-display); font-size: 1.125rem; font-weight: 600; color: var(--slate-900); }
+.mobile-menu a:hover { color: var(--brand); }
+.mobile-menu hr { border: 0; border-top: 1px solid var(--slate-100); margin: 1rem 0; }
+.mobile-menu .btn { padding-block: 0; }
+
+/* --------------------------------------------------------------------------
+   8. HERO — inner-page variant §7.3 (lighter than the homepage hero)
+   DELIBERATE DEVIATION from §7.3: the hero surface is white, not slate-50,
+   so the ledger section below can sit on slate-50 and its Interloid column
+   card can pop. The hero__fade bridges the seam.
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative; overflow: hidden; background: #fff;
+  padding: 10rem 0 6rem;
+}
+@media (min-width: 1024px) { .hero { padding: 11rem 0 7rem; } }
+
+.hero__orbs { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.hero__orb { position: absolute; border-radius: 50%; filter: blur(80px); }
+.hero__orb--1 {
+  width: 26rem; height: 26rem; top: -10%; right: -6%;
+  background: rgba(31,93,160,.12);
+  animation: heroPulse 9s ease-in-out infinite;
+}
+.hero__orb--2 {
+  width: 20rem; height: 20rem; bottom: -18%; left: -4%;
+  background: rgba(40,157,190,.10);
+  animation: heroPulse 12s ease-in-out 2s infinite;
+}
+
+.hero__inner { position: relative; z-index: 10; text-align: center; }
+.hero__inner .badge { margin-bottom: 2rem; }
+.hero .lead { margin-inline: auto; margin-bottom: 2.5rem; }
+.hero__cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem; }
+
+.hero__fade {
+  position: absolute; inset: auto 0 0 0; height: 6rem; z-index: 5;
+  background: linear-gradient(to top, var(--slate-50), transparent);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   9. LEDGER — the comparison table (page centrepiece)
+   A real <table> for semantics; the Interloid column reads as one
+   continuous elevated card on the slate-50 section background.
+   -------------------------------------------------------------------------- */
+.ledger-wrap { position: relative; }
+.ledger { width: 100%; border-collapse: separate; border-spacing: 0; }
+
+.ledger thead th {
+  text-align: left; padding: 1.5rem 2rem;
+  font-family: var(--font-sans);
+  font-size: .6875rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--slate-500);
+}
+.ledger thead th:first-child { padding-left: 0; width: 22%; }
+.ledger__ha { width: 39%; }
+.ledger__hi { width: 39%; }
+
+/* The Interloid column card: white cells + hairline ring + a brand top bar */
+.ledger__hi, .ledger__i {
+  background: #fff;
+  border-left: 1px solid var(--slate-200);
+  border-right: 1px solid var(--slate-200);
+}
+.ledger__hi {
+  position: relative;
+  border-top: 1px solid var(--slate-200);
+  border-radius: var(--r-3xl) var(--r-3xl) 0 0;
+  overflow: hidden;
+}
+.ledger__hi::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: linear-gradient(90deg, var(--brand), var(--accent), var(--accent-teal));
+}
+.ledger tbody tr:last-child .ledger__i {
+  border-bottom: 1px solid var(--slate-200);
+  border-radius: 0 0 var(--r-3xl) var(--r-3xl);
+}
+
+.ledger__brand {
+  display: inline-flex; align-items: center; gap: .625rem;
+  font-family: var(--font-display); font-size: 1rem; font-weight: 700;
+  letter-spacing: -.02em; text-transform: none; color: var(--primary);
+}
+
+.ledger tbody th {
+  text-align: left; vertical-align: top;
+  padding: 1.75rem 2rem 1.75rem 0;
+  font-size: 1.0625rem; font-weight: 700; color: var(--slate-900);
+  line-height: 1.35;
+}
+.ledger tbody td { vertical-align: top; padding: 1.75rem 2rem; }
+
+.ledger tbody tr:not(:last-child) th,
+.ledger tbody tr:not(:last-child) .ledger__a { border-bottom: 1px solid var(--slate-200); }
+.ledger tbody tr:not(:last-child) .ledger__i { border-bottom: 1px solid var(--slate-100); }
+
+.ledger__a { color: var(--slate-500); line-height: 1.6; }
+.ledger__i { color: var(--slate-700); line-height: 1.6; font-weight: 500; }
+
+.ledger__cell { display: flex; gap: .75rem; align-items: flex-start; }
+.ledger .tick {
+  width: 1.125rem; height: 1.125rem; flex-shrink: 0; margin-top: .2rem;
+  color: var(--accent-text);
+}
+
+/* Row hover: the dimension label warms — subtle, §14.2 */
+.ledger tbody tr th { transition: color var(--d-fast); }
+.ledger tbody tr:hover th { color: var(--brand); }
+
+/* Route to proof from the body (review §9.4 / credibility finding) */
+.ledger-proof { margin-top: 2.5rem; }
+
+.btn--ghost {
+  border: 1px solid var(--slate-200); color: var(--slate-700);
+  font-weight: 600; font-family: var(--font-display); background: #fff;
+}
+.btn--ghost:hover { border-color: var(--primary); color: var(--primary); background: var(--slate-50); }
+
+/* Mobile ledger: each row becomes a stacked card */
+@media (max-width: 767px) {
+  .ledger, .ledger tbody, .ledger tr, .ledger tbody th, .ledger td { display: block; width: auto; }
+  .ledger thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+  .ledger tbody tr {
+    background: #fff; border: 1px solid var(--slate-100); border-radius: var(--r-3xl);
+    padding: 1.5rem; margin-bottom: 1rem; box-shadow: var(--sh-rest);
+  }
+  .ledger tbody th { padding: 0 0 1rem; border: 0 !important; font-size: 1.125rem; }
+  .ledger td { padding: .875rem 0 0; border: 0 !important; background: transparent; border-radius: 0 !important; }
+  .ledger__hi::before { display: none; }
+  .ledger td::before {
+    display: block; margin-bottom: .375rem;
+    font-size: .625rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+  }
+  .ledger__a::before { content: "A typical agency"; color: var(--slate-500); }
+  .ledger__i::before { content: "Interloid"; color: var(--brand); }
+  .ledger__i { margin-top: 1rem; padding-top: 1.25rem; border-top: 1px dashed var(--slate-200) !important; }
+}
+
+/* --------------------------------------------------------------------------
+   10. COMMITMENTS BAND
+   -------------------------------------------------------------------------- */
+.commit__cap {
+  display: flex; align-items: center; justify-content: center; gap: .5rem;
+  margin-bottom: 3rem; text-align: center;
+  font-size: .875rem; font-weight: 600; color: var(--slate-500);
+}
+.commit__cap svg { width: .9375rem; height: .9375rem; flex-shrink: 0; color: var(--accent-text); }
+
+.commit__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem 1.5rem; }
+@media (min-width: 1024px) { .commit__grid { grid-template-columns: repeat(4, 1fr); gap: 0; } }
+
+.commit { text-align: center; padding-inline: 1.5rem; }
+@media (min-width: 1024px) {
+  .commit + .commit { border-left: 1px solid var(--slate-100); }
+}
+.commit__v {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.25rem, 4vw, 3rem); line-height: 1; color: var(--primary);
+  margin-bottom: .625rem;
+}
+.commit__v span { font-size: .5em; font-weight: 600; color: var(--slate-500); }
+.commit p { font-size: .875rem; color: var(--slate-500); max-width: 14rem; margin-inline: auto; }
+
+.commit__trust {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: .5rem 1rem; margin-top: 3rem;
+  font-size: .8125rem; font-weight: 500; color: var(--slate-500);
+}
+.commit__trust > span { display: inline-flex; align-items: center; gap: .375rem; }
+.commit__trust svg { width: .875rem; height: .875rem; color: var(--accent-text); }
+.commit__dot { color: var(--slate-300); }
+
+/* --------------------------------------------------------------------------
+   11. PRINCIPLES — editorial numbered rows (not a card grid)
+   -------------------------------------------------------------------------- */
+.prins { border-bottom: 1px solid var(--slate-100); }
+
+.prin {
+  display: grid; gap: 1.5rem;
+  padding-block: 3rem;
+  border-top: 1px solid var(--slate-100);
+}
+@media (min-width: 1024px) {
+  .prin { grid-template-columns: 5fr 7fr; gap: 4rem; padding-block: 3.5rem; }
+}
+
+.prin__head { position: relative; padding-top: 1.25rem; }
+
+/* Ghost numeral — §8.9 device, at editorial scale */
+.prin__num {
+  position: absolute; top: -1.25rem; left: -.75rem; z-index: 0;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 5.5rem; line-height: 1; color: var(--slate-100);
+  user-select: none; pointer-events: none;
+  transition: color var(--d-mid);
+}
+.prin:hover .prin__num { color: rgba(31,93,160,.08); }
+
+.prin__head h3 {
+  position: relative; z-index: 1;
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem); font-weight: 700; line-height: 1.25;
+  max-width: 22rem;
+  transition: color var(--d-fast);
+}
+.prin:hover .prin__head h3 { color: var(--brand); }
+
+.prin__body p { line-height: 1.75; margin-bottom: 1.25rem; max-width: 38rem; }
+.prin__meta { display: flex; flex-wrap: wrap; gap: .625rem; }
+
+.chip {
+  padding: .5rem 1rem; border-radius: var(--r-lg);
+  background: var(--slate-50); border: 1px solid var(--slate-100);
+  font-size: .875rem; font-weight: 600; color: var(--slate-700); box-shadow: var(--sh-sm);
+}
+
+/* --------------------------------------------------------------------------
+   12. PROCESS TIMELINE — §8.9 (same component as the homepage prototype,
+   surface-adapted: this instance sits on slate-50, so the rail uses
+   slate-200 and the timebox pill uses a white background where the
+   prototype's white-surface instance uses slate-100 / slate-50)
+   -------------------------------------------------------------------------- */
+.process { position: relative; margin-top: 5rem; }
+
+.process__rail, .process__fill {
+  position: absolute; left: 2.4rem; top: 2rem; bottom: 2rem; width: 2px;
+}
+.process__rail { background: var(--slate-200); }
+.process__fill {
+  background: linear-gradient(to bottom, var(--brand), var(--accent), var(--accent-teal));
+  transform: scaleY(0); transform-origin: top;
+  transition: transform 1.5s var(--ease);
+}
+.process.is-visible .process__fill { transform: scaleY(1); }
+
+@media (min-width: 1024px) {
+  .process__rail, .process__fill { left: 5%; right: 5%; top: 2.75rem; bottom: auto; width: auto; height: 2px; }
+  .process__fill { background: linear-gradient(to right, var(--brand), var(--accent), var(--accent-teal)); transform: scaleX(0); transform-origin: left; }
+  .process.is-visible .process__fill { transform: scaleX(1); }
+}
+
+.process__steps { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 3rem; }
+@media (min-width: 1024px) { .process__steps { flex-direction: row; gap: 1.5rem; justify-content: space-between; } }
+
+.step { display: flex; align-items: flex-start; gap: 2rem; }
+@media (min-width: 1024px) { .step { flex-direction: column; align-items: center; text-align: center; width: 25%; gap: 0; } }
+
+.step__nodewrap { position: relative; display: grid; place-items: center; flex-shrink: 0; }
+.step__node {
+  position: relative; z-index: 1;
+  width: 5rem; height: 5rem; border-radius: 50%; display: grid; place-items: center;
+  background: #fff; border: 4px solid #fff; box-shadow: 0 10px 20px -8px rgba(15,23,43,.2);
+  transition: transform var(--d-mid), box-shadow var(--d-mid);
+}
+.step:hover .step__node { transform: scale(1.1); box-shadow: 0 0 30px -5px rgba(31,93,160,.45); }
+.step__inner { width: 3.5rem; height: 3.5rem; border-radius: 50%; display: grid; place-items: center; }
+.step__inner svg { width: 1.375rem; height: 1.375rem; }
+
+.step__num {
+  position: absolute; top: -2rem; right: -2rem; z-index: 0;
+  font-family: var(--font-display); font-size: 5rem; font-weight: 700;
+  color: var(--slate-100); user-select: none; pointer-events: none;
+  transition: color var(--d-fast); line-height: 1;
+}
+.step:hover .step__num { color: rgba(31,93,160,.07); }
+
+.step__body { padding-top: .5rem; }
+@media (min-width: 1024px) { .step__body { margin-top: 2.5rem; padding-inline: .5rem; } }
+.step__body h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: .5rem; transition: color var(--d-fast); }
+.step:hover .step__body h3 { color: var(--brand); }
+.step__time {
+  display: inline-block; margin-bottom: .75rem;
+  padding: .1875rem .625rem; border-radius: var(--r-full);
+  background: #fff; border: 1px solid var(--slate-200);
+  font-size: .6875rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--accent-text);
+}
+
+/* --------------------------------------------------------------------------
+   13. PULL QUOTE — single editorial voice, not a testimonial grid
+   -------------------------------------------------------------------------- */
+.pull { max-width: 46rem; margin-inline: auto; text-align: center; }
+.pull__mark { display: flex; justify-content: center; margin-bottom: 1.5rem; color: var(--slate-200); }
+.pull__mark svg { width: 2.5rem; height: 2.5rem; }
+.pull blockquote p {
+  font-size: clamp(1.25rem, 2.2vw, 1.5rem); line-height: 1.6;
+  color: var(--slate-700); font-weight: 500; margin-bottom: 2rem;
+}
+.pull__who { display: inline-flex; align-items: center; gap: .875rem; text-align: left; }
+.pull__avatar {
+  width: 2.75rem; height: 2.75rem; border-radius: 50%; flex-shrink: 0;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--brand), var(--accent)); color: #fff;
+  font-family: var(--font-display); font-weight: 700; font-size: .9375rem;
+}
+.pull__who strong { display: block; font-size: .9375rem; color: var(--slate-900); font-weight: 600; }
+.pull__who span span { font-size: .8125rem; color: var(--slate-500); }
+
+/* --------------------------------------------------------------------------
+   14. QUESTIONS — numbered accordion
+   -------------------------------------------------------------------------- */
+.faq { max-width: 52rem; margin-inline: auto; display: flex; flex-direction: column; gap: 1rem; }
+.faq__item {
+  background: #fff; border: 1px solid var(--slate-100); border-radius: var(--r-2xl);
+  overflow: hidden; transition: border-color var(--d-fast), box-shadow var(--d-fast);
+}
+.faq__item:hover { border-color: var(--slate-200); box-shadow: var(--sh-rest); }
+.faq__item.is-open { border-color: var(--slate-200); box-shadow: var(--sh-card); }
+
+.faq__h { margin: 0; font-size: inherit; font-weight: inherit; letter-spacing: 0; }
+.faq__q {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+  padding: 1.5rem; text-align: left;
+  font-family: var(--font-display); font-size: 1.0625rem; font-weight: 600; color: var(--slate-900);
+}
+/* The item's overflow:hidden clips the global outward focus ring, so the
+   accordion trigger gets an inset indicator instead (WCAG 2.4.7). */
+.faq__q:focus-visible { box-shadow: inset 0 0 0 2px var(--brand); border-radius: var(--r-2xl); }
+.faq__label { display: flex; align-items: baseline; gap: 1rem; }
+.faq__n {
+  font-size: .8125rem; font-weight: 700; color: var(--accent-text);
+  flex-shrink: 0; letter-spacing: .05em;
+}
+.faq__icon { flex-shrink: 0; color: var(--slate-500); transition: transform var(--d-fast), color var(--d-fast); }
+.faq__icon svg { width: 1.25rem; height: 1.25rem; }
+.faq__item.is-open .faq__icon { transform: rotate(180deg); color: var(--brand); }
+
+.faq__a { display: grid; grid-template-rows: 0fr; visibility: hidden;
+  transition: grid-template-rows var(--d-fast) var(--ease), visibility var(--d-fast); }
+.faq__item.is-open .faq__a { grid-template-rows: 1fr; visibility: visible; }
+.faq__a > div { overflow: hidden; }
+.faq__a p { padding: 0 1.5rem 1.5rem 3.75rem; color: var(--slate-500); line-height: 1.7; }
+@media (max-width: 639px) { .faq__a p { padding-left: 1.5rem; } }
+
+/* Left-aligned to match the house-style section header (§16.4) */
+.faq { margin-inline: 0; }
+.q-close {
+  margin-top: 3rem;
+  font-family: var(--font-display); font-size: 1.125rem; font-weight: 600;
+  color: var(--slate-600);
+}
+
+/* --------------------------------------------------------------------------
+   15. DARK CTA SLAB — §11.1
+   -------------------------------------------------------------------------- */
+.cta-wrap { padding: 2rem 0 6rem; background: #fff; }
+.cta {
+  position: relative; overflow: hidden; border-radius: var(--r-3rem);
+  background: var(--slate-900); box-shadow: 0 25px 50px -12px rgba(15,23,43,.35);
+  padding: 4rem 1.5rem; text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+}
+@media (min-width: 640px) { .cta { padding: 5rem 4rem; } }
+.cta::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at top, rgba(31,93,160,.45), var(--slate-900) 55%, var(--slate-900));
+}
+.cta__glow {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 50rem; height: 25rem;
+  background: rgba(40,157,190,.25); filter: blur(120px);
+  border-radius: 50rem 50rem 0 0; pointer-events: none;
+}
+.cta__particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.cta__p { position: absolute; border-radius: 50%; background: #fff; }
+.cta__inner { position: relative; z-index: 1; max-width: 56rem; display: flex; flex-direction: column; align-items: center; }
+.cta h2 { color: #fff; font-weight: 500; font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.1; margin-bottom: 1.25rem; }
+.cta p { color: var(--slate-300); font-size: 1.0625rem; max-width: 36rem; margin-bottom: 2.5rem; line-height: 1.7; }
+.cta__actions { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+.cta__meta { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 2.5rem; }
+.cta__meta div { display: flex; align-items: center; gap: .5rem; font-size: .8125rem; color: var(--slate-400); }
+.cta__meta svg { width: .875rem; height: .875rem; color: #38bdf8; }
+.cta__alt { margin: 1.5rem 0 0 !important; font-size: .875rem !important; color: var(--slate-400) !important; }
+.cta__alt a { color: #7dd3fc; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.cta__alt a:hover { color: #bae6fd; }
+
+/* --------------------------------------------------------------------------
+   16. FOOTER — §11.2. Only links that resolve.
+   -------------------------------------------------------------------------- */
+.footer { background: var(--slate-950); color: var(--slate-300); padding: 5rem 0 0; border-top: 1px solid var(--slate-800); }
+.footer__grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 4rem; }
+@media (min-width: 768px)  { .footer__grid { grid-template-columns: 2fr 1fr 1fr; } }
+@media (min-width: 1024px) { .footer__grid { grid-template-columns: 2fr 1fr 1fr 1.2fr; } }
+.footer .logo { color: #fff; margin-bottom: 1.25rem; }
+.footer__about { font-size: .875rem; color: var(--slate-400); line-height: 1.7; max-width: 22rem; margin-bottom: 1.5rem; }
+.footer h3 { color: #fff; font-size: .9375rem; font-weight: 600; margin-bottom: 1.5rem; font-family: var(--font-sans); letter-spacing: 0; }
+.footer ul { display: flex; flex-direction: column; gap: 1rem; }
+.footer ul a { font-size: .875rem; color: var(--slate-400); transition: color var(--d-fast); }
+.footer ul a:hover { color: #fff; }
+.footer__addr { font-size: .8125rem; color: var(--slate-400); line-height: 1.8; }
+.footer__addr a { color: var(--slate-300); }
+.footer__addr a:hover { color: #fff; }
+.footer__bar {
+  border-top: 1px solid #0f172b; padding: 2rem 0;
+  display: flex; flex-direction: column; gap: 1.5rem;
+  align-items: center; justify-content: space-between;
+  font-size: .75rem; color: var(--slate-400); /* slate-400 passes on slate-950; slate-500 does not */
+}
+@media (min-width: 768px) { .footer__bar { flex-direction: row; } }
+.footer__bar a:hover { color: #fff; }
+.social { display: flex; gap: .75rem; }
+.social a {
+  width: 2.25rem; height: 2.25rem; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+  color: var(--slate-400); transition: all var(--d-fast);
+}
+.social a:hover { background: rgba(255,255,255,.12); color: #fff; transform: translateY(-2px); }
+.social svg { width: 1rem; height: 1rem; }
+
+/* --------------------------------------------------------------------------
+   17. SCROLL REVEALS — §13.1
+   Hidden state applies only when JS is running (html.js), so content is
+   never invisible without JavaScript.
+   -------------------------------------------------------------------------- */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+  transition-delay: var(--delay, 0ms);
+}
+.js [data-reveal="left"]  { transform: translateX(-20px); }
+.js [data-reveal="right"] { transform: translateX(20px); }
+.js [data-reveal="fade"]  { transform: none; }
+.js [data-reveal].is-in { opacity: 1; transform: none; }
+
+/* --------------------------------------------------------------------------
+   18. KEYFRAMES
+   -------------------------------------------------------------------------- */
+@keyframes heroPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.12); opacity: .75; }
+}
+@keyframes drift {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-18px); }
+}
+
+/* --------------------------------------------------------------------------
+   19. REVIEW OVERLAY — prototype-only; strip before production.
+   -------------------------------------------------------------------------- */
+.review-toggle {
+  position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 150;
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .75rem 1.25rem; border-radius: var(--r-full);
+  background: var(--primary); color: #fff; font-size: .8125rem; font-weight: 600;
+  box-shadow: 0 12px 28px rgba(11,17,32,.4); transition: all var(--d-fast);
+}
+.review-toggle:hover { background: var(--primary-light); transform: translateY(-2px); }
+.review-toggle svg { width: 1rem; height: 1rem; }
+
+body.show-placeholders [data-placeholder] {
+  outline: 2px dashed #f59e0b; outline-offset: 6px; border-radius: var(--r-lg);
+  position: relative;
+}
+body.show-placeholders [data-placeholder]::after {
+  content: attr(data-placeholder);
+  position: absolute; top: -.75rem; left: 0; z-index: 60;
+  background: #f59e0b; color: #451a03;
+  font-family: var(--font-sans); font-size: .625rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  padding: .1875rem .5rem; border-radius: var(--r-full); white-space: nowrap;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   20. REDUCED MOTION — §18.5
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .process__fill { transform: none !important; }
+}
