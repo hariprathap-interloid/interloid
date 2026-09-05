@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Interloid — Hero: particles resolve into the mark</title>
+<title>Interloid — Mark interaction lab</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,16 +34,13 @@
   .stage canvas { opacity: 0; transition: opacity 1s ease-out; }
   .stage.ready canvas { opacity: 1; }
 
-  /* ---- Dark (default) ---------------------------------------------------- */
   #hero { background: var(--ink-deep); }
   .fallback {
     position: absolute; inset: 0; z-index: -1;
     background:
       radial-gradient(55% 50% at 74% 45%, color-mix(in oklab, var(--brand) 40%, transparent), transparent 70%),
-      radial-gradient(40% 40% at 86% 55%, color-mix(in oklab, var(--accent) 34%, transparent), transparent 70%),
       var(--ink-deep);
   }
-  /* The scrim is what protects the copy. On dark it barely has to work. */
   .scrim {
     position: absolute; inset: 0; z-index: 1; pointer-events: none;
     background: linear-gradient(90deg, var(--ink-deep) 0%,
@@ -51,43 +48,38 @@
       color-mix(in oklab, var(--ink-deep) 40%, transparent) 52%, transparent 68%);
   }
 
-  /* ---- Light --------------------------------------------------------------
-     Light is the readability problem: dark particles on a pale ground compete
-     with dark text. Three defences, not one — a wider and more opaque scrim,
-     a dimmer cloud, and the mark pushed further right. ---------------------- */
   html.light #hero { background: var(--secondary); }
   html.light .fallback {
-    background:
-      radial-gradient(55% 50% at 78% 45%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 70%),
-      var(--secondary);
+    background: radial-gradient(55% 50% at 78% 45%, color-mix(in oklab, var(--brand) 14%, transparent), transparent 70%), var(--secondary);
   }
   html.light .scrim {
-    background: linear-gradient(90deg, var(--secondary) 0%,
-      var(--secondary) 30%,
+    background: linear-gradient(90deg, var(--secondary) 0%, var(--secondary) 30%,
       color-mix(in oklab, var(--secondary) 82%, transparent) 46%,
       color-mix(in oklab, var(--secondary) 30%, transparent) 62%, transparent 76%);
   }
   html.light .t-strong { color: var(--foreground); }
   html.light .t-accent { color: var(--brand); }
-  html.light .t-body   { color: var(--muted-foreground); }
-  html.light .t-meta   { color: var(--muted-foreground); }
-  html.light .chip     { background: var(--card); border-color: var(--border); color: var(--muted-foreground); }
-  html.light .btn-1    { background: var(--primary); color: var(--primary-foreground); }
-  html.light .btn-2    { background: var(--card); border-color: var(--border); color: var(--foreground); }
+  html.light .t-body, html.light .t-meta { color: var(--muted-foreground); }
+  html.light .chip { background: var(--card); border-color: var(--border); color: var(--muted-foreground); }
+  html.light .btn-1 { background: var(--primary); color: var(--primary-foreground); }
+  html.light .btn-2 { background: var(--card); border-color: var(--border); color: var(--foreground); }
+  html.light .panel { background: color-mix(in oklab, var(--card) 92%, transparent); border-color: var(--border); }
+  html.light .panel .lbl { color: var(--muted-foreground); }
+  html.light .mode { color: var(--muted-foreground); }
 
   .t-strong { color: #fff; }
   .t-accent { color: var(--accent); }
-  .t-body   { color: color-mix(in oklab, var(--ink-foreground) 88%, transparent); }
-  .t-meta   { color: color-mix(in oklab, var(--ink-foreground) 55%, transparent); }
-  .chip     { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); color: var(--ink-foreground); }
-  .btn-1    { background: var(--accent); color: #fff; box-shadow: 0 0 50px -12px var(--accent); }
-  .btn-2    { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.15); color: #fff; }
+  .t-body { color: color-mix(in oklab, var(--ink-foreground) 88%, transparent); }
+  .t-meta { color: color-mix(in oklab, var(--ink-foreground) 55%, transparent); }
+  .chip { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); color: var(--ink-foreground); }
+  .btn-1 { background: var(--accent); color: #fff; box-shadow: 0 0 50px -12px var(--accent); }
+  .btn-2 { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.15); color: #fff; }
+  .panel { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.12); }
+  .panel .lbl { color: color-mix(in oklab, var(--ink-foreground) 60%, transparent); }
+  .mode { color: color-mix(in oklab, var(--ink-foreground) 75%, transparent); }
 
   .rise { opacity: 0; transform: translateY(16px); animation: rise .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay: var(--d,0ms); }
   @keyframes rise { to { opacity: 1; transform: none } }
-
-  :focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ink-deep), 0 0 0 4px var(--accent); }
-  html.light :focus-visible { box-shadow: 0 0 0 2px var(--secondary), 0 0 0 4px var(--ring); }
 
   @media (prefers-reduced-motion: reduce) {
     *,*::before,*::after { animation: none !important; transition-duration: .01ms !important }
@@ -98,9 +90,19 @@
 
 <body class="font-sans antialiased">
 
-<div class="fixed left-1/2 top-4 z-100 flex -translate-x-1/2 items-center gap-1 rounded-full border border-white/10 bg-white/10 p-1 shadow-lg backdrop-blur">
-  <button data-theme="dark"  class="th rounded-full px-4 py-2 text-sm font-semibold">Dark</button>
-  <button data-theme="light" class="th rounded-full px-4 py-2 text-sm font-semibold">Light</button>
+<!-- Controls — lab only -->
+<div class="panel fixed left-1/2 top-4 z-100 flex -translate-x-1/2 flex-wrap items-center justify-center gap-1 rounded-2xl border p-2 shadow-xl backdrop-blur">
+  <span class="lbl px-2 text-[10px] font-bold uppercase tracking-[.18em]">Mouse</span>
+  <button data-mode="repel"  class="md rounded-full px-3 py-1.5 text-sm font-semibold">Repel</button>
+  <button data-mode="spring" class="md rounded-full px-3 py-1.5 text-sm font-semibold">Spring back</button>
+  <button data-mode="attract" class="md rounded-full px-3 py-1.5 text-sm font-semibold">Attract</button>
+  <button data-mode="vortex" class="md rounded-full px-3 py-1.5 text-sm font-semibold">Vortex</button>
+  <button data-mode="ripple" class="md rounded-full px-3 py-1.5 text-sm font-semibold">Ripple</button>
+  <button data-mode="glow"   class="md rounded-full px-3 py-1.5 text-sm font-semibold">Glow only</button>
+  <span class="mx-1 h-5 w-px bg-white/15"></span>
+  <span class="lbl px-2 text-[10px] font-bold uppercase tracking-[.18em]">Theme</span>
+  <button data-theme="dark"  class="th rounded-full px-3 py-1.5 text-sm font-semibold">Dark</button>
+  <button data-theme="light" class="th rounded-full px-3 py-1.5 text-sm font-semibold">Light</button>
 </div>
 
 <section id="hero" class="relative flex min-h-screen items-center overflow-hidden px-6 lg:px-16">
@@ -131,9 +133,10 @@
         <a href="#" class="btn-2 inline-flex h-14 items-center rounded-full border px-8 text-lg font-medium backdrop-blur transition-colors">See how we work</a>
       </div>
 
-      <p class="t-meta rise mt-12 font-mono text-[11px] uppercase tracking-[.2em]" style="--d:460ms">
-        <span id="state">Dispersed</span> &middot; the mark condenses out of smoke &middot; hover to glow
+      <p class="mode rise mt-12 max-w-md font-mono text-[11px] uppercase tracking-[.16em]" style="--d:460ms">
+        <span id="modeName">Repel</span> &mdash; <span id="modeDesc">dots are pushed away from the cursor</span>
       </p>
+      <p class="t-meta mt-2 font-mono text-[11px] uppercase tracking-[.16em]">Click anywhere for a burst</p>
     </div>
   </div>
 </section>
@@ -141,6 +144,6 @@
 <script type="importmap">
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
 </script>
-<script type="module" src="hero-logo.js"></script>
+<script type="module" src="hero-logo-lab.js"></script>
 </body>
 </html>
