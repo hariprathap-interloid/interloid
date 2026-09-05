@@ -90,6 +90,17 @@ click + arrow keys switch the panel · mobile menu opens on a dead-centre tap
 
 ---
 
+## 3b. Parked variants
+
+| File | What | Why parked |
+| --- | --- | --- |
+| `hero-signal.html` | The dark "Signal" hero — ink-deep ground, 4-layer aurora, grain, accent glow CTA. Standalone and runnable. | Approved on look. Reverted from `index.html` because the page below is light-first (DS §1.2 rule 1) and the CTA slab + footer already close dark — opening dark costs that ending its impact. Kept for **dark mode** (`theme.css` already ships a working `.dark` block) or a dark campaign/landing page. |
+| `hero-lab.html` | Three hero treatments side by side — A Cadence (light, centred, horizontal engagement rail), B Engagement (split, tilting timeline card), C Signal (dark). Includes the running engagement timeline. | Comparison artifact. Whichever direction wins gets lifted into `index.html` as one section. |
+
+`hero-signal.html` carries its own re-enable instructions in the file header,
+including the nav inversion it needs (at rest the bar is transparent over ink,
+so the dark wordmark and toggle would be invisible).
+
 ## 4. Round log
 
 | Round | Instruction | Touched | Outcome |
@@ -97,6 +108,9 @@ click + arrow keys switch the panel · mobile menu opens on a dead-centre tap
 | 1 | Header from D's V1 · DS layout + auto-hide on scroll | 00 | Superseded by round 2 |
 | 2 | Investigate conversedatasolutions.com; rebuild in Tailwind | all | ◐ built + verified |
 | 3 | Too white — probe interloid.com, build a token-based brand theme | all | ◐ built + verified |
+| 4 | Copy/tone audit of nav, header and buttons; CTA label system | 00, 01, 07 | ◐ 3 labels down from 5; nav to `xl:` breakpoint |
+| 5 | Hero: fix the split headline, add life | 01 | ◐ H1 restructured, orb parallax, chips, dot grid, shine, cue |
+| 6 | Explore "make it alive": 3 treatments + engagement timeline | — | ◐ `hero-lab.html`; dark tried on index then reverted, parked |
 
 ---
 

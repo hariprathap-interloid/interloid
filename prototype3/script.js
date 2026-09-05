@@ -139,7 +139,7 @@ if (orbs.length && !REDUCED) {
       /* scroll drifts the orbs up more slowly than the page, so the hero
          gains depth as it leaves rather than moving as one flat plane */
       const y = py * d + sy * (d / 220);
-      el.style.transform = `translate3d(${(px * d).toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      el.style.translate = `${(px * d).toFixed(1)}px ${y.toFixed(1)}px`;
     });
   };
   const queue = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };

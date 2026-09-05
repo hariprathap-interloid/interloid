@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interloid — Hero: Signal (dark), parked</title>
+
+<!-- ==========================================================================
+     PARKED VARIANT — not in use on index.html.
+
+     The dark "Signal" hero. Approved on look, reverted 2026-09-05 because the
+     page below it is light-first (DS §1.2 rule 1) and the CTA slab + footer
+     already close dark — opening dark too costs that ending its impact.
+
+     Kept for: a future dark mode (theme.css already ships a working `.dark`
+     block), or a dark landing/campaign page.
+
+     TO RE-ENABLE ON index.html:
+       1. Paste the <section id="home"> below over the current hero.
+       2. Copy the aurora + grain CSS from this file's <style> block.
+       3. Re-add the nav inversion — at rest the bar is transparent over ink,
+          so the dark wordmark and toggle vanish:
+            CSS  .nav-dark .logo-word { color:#fff }
+                 .nav-dark #navToggle { color:#fff }
+                 .nav-dark :focus-visible { box-shadow:0 0 0 2px var(--ink-deep),0 0 0 4px var(--accent) }
+            JS   nav.classList.toggle("nav-dark", !on);   // in the scroll handler
+          Add class="logo-word" to the wordmark span. The links pill is
+          bg-card/80, which reads correctly on dark as-is.
+       4. Parallax depths for four aurora layers: { 1:40, 2:70, 3:55, 4:90 }.
+          Write `element.style.translate`, NEVER `transform` — the drift
+          keyframes own `transform` and the two would cancel each other.
+     ========================================================================== -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="theme.css">
+
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--background); --color-foreground: var(--foreground);
+    --color-card: var(--card); --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary); --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent); --color-border: var(--border); --color-ring: var(--ring);
+    --color-ink: var(--ink); --color-ink-deep: var(--ink-deep);
+    --color-ink-foreground: var(--ink-foreground);
+    --color-brand: var(--brand); --color-brand-light: var(--brand-light);
+    --color-accent-strong: var(--accent-strong);
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+    --animate-gradient: gradient 8s linear infinite;
+    --radius-3xl: calc(var(--radius) * 2.2); --radius-4xl: calc(var(--radius) * 3.4);
+  }
+</style>
+
+<style>
+  /* ---- Aurora: four drifting layers on different periods, so the pattern
+         never visibly repeats. Replaces three discrete blobs. -------------- */
+  .aurora { position:absolute; inset:-20%; filter: blur(110px); opacity:.9; }
+  .aurora i { position:absolute; display:block; border-radius:50%; will-change: transform, translate; }
+  .aurora i:nth-child(1){ width:46%; height:52%; left:2%;  top:4%;  background:var(--brand);       opacity:.34; animation: drift1 22s ease-in-out infinite; }
+  .aurora i:nth-child(2){ width:52%; height:56%; left:40%; top:0%;  background:var(--accent);      opacity:.30; animation: drift2 27s ease-in-out infinite; }
+  .aurora i:nth-child(3){ width:40%; height:48%; left:18%; top:38%; background:var(--brand-light); opacity:.26; animation: drift3 31s ease-in-out infinite; }
+  .aurora i:nth-child(4){ width:34%; height:40%; left:58%; top:42%; background:var(--accent);      opacity:.20; animation: drift1 25s ease-in-out infinite reverse; }
+  @keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)}    33%{transform:translate(8%,6%) scale(1.12)}  66%{transform:translate(-6%,4%) scale(.94)} }
+  @keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)}    33%{transform:translate(-9%,5%) scale(.92)}  66%{transform:translate(5%,-6%) scale(1.14)} }
+  @keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1.05)} 33%{transform:translate(6%,-7%) scale(.96)}  66%{transform:translate(-8%,-3%) scale(1.1)} }
+
+  /* Grain stops the large gradients banding on a dark ground. */
+  .grain::after {
+    content:""; position:absolute; inset:0; pointer-events:none; opacity:.30; z-index:1;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  }
+
+  /* ---- Nav over the dark hero. At rest the bar is transparent on ink, so
+         every default (dark) label would be invisible; once it morphs into
+         the white glass pill the normal light-surface colours are correct. -- */
+  .nav-dark .logo-word { color: #fff; }
+  .nav-dark #navToggle { color: #fff; }
+  .nav-dark #navToggle:hover { background: rgba(255,255,255,.12); }
+  .nav-dark :focus-visible { box-shadow: 0 0 0 2px var(--ink-deep), 0 0 0 4px var(--accent); }
+  [data-reveal] { opacity: 0; transform: translateY(20px); transition: opacity .6s cubic-bezier(0,0,.2,1), transform .6s cubic-bezier(0,0,.2,1); transition-delay: var(--delay, 0ms); }
+  [data-reveal].is-in { opacity: 1; transform: none; }
+  @keyframes shine { 0% { opacity:0; left:-100% } 20% { opacity:.45 } 100% { opacity:0; left:100% } }
+  .shine::after { content:""; position:absolute; top:-50%; left:-100%; width:55%; height:200%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+    transform:rotate(30deg); animation:shine 5s 1.5s infinite; pointer-events:none; }
+  .shine > * { position:relative; z-index:1; }
+  @keyframes cue { 0%,100% { transform:translate(-50%,0) } 50% { transform:translate(-50%,6px) } }
+  .scroll-cue { animation: cue 2.4s ease-in-out infinite; }
+  .on-dark:focus-visible { outline:none; box-shadow:0 0 0 2px var(--ink-deep), 0 0 0 4px var(--accent); }
+  @media (prefers-reduced-motion: reduce) {
+    *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+    [data-reveal] { opacity:1; transform:none } .aurora i { animation:none }
+    .shine::after { display:none } .scroll-cue { animation:none }
+  }
+</style>
+</head>
+<body class="bg-ink-deep font-sans antialiased">
+<!-- ==========================================================================
+     1. HERO — "Signal": dark anchor + aurora mesh. Deliberately departs from
+     DS §1.2 rule 1 (light-first). Everything below stays light, so the page
+     now opens dark, runs light, and closes dark on the CTA slab + footer.
+     ========================================================================== -->
+      <section
+        id="home"
+        class="grain relative flex min-h-screen items-center justify-center overflow-hidden bg-ink-deep px-6 pt-20"
+      >
+        <!-- Aurora: four layers on different periods so the drift never
+             visibly repeats. `translate` is set by the parallax; `transform`
+             belongs to the drift keyframes — writing both to `transform`
+             would make each cancel the other. -->
+        <div class="aurora pointer-events-none" aria-hidden="true">
+          <i data-orb="1"></i><i data-orb="2"></i><i data-orb="3"></i><i data-orb="4"></i>
+        </div>
+
+        <div
+          class="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,.10)_1px,transparent_1px)] bg-[size:30px_30px] [mask-image:radial-gradient(ellipse_60%_55%_at_50%_45%,#000_10%,transparent_100%)]"
+          aria-hidden="true"
+        ></div>
+
+        <div class="relative z-20 mx-auto max-w-7xl text-center">
+          <div
+            data-reveal
+            class="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur"
+          >
+            <span class="relative flex size-2">
+              <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-70"></span>
+              <span class="relative inline-flex size-2 rounded-full bg-accent"></span>
+            </span>
+            <span class="text-sm font-medium text-ink-foreground">Senior product engineering</span>
+          </div>
+
+          <!-- §3.2 hero H1 is the only place font-black (900) is used.
+               §1.2 rule 4: exactly one gradient phrase per heading. -->
+          <h1
+            data-reveal
+            style="--delay: 100ms"
+            class="mb-8 font-display text-5xl font-black leading-[1.02] tracking-tight md:text-6xl lg:text-7xl xl:text-8xl"
+          >
+            <span class="block text-white">The problem isn't ideas.</span>
+            <span
+              class="block bg-gradient-to-r from-accent via-brand-light to-accent bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient"
+              >It's shipping.</span
+            >
+          </h1>
+
+          <p
+            data-reveal
+            style="--delay: 200ms"
+            class="mx-auto mb-12 max-w-3xl text-xl leading-relaxed text-ink-foreground/80"
+          >
+            Interloid takes defined problems to deployed software — in your
+            accounts, on your repos, with a working demo every week. No vendor
+            relationship to manage.
+          </p>
+
+          <div
+            data-reveal
+            style="--delay: 300ms"
+            class="flex flex-wrap items-center justify-center gap-6"
+          >
+            <a
+              href="#contact"
+              class="on-dark shine active:scale-95 group relative overflow-hidden inline-flex h-14 items-center gap-2 rounded-full bg-accent px-10 text-lg font-bold text-white shadow-[0_0_50px_-10px_var(--accent)] transition-all hover:scale-[1.03]"
+            >
+              Book a free 30-min consult
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a
+              href="#process"
+              class="on-dark active:scale-95 group inline-flex h-14 items-center gap-2 rounded-full border border-white/15 bg-white/5 px-10 text-lg font-medium text-white backdrop-blur transition-colors hover:bg-white/10"
+            >
+              See how we work
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
+
+          <div
+            data-reveal
+            style="--delay: 400ms"
+            class="mt-10 flex flex-wrap items-center justify-center gap-3"
+          >
+            <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-sm font-medium text-ink-foreground backdrop-blur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You own 100% of the code</span>
+            <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-sm font-medium text-ink-foreground backdrop-blur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Written proposal in 48 hours</span>
+            <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-sm font-medium text-ink-foreground backdrop-blur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>30-day notice, either way</span>
+          </div>
+        </div>
+
+        <a
+          href="#services"
+          aria-label="Scroll to what we build"
+          class="on-dark scroll-cue absolute bottom-8 left-1/2 z-20 -translate-x-1/2 grid size-11 place-items-center rounded-full border border-white/15 bg-white/5 text-ink-foreground backdrop-blur transition-colors hover:border-accent hover:text-white"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </a>
+
+        <div
+          class="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-32 bg-gradient-to-t from-ink-deep to-transparent"
+          aria-hidden="true"
+        ></div>
+      </section>
+<script>
+  document.querySelectorAll('[data-reveal]').forEach(e => e.classList.add('is-in'));
+  const hero = document.querySelector('#home');
+  const DEPTH = { 1: 40, 2: 70, 3: 55, 4: 90 };
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let px = 0, py = 0, q = false;
+    const paint = () => { q = false;
+      document.querySelectorAll('[data-orb]').forEach(el => {
+        const d = DEPTH[el.dataset.orb] || 70;
+        el.style.translate = `${(px*d).toFixed(1)}px ${(py*d).toFixed(1)}px`;
+      });
+    };
+    hero.addEventListener('pointermove', e => {
+      const r = hero.getBoundingClientRect();
+      px = (e.clientX-r.left)/r.width-0.5; py = (e.clientY-r.top)/r.height-0.5;
+      if (!q) { q = true; requestAnimationFrame(paint); }
+    });
+    hero.addEventListener('pointerleave', () => { px=0; py=0; paint(); });
+  }
+</script>
+</body>
+</html>
