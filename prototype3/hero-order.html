@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interloid — Order from chaos (light)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="theme.css">
+
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--background); --color-foreground: var(--foreground);
+    --color-card: var(--card); --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary); --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent); --color-accent-strong: var(--accent-strong);
+    --color-border: var(--border); --color-ring: var(--ring);
+    --color-brand: var(--brand); --color-brand-light: var(--brand-light);
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  }
+</style>
+
+<style>
+  html { scroll-behavior: smooth; }
+  canvas { display: block; width: 100%; height: 100%; }
+
+  /* Scroll mode makes the hero a 220vh scroll track with a sticky viewport.
+     The visitor's scroll IS the animation timeline. */
+  .track { height: 220vh; position: relative; }
+  .track[data-mode="pointer"], .track[data-mode="auto"] { height: 100vh; }
+  .sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+
+  .stage { position: absolute; inset: 0; z-index: 0; }
+  .stage canvas { opacity: 0; transition: opacity 1s ease-out; }
+  .stage.ready canvas { opacity: 1; }
+
+  /* Painted before WebGL arrives, and left in place if it never does. */
+  .fallback {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(55% 50% at 78% 32%, color-mix(in oklab, var(--brand) 22%, transparent), transparent 70%),
+      radial-gradient(45% 45% at 62% 70%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 70%),
+      var(--secondary);
+  }
+
+  /* Keeps the left column legible whatever the particles do behind it. */
+  .scrim {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(90deg,
+      var(--secondary) 0%,
+      color-mix(in oklab, var(--secondary) 82%, transparent) 38%,
+      transparent 68%);
+  }
+
+  .rise { opacity: 0; transform: translateY(16px); animation: rise .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay: var(--d,0ms); }
+  @keyframes rise { to { opacity: 1; transform: none } }
+
+  .meter { transform-origin: left; transform: scaleX(var(--p, 0)); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto }
+    .track { height: 100vh !important }
+    *,*::before,*::after { animation: none !important; transition-duration: .01ms !important }
+    .rise { opacity: 1; transform: none }
+  }
+</style>
+</head>
+
+<body class="bg-secondary font-sans text-muted-foreground antialiased">
+
+<!-- Control mode — lab only. Pick one before this ships. -->
+<div class="fixed left-1/2 top-4 z-100 flex -translate-x-1/2 items-center gap-1 rounded-full border border-border bg-card/90 p-1 shadow-lg backdrop-blur">
+  <span class="px-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Driven by</span>
+  <button data-mode="scroll"  class="md rounded-full px-4 py-2 text-sm font-semibold">Scroll</button>
+  <button data-mode="pointer" class="md rounded-full px-4 py-2 text-sm font-semibold">Cursor</button>
+  <button data-mode="auto"    class="md rounded-full px-4 py-2 text-sm font-semibold">Auto loop</button>
+</div>
+
+<section id="track" class="track" data-mode="scroll">
+  <div class="sticky flex items-center px-6 lg:px-16">
+    <div class="fallback"></div>
+    <div class="stage"><canvas></canvas></div>
+    <div class="scrim"></div>
+
+    <div class="relative z-10 mx-auto w-full max-w-[1400px]">
+      <div class="max-w-2xl">
+        <p class="rise mb-7 inline-flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground shadow-sm" style="--d:60ms">
+          <span class="size-2 rounded-full bg-accent"></span>Senior product engineering
+        </p>
+
+        <h1 class="rise mb-7 font-display text-5xl font-black leading-[1.02] tracking-tight text-foreground md:text-6xl lg:text-7xl" style="--d:160ms">
+          The problem isn&rsquo;t ideas.<br><span class="text-brand">It&rsquo;s shipping.</span>
+        </h1>
+
+        <p class="rise mb-10 max-w-xl text-xl leading-relaxed text-muted-foreground" style="--d:260ms">
+          Interloid takes defined problems to deployed software &mdash; in your accounts,
+          on your repos, with a working demo every week.
+        </p>
+
+        <div class="rise flex flex-wrap items-center gap-4" style="--d:360ms">
+          <a href="#" class="group inline-flex h-14 items-center gap-2 rounded-full bg-primary px-9 text-lg font-medium text-primary-foreground shadow-xl shadow-primary/25 transition-all hover:bg-brand-light active:scale-95">
+            Book a free 30-min consult
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a href="#" class="inline-flex h-14 items-center rounded-full border border-border bg-card px-8 text-lg font-medium text-foreground transition-colors hover:border-primary hover:text-primary">See how we work</a>
+        </div>
+
+        <!-- Progress read-out: makes it obvious the visitor is driving it. -->
+        <div class="rise mt-12 max-w-sm" style="--d:460ms">
+          <div class="mb-2 flex items-baseline justify-between">
+            <span id="hint" class="font-mono text-[11px] uppercase tracking-[.2em] text-muted-foreground">Scroll to resolve</span>
+            <span id="pct" class="font-mono text-[11px] font-bold text-brand">0%</span>
+          </div>
+          <div class="h-px w-full bg-border">
+            <div id="meter" class="meter h-px bg-gradient-to-r from-brand to-accent"></div>
+          </div>
+          <p class="mt-3 font-mono text-[11px] uppercase tracking-[.16em] text-muted-foreground/70">
+            <span id="stateLabel">Scattered</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="flex min-h-screen items-center justify-center border-t border-border bg-background px-6">
+  <p class="max-w-xl text-center text-lg">
+    The page continues here. In scroll mode the hero occupies 220&nbsp;vh of track,
+    so the visitor spends roughly one extra screen of scrolling resolving the
+    particles before normal content resumes.
+  </p>
+</section>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module" src="hero-order.js"></script>
+</body>
+</html>
