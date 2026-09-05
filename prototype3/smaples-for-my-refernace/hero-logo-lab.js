@@ -83,7 +83,7 @@ function webglOK() {
 
 async function boot() {
   let data;
-  try { data = await (await fetch('logo-points.json')).json(); }
+  try { data = await (await fetch('../logo-points.json')).json(); }
   catch (e) { console.error('logo points unavailable; CSS fallback stands', e); return; }
 
   const N = data.count, src = data.pos;

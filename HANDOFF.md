@@ -48,7 +48,7 @@ Nothing has been deployed. The live site is untouched.
 | `theme.css` | **The colour system. The only file to edit when re-theming.** |
 | `index.html` + `script.js` | The full page: nav, hero, services, marquee, bento, process, work, CTA, footer |
 | `hero-logo.html` + `hero-logo.js` + `logo-points.json` | ✅ **THE APPROVED HERO.** Not yet folded into `index.html`. |
-| `hero-logo-lab.html` / `hero-lab.html` / `hero-3d.*` / `hero-order.*` / `hero-v2.*` / `hero-signal.html` | Exploration labs — **all superseded, safe to delete** |
+| `smaples-for-my-refernace/` | The exploration labs, kept for reference. All superseded — **nothing here ships.** Their `theme.css` / `logo-points.json` paths are `../`, so they only work from inside that folder. |
 
 **Serving:** must be served over http (Live Server is fine). `theme.css` loads
 via `<link>`; opening `index.html` from the filesystem leaves it unstyled.
@@ -109,8 +109,7 @@ a 14-second auto loop. Dark by default, light toggle present.
 
 **Mechanical, unblocked, do these first:**
 1. Fold `hero-logo.html`'s hero into `index.html` as the real hero.
-2. Delete the superseded labs listed in §3.
-3. Build the §10.1 conversational contact form — the CTA is a bare `mailto`
+2. Build the §10.1 conversational contact form — the CTA is a bare `mailto`
    today. Form a11y is gotcha §5.9.
 
 **Blocked on a content answer (see §7) — do not build these blind:**
