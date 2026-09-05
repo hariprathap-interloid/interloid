@@ -127,16 +127,6 @@
           0 0 0 2px var(--ink-deep),
           0 0 0 4px var(--accent);
       }
-
-      /* DS §1.2 rule 3 — "nothing is sharp". One knob scales every radius. */
-        --radius-sm: calc(var(--radius) * 0.6);
-        --radius-md: calc(var(--radius) * 0.8);
-        --radius-lg: var(--radius);
-        --radius-xl: calc(var(--radius) * 1.4);
-        --radius-2xl: calc(var(--radius) * 1.8);
-        --radius-3xl: calc(var(--radius) * 2.2);
-        --radius-4xl: calc(var(--radius) * 3.4);
-      }
     </style>
 
     <style>
@@ -192,21 +182,56 @@
           0 0 0 4px var(--accent);
       }
 
-  /* DS 9.10 shine sweep - reserved for the single most important CTA. */
-  @keyframes shine { 0% { opacity: 0; left: -100% } 20% { opacity: .45 } 100% { opacity: 0; left: 100% } }
-  .shine::after {
-    content: ""; position: absolute; top: -50%; left: -100%;
-    width: 55%; height: 200%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
-    transform: rotate(30deg); animation: shine 5s 1.5s infinite;
-    pointer-events: none;
-  }
-  .shine > * { position: relative; z-index: 1; }
+      /* DS 9.10 shine sweep - reserved for the single most important CTA. */
+      @keyframes shine {
+        0% {
+          opacity: 0;
+          left: -100%;
+        }
+        20% {
+          opacity: 0.45;
+        }
+        100% {
+          opacity: 0;
+          left: 100%;
+        }
+      }
+      .shine::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -100%;
+        width: 55%;
+        height: 200%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.55),
+          transparent
+        );
+        transform: rotate(30deg);
+        animation: shine 5s 1.5s infinite;
+        pointer-events: none;
+      }
+      .shine > * {
+        position: relative;
+        z-index: 1;
+      }
 
-  @keyframes cue { 0%, 100% { transform: translate(-50%, 0) } 50% { transform: translate(-50%, 6px) } }
-  .scroll-cue { animation: cue 2.4s ease-in-out infinite; }
+      @keyframes cue {
+        0%,
+        100% {
+          transform: translate(-50%, 0);
+        }
+        50% {
+          transform: translate(-50%, 6px);
+        }
+      }
+      .scroll-cue {
+        animation: cue 2.4s ease-in-out infinite;
+      }
 
-  /* Placeholder outliner — every prototype ships one (HANDOFF §8). */
+      /* Placeholder outliner — every prototype ships one (HANDOFF §8). */
       body.show-ph [data-placeholder] {
         outline: 2px dashed #e11d48;
         outline-offset: 4px;
@@ -307,7 +332,7 @@
 
         <!-- §6.2 a pill inside a pill -->
         <div
-          class="hidden items-center gap-1 rounded-full border  border-white/40 bg-card/80 p-1 shadow-sm backdrop-blur-sm xl:flex py-2 px-3"
+          class="hidden items-center gap-1 rounded-full border border-white/40 bg-card/80 p-1 shadow-sm backdrop-blur-sm xl:flex py-2 px-3"
         >
           <a
             href="#home"
@@ -512,8 +537,23 @@
             data-reveal
             class="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 shadow-sm"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4 text-accent-strong" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
-            <span class="text-sm font-medium text-muted-foreground">Senior product engineering</span>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-4 text-accent-strong"
+              aria-hidden="true"
+            >
+              <path
+                d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"
+              />
+            </svg>
+            <span class="text-sm font-medium text-muted-foreground"
+              >Senior product engineering</span
+            >
           </div>
 
           <!-- DS 3.2: the hero H1 is the only place font-black (900) is used.
@@ -523,7 +563,9 @@
             style="--delay: 100ms"
             class="mb-8 font-display text-5xl font-black leading-[1.02] tracking-tight md:text-6xl lg:text-7xl xl:text-8xl"
           >
-            <span class="block text-foreground">The problem isn&#39;t ideas.</span>
+            <span class="block text-foreground"
+              >The problem isn&#39;t ideas.</span
+            >
             <span
               class="block bg-gradient-to-r from-brand via-accent to-brand-light bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient"
               >It&#39;s shipping.</span
@@ -535,9 +577,9 @@
             style="--delay: 200ms"
             class="mx-auto mb-12 max-w-3xl text-xl leading-relaxed text-muted-foreground"
           >
-            Interloid takes defined problems to deployed software &mdash; in your
-            accounts, on your repos, with a working demo every week. No vendor
-            relationship to manage.
+            Interloid takes defined problems to deployed software &mdash; in
+            your accounts, on your repos, with a working demo every week. No
+            vendor relationship to manage.
           </p>
 
           <div
@@ -550,14 +592,38 @@
               class="shine active:scale-95 group relative overflow-hidden inline-flex h-14 items-center gap-2 rounded-full bg-primary px-10 text-lg font-medium text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:bg-brand-light hover:shadow-2xl hover:shadow-primary/40"
             >
               Book a free 30-min consult
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-5 transition-transform group-hover:translate-x-1"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
             </a>
             <a
               href="#process"
               class="active:scale-95 group inline-flex h-14 items-center gap-2 rounded-full border border-border bg-card/60 px-10 text-lg font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary hover:bg-card hover:text-primary"
             >
               See how we work
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-5 transition-transform group-hover:translate-x-1"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
             </a>
           </div>
 
@@ -566,9 +632,51 @@
             style="--delay: 400ms"
             class="mt-10 flex flex-wrap items-center justify-center gap-3"
           >
-            <span class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent-strong" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You own 100% of the code</span>
-            <span class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent-strong" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Written proposal in 48 hours</span>
-            <span class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent-strong" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>30-day notice, either way</span>
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"
+              ><svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-3.5 text-accent-strong"
+                aria-hidden="true"
+              >
+                <path d="M20 6 9 17l-5-5" /></svg
+              >You own 100% of the code</span
+            >
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"
+              ><svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-3.5 text-accent-strong"
+                aria-hidden="true"
+              >
+                <path d="M20 6 9 17l-5-5" /></svg
+              >Written proposal in 48 hours</span
+            >
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"
+              ><svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-3.5 text-accent-strong"
+                aria-hidden="true"
+              >
+                <path d="M20 6 9 17l-5-5" /></svg
+              >30-day notice, either way</span
+            >
           </div>
         </div>
 
@@ -577,7 +685,18 @@
           aria-label="Scroll to what we build"
           class="scroll-cue absolute bottom-8 left-1/2 z-20 -translate-x-1/2 grid size-11 place-items-center rounded-full border border-border bg-card/70 text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:border-primary hover:text-primary"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-5"
+            aria-hidden="true"
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
         </a>
 
         <div
