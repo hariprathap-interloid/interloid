@@ -186,14 +186,37 @@ async function boot() {
     const narrow = w < 900;
     /* A fixed fraction of the viewport, so the mark is the same size on a
        1280 laptop and a 2560 monitor. */
-    /* Narrow: the mark moves to a band across the TOP and the copy sits under
-       it, so it has to be much smaller than the 900+ side-by-side framing —
-       at .30 it spanned 60% of the viewport and ran straight through the H1.
-       .19 + a .32 lift keeps it inside the top ~40%, which is what the mobile
-       scrim and the hero's 40vh top padding are cut to. */
-    SCALE = FRAME.h * (narrow ? .19 : .34);
-    HOME_X = narrow ? 0 : Math.min(FRAME.w * .26, FRAME.w / 2 - SCALE * 1.05);
-    HOME_Y = narrow ? FRAME.h * .32 : 0;
+    if (!narrow) {
+      SCALE  = FRAME.h * .34;
+      HOME_X = Math.min(FRAME.w * .26, FRAME.w / 2 - SCALE * 1.05);
+      HOME_Y = 0;
+      return;
+    }
+
+    /* NARROW — the mark sits in a band across the TOP and the copy stacks
+       under it. Two things make this genuinely different from a scaled-down
+       desktop layout, and both bit us:
+
+       1. On mobile the SECTION is taller than the viewport (the copy overflows
+          it), so `h` here is the section height, not the screen. That makes
+          FRAME.w = FRAME.h * w/h very narrow — at 390x844 with a ~1000px tall
+          section, FRAME.w is 5.46 against a mark 5.32 wide. Sizing off
+          FRAME.h alone put the mark edge to edge and cropped it. Cap it on
+          the WIDTH instead; the mark is square in unit space (x +/-1, y
+          +/-0.98), so a third of the frame width is a real third.
+
+       2. For the same reason the mark cannot be positioned as a fraction of
+          FRAME.h — that lands it relative to the section, not the visible
+          band. Read the section's own padding-top (the band the CSS reserves)
+          and centre the mark inside it, so the two can never drift apart. */
+    SCALE = Math.min(FRAME.w * .26, FRAME.h * .19);
+    HOME_X = 0;
+    /* Centred at 58% of the band, not 50%: the nav is transparent at rest and
+       occupies the first ~70px, so a mark centred in the band sits behind the
+       wordmark. Pushing it down clears the nav and still leaves a gap above
+       the eyebrow. */
+    const band = parseFloat(getComputedStyle(hero).paddingTop) || h * .36;
+    HOME_Y = ((h / 2 - band * .58) / h) * FRAME.h;
   };
   resize();
   addEventListener('resize', resize);

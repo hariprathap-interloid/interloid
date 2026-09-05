@@ -38,7 +38,7 @@ Opening `index.html` from the filesystem leaves it unstyled.
 | # | Section | DS ref | Notes | State |
 | --- | --- | --- | --- | --- |
 | 00 | Morphing nav | §6.1–6.5 | max-w-7xl→6xl, transparent→glass, 0→rounded-full, 300ms. Pill-in-pill links. | ◐ |
-| 01 | Hero | — | **Treatment C "Terms".** Left-aligned copy over the WebGL mark, proof as a label→value rail. Orbs/dot-grid/gradient-clip headline all removed. Deliberately ignores DS §7.2. | ☑ |
+| 01 | Hero | — | **Treatment C layout + contrast headline.** Left copy over the WebGL mark, proof as a label→value rail. Orbs/dot-grid/gradient-clip headline all removed. Deliberately ignores DS §7.2. | ☑ |
 | 02 | Services | §8.4 / §8.6 | 5/7 split: selector rows + L4 feature panel. ARIA tablist, roving tabindex | ◐ |
 | 03 | Stack marquee | §8.10 | Tripled list, edge fades, 28s linear. Uses `text-faint`, not `text-border`. | ◐ |
 | 04 | Advantage bento | §8.2 / §14.3 | Glass tiles on slate-50, cursor spotlight | ◐ |
@@ -117,23 +117,45 @@ so the dark wordmark and toggle would be invisible).
 | 6 | Explore "make it alive": 3 treatments + engagement timeline | — | ◐ `hero-lab.html`; dark tried on index then reverted, parked |
 | 7 | Hero animation: particles condense into the mark | 01 | ☑ `hero-logo.html` approved. No rotation, no glow, no cursor modes |
 | 8 | Hero content + design; fold into `index.html` | 01, 00 | ☑ 4 treatments in `hero-copy-lab.html`; **C "Terms"** chosen and folded in. Theme toggle now ships. |
+| 8b | Hero copy pass 2 | 01 | ☑ Headline → the contrast line; subhead names the audience; "See the proof"; Proposal row dropped |
 
 ---
 
 ## 4b. Round 8 detail — the hero that shipped
 
-**Content position.** The engagement terms are the differentiator, so they carry
-the headline: *"Software that ships. / Terms that don't trap you."* Proof is an
-editorial label→value rail (Proposal · Cadence · Ownership · Exit), not a chip
-row. Review §9.2 asks the hero to say *who it is for*; with no verified client
-data that specificity cannot come from **who we serve** without inventing it, so
-every treatment drew its specificity from **how the engagement works** instead.
-Every value in the rail is on HANDOFF §7's allowed list, so none is a placeholder.
+**What shipped is C's layout with A's headline.** Round 8 chose treatment C
+whole; round 8b kept its structure — left copy over the mark, proof as an
+editorial label→value rail rather than a chip row — and swapped the headline
+back to the contrast line, which carries more:
 
-The three treatments not taken are still in `hero-copy-lab.html`:
-A *Contrast* (the old "The problem isn't ideas. / It's shipping." — memorable,
-least specific), B *Ledger* ("Live in production. / Not in a backlog." with a
-three-column evidence strip), D *Plain* (literal, maximum air, one CTA).
+> **The problem isn't ideas. / It's shipping.**
+> Interloid is a senior engineering team for founders and product leaders. We
+> take defined problems to deployed software — in your accounts, on your repos,
+> with a working demo every week. No vendor relationship to manage.
+> `Book a free 30-min consult` · `See the proof`
+> Cadence · Ownership · Exit
+
+Round 8's note said the hero could not say *who it is for* without inventing
+client data. **8b resolves that a different way:** the subhead names the
+audience — "founders and product leaders". That is a *positioning* claim about
+who we sell to, not a *proof* claim about who we have served, so it needs no
+source. This is the first audience statement the hero has had, and it is what
+review §9.2 was asking for. The eyebrow stays geography ("India-based · US & UK
+overlap hours"); the eyebrow says where we are, the subhead says who we are for.
+
+The **Proposal / 48 hours** row was dropped from the rail at the user's
+instruction. The claim still stands on the CTA slab (§07) and in Process (§05),
+so nothing was lost from the page — only from the hero.
+
+**`See the proof` points at §06 Selected Work, which is three placeholder
+cards.** That makes HANDOFF §7's case-study P0 into a hero-level promise: the
+hero now explicitly offers proof the page cannot yet show. Either land the case
+studies before launch or repoint that link — it is one `href`.
+
+The treatments not taken are still in `hero-copy-lab.html` as the record:
+A *Contrast* (whose headline was taken, but with the old chip-row proof),
+B *Ledger* ("Live in production. / Not in a backlog." with a three-column
+evidence strip), C as originally written, D *Plain*.
 
 **Theme.** The toggle ships. `.dark` on `<html>` is the one convention across the
 page and both labs; light stays the default. An inline head script resolves it
@@ -143,11 +165,17 @@ blending — the two can never fight over who set the theme.
 
 **Found and fixed on the way:**
 
-- **Mobile was broken.** Below 900px the mark spanned ~60% of the viewport and
-  ran through the H1, and the scrim ran horizontally where the layout stacks
-  vertically. Mark is now `.19` scale in a top band, the scrim runs downward in
-  two layers (the first caps the top 13% so the cloud stops running through the
-  transparent nav), and the copy clears 40vh.
+- **Mobile was broken, twice.** First: the mark spanned ~60% of the viewport
+  and ran through the H1, and the scrim ran horizontally where the layout
+  stacks vertically. Then, once 8b's longer subhead landed, the mark came back
+  cropped edge to edge — because on mobile the *section* is taller than the
+  viewport, so `camera.aspect` is computed against the section and FRAME.w
+  collapses. The mark is now capped on frame **width** (the logo is square in
+  unit space, x ±1 / y ±0.98) and centred at 58% of the section's own
+  `padding-top`, read from the DOM so the CSS band and the mark cannot drift
+  apart. The scrim runs downward in two layers — the first caps the top 13%, or
+  the cloud runs through the transparent nav — and the copy clears 36vh, down
+  from 40 because at 40 both CTAs fell below the fold.
 - **`text-border` is not a text colour.** The marquee and the inactive selector
   arrows used it; in dark `--border` is white at 10% alpha and they vanished.
   New `--faint` token, same value in light, opaque in dark.

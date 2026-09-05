@@ -49,7 +49,7 @@ Nothing has been deployed. The live site is untouched.
 | `index.html` + `script.js` | The full page: nav, hero, services, marquee, bento, process, work, CTA, footer |
 | `hero-logo.js` + `logo-points.json` | ✅ **THE APPROVED HERO STAGE.** Now folded into `index.html`. |
 | `hero-logo.html` | The animation on its own, for working on the motion without the page. |
-| `hero-copy-lab.html` | The four hero copy/layout treatments. **C "Terms" shipped**; A/B/D kept as the record of what was rejected. |
+| `hero-copy-lab.html` | The four hero copy/layout treatments. **C's layout + A's headline shipped**; the lab is the record of what was rejected, and is now behind `index.html` on copy. |
 | `smaples-for-my-refernace/` | The exploration labs, kept for reference. All superseded — **nothing here ships.** Their `theme.css` / `logo-points.json` paths are `../`, so they only work from inside that folder. |
 
 **Serving:** must be served over http (Live Server is fine). `theme.css` loads
@@ -59,8 +59,8 @@ via `<link>`; opening `index.html` from the filesystem leaves it unstyled.
 
 Particles disperse into a cloud and re-condense into the **Interloid mark**, on
 a 14-second auto loop. It now lives in `index.html` as section 01, carrying
-treatment **C "Terms"** — see PROTOTYPE3-BRIEF §4b for the copy decision and the
-three treatments that were not taken.
+treatment **C's layout with A's contrast headline** — see PROTOTYPE3-BRIEF §4b
+for the copy decision and the treatments that were not taken.
 
 The page is **light by default with a working dark toggle in the nav**; the mark
 reads in both. This supersedes the earlier "light-first, no dark mode" stance —
@@ -113,6 +113,8 @@ but only the hero is verified in dark (§6).
 18. **A border token is not a text token.** The marquee and the inactive selector arrows used `text-border`; `--border` in dark is white at **10% alpha**, so both effectively disappeared. `--faint` now exists for faint *display text* — same value in light, opaque in dark.
 19. **One theme owner.** `script.js` sets the `.dark` class; `hero-logo.js` only *observes* it (MutationObserver). Two owners is a race waiting to happen, so the stage was rewritten to observe rather than own. The class must also be resolved by an inline head script placed before the stylesheets, or a stored dark preference flashes light on every load.
 20. **A hero designed at desktop width is not a mobile hero.** At `.30` scale the mark covered ~60% of a 390px viewport and ran through the H1, and the horizontal desktop scrim protected nothing once the layout stacked. Mobile needs its own scale, its own vertical scrim — and a second scrim layer capping the top, because the nav is transparent at rest and the cloud ran straight through the wordmark.
+21. **`camera.aspect` on mobile is the SECTION's aspect, not the screen's.** The hero section is taller than the viewport there (the copy overflows it), so `FRAME.w = FRAME.h * w/h` collapses — at 390×944 it is 5.78 against a mark 5.32 wide, and sizing the mark off `FRAME.h` cropped it edge to edge. On narrow, cap `SCALE` on frame **width**. Same trap for position: a fraction of `FRAME.h` places the mark relative to the section, not the visible band, so read the section's own `padding-top` and centre inside that.
+22. **Longer hero copy pushes the CTA off a 390×844 screen.** The round-8b subhead is four lines on desktop and seven on mobile; both CTAs fell below the fold. Whenever hero copy grows, re-check the mobile fold — the subhead now steps down to `text-lg` below `sm:` and the mark's band shrank from 40vh to 36vh to pay for it.
 
 ---
 
