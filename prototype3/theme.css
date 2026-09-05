@@ -1,0 +1,101 @@
+/* ==========================================================================
+   Interloid — Theme
+   Palette probed from the live https://www.interloid.com/ (2026-09-05):
+     #1f5da0  Interloid blue   — 28 text uses, 4 backgrounds, 3 borders
+     #289dbe  accent cyan      — 24 text uses, 2 backgrounds
+     #3a7bc8  light blue       — gradient partner
+     linear-gradient(135deg, #1f5da0, #289dbe)  — the signature, 11+ uses
+
+   Architecture is shadcn-shaped on purpose: every raw value lives once, here,
+   under a semantic name. Re-theming later means editing this file only — no
+   class in any component changes.
+
+   NOTE ON THE SPLIT: this file is plain CSS, loaded with <link>. The matching
+   `@theme inline { --color-*: var(--*) }` block lives in index.html because the
+   Tailwind *browser* CDN cannot resolve a relative @import. In the Next.js port
+   the two rejoin as one app/globals.css — paste this file under the @theme
+   block there.
+
+   Fixing "too white": the page background is a faintly blue-tinted near-white
+   (--background) while cards stay pure white (--card). White-on-white reads as
+   flat; white-on-tinted gives every card an edge without drawing a border.
+   ========================================================================== */
+
+:root {
+  --radius: 0.75rem;
+
+  /* Surfaces ------------------------------------------------------------- */
+  --background:  oklch(0.9814 0.0045 258.32);   /* #f7f9fc — tinted, not white */
+  --foreground:  oklch(0.2077 0.0398 265.75);   /* #0f172a */
+  --card:        oklch(1 0 0);                  /* pure white — lifts off bg   */
+  --card-foreground:    oklch(0.2077 0.0398 265.75);
+  --popover:            oklch(1 0 0);
+  --popover-foreground: oklch(0.2077 0.0398 265.75);
+
+  /* Brand ---------------------------------------------------------------- */
+  --primary:            oklch(0.4751 0.1249 253.47);  /* #1f5da0 */
+  --primary-foreground: oklch(1 0 0);
+  --brand:              oklch(0.4751 0.1249 253.47);  /* #1f5da0 */
+  --brand-light:        oklch(0.5782 0.1362 254.36);  /* #3a7bc8 */
+
+  /* Accent. #289dbe is 3.15:1 on white — display sizes, icons and borders
+     only. For body-size accent text use --accent-strong (#1b7c99, 4.6:1). */
+  --accent:             oklch(0.6481 0.1094 221.82);  /* #289dbe */
+  --accent-foreground:  oklch(1 0 0);
+  --accent-strong:      oklch(0.5466 0.0947 223.53);  /* #1b7c99 */
+
+  /* Neutrals ------------------------------------------------------------- */
+  --secondary:            oklch(0.9621 0.0097 252.81); /* #eef3f9 alt section */
+  --secondary-foreground: oklch(0.4751 0.1249 253.47);
+  --muted:                oklch(0.9683 0.0069 247.9);  /* #f1f5f9 */
+  --muted-foreground:     oklch(0.5544 0.0407 257.42); /* #64748b body copy   */
+  --border:               oklch(0.9288 0.0126 255.51); /* #e2e8f0 */
+  --hairline:             oklch(0.9683 0.0069 247.9);  /* #f1f5f9 */
+  --input:                oklch(0.9288 0.0126 255.51);
+  --ring:                 oklch(0.4751 0.1249 253.47);
+
+  /* Dark anchors --------------------------------------------------------- */
+  --ink:            oklch(0.2077 0.0398 265.75);  /* #0f172a CTA slab */
+  --ink-deep:       oklch(0.1288 0.0406 264.7);   /* #020617 footer   */
+  --ink-foreground: oklch(0.869 0.0198 252.89);   /* #cbd5e1          */
+
+  --destructive: oklch(0.577 0.245 27.325);
+}
+
+/* DS §1.2 rule 1: "Light-first. There is no dark mode." This block is declared
+   so the architecture is complete and a future toggle is a CSS-only change —
+   nothing in the prototype activates it today. */
+.dark {
+  --background:  oklch(0.1288 0.0406 264.7);
+  --foreground:  oklch(0.9842 0.0034 247.86);
+  --card:        oklch(0.2077 0.0398 265.75);
+  --card-foreground:    oklch(0.9842 0.0034 247.86);
+  --popover:            oklch(0.2077 0.0398 265.75);
+  --popover-foreground: oklch(0.9842 0.0034 247.86);
+
+  --primary:            oklch(0.6481 0.1094 221.82);
+  --primary-foreground: oklch(0.1288 0.0406 264.7);
+  --brand:              oklch(0.5782 0.1362 254.36);
+  --brand-light:        oklch(0.6481 0.1094 221.82);
+
+  --accent:             oklch(0.6481 0.1094 221.82);
+  --accent-foreground:  oklch(0.1288 0.0406 264.7);
+  --accent-strong:      oklch(0.7107 0.0351 256.79);
+
+  --secondary:            oklch(0.2795 0.0368 260.03);
+  --secondary-foreground: oklch(0.9842 0.0034 247.86);
+  --muted:                oklch(0.2795 0.0368 260.03);
+  --muted-foreground:     oklch(0.7107 0.0351 256.79);
+  --border:               oklch(1 0 0 / 10%);
+  --hairline:             oklch(1 0 0 / 6%);
+  --input:                oklch(1 0 0 / 15%);
+  --ring:                 oklch(0.6481 0.1094 221.82);
+
+  --ink:            oklch(0.2077 0.0398 265.75);
+  --ink-deep:       oklch(0.1288 0.0406 264.7);
+  --ink-foreground: oklch(0.869 0.0198 252.89);
+}
+
+@keyframes gradient { 0% { background-position: 0% } 50% { background-position: 100% } 100% { background-position: 0% } }
+@keyframes marquee  { from { transform: translateX(0) } to { transform: translateX(-33.333%) } }
+@keyframes orb      { 0%, 100% { transform: scale(1); opacity: 1 } 50% { transform: scale(1.12); opacity: .7 } }

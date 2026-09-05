@@ -30,3 +30,7 @@ coverage
 *.sw?
 
 .claude/Interloid Workforce design system (1)/
+
+# scratch playwright scripts
+.*.mjs
+.*.png
