@@ -213,7 +213,9 @@ on a someday list.
 28. **A directional scrim only protects one direction.** The hero's 90deg ramp shields the copy on the left; the nav is full-width and transparent at rest, so its right-hand controls sat over the bare cloud. Any full-width chrome over the stage needs its own cap, and that cap's stops belong in **px** (the nav's height is fixed) not %.
 29. **z-index ties are broken by DOM order.** The hero's bottom fade and its copy were both `z-10`, the fade later in the markup — so the fade painted over both CTAs. Invisible at 900px tall, total washout at 1280×720. Sweep 1280/1440/1920/2560, not just one size: this, the scroll-cue collision and the H1 wrap were all found by the sweep and none by the default viewport.
 30. **Headline size and column width are one unit.** At `2xl:text-7xl` (72px) line 1 needs ~830px and `max-w-3xl` is 768, so it wrapped mid-idea. Scale the column with the type or cap the type; never move one alone. `.short-vp.mjs` reports font size, column width and line count together for this reason.
-31. **A pill badge cannot wrap.** "Senior product engineering · for founders and business leaders" is one line at 1440 and two at 390 — and a two-line pill puts the leading dot mid-left, so it reads as broken rather than as a wrapped label. Badge text has to fit the narrowest viewport on one line, which in practice means ~30 characters. Give the badge one clause and the lead the other.
+31. **Never build a Tailwind class by concatenation in a compiled build.** The prototype wrote `${h.tile}/10` for the service panel's glow and it worked, because the *browser CDN* generates classes at runtime. A compiled build scans source for whole class strings, so `bg-brand` + "/10" is invisible to it and the class is dropped **silently** — no error, the glow just disappears. Every class must be a literal string; `HUE` carries a `glow` key for exactly this reason.
+32. **Next injects `<meta charset>` and `<meta name="viewport">` itself.** Writing them by hand in `layout.tsx` renders two of each. For non-default viewport values, export a `viewport` object instead of writing the tag.
+33. **A pill badge cannot wrap.** "Senior product engineering · for founders and business leaders" is one line at 1440 and two at 390 — and a two-line pill puts the leading dot mid-left, so it reads as broken rather than as a wrapped label. Badge text has to fit the narrowest viewport on one line, which in practice means ~30 characters. Give the badge one clause and the lead the other.
 
 ---
 
@@ -221,15 +223,21 @@ on a someday list.
 
 Ordered per §4a. Nothing here is prototype work any more.
 
+**Done (2026-09-06) — see TAILWIND-MAP §4b:**
+- Scaffolded on Next 16.3.4 + React 19.2.8 + Tailwind v4.
+- Nav + hero ported. **FCP 168ms median against the 364ms budget, 24 requests
+  vs the live site's 37.** The hero does not regress first paint.
+- Playwright harness rebuilt: `npm run verify`, `npm run perf`.
+- **Whole-page fidelity verified identical** — `.fidelity.mjs` compares 27 elements
+  — `.fidelity.mjs` compares **614 elements** (including html/body) across 42
+  computed properties + bounding boxes against `prototype3/`, in both themes.
+  Zero differences. It caught a missing scrollspy, a curly apostrophe and
+  divergent icon paths that no screenshot would have shown. See
+  TAILWIND-MAP §4b.
+
 **In the app, unblocked:**
-1. Scaffold Next.js + Tailwind v4 in `next-js/` (empty today) and run the
-   `TAILWIND-MAP.md` §5 checklist.
-   Pinning v4 is listed there as the highest risk; the hero's first-paint cost
-   is the one to *measure* first.
-2. Port nav + hero, and measure the WebGL hero against FCP 364ms (§8).
-3. Rebuild the Playwright harness against `next dev`. Every deferred check
-   below lands here.
-4. Port sections 02–08.
+4. ~~Port sections 02–08.~~ **Done 2026-09-06** — whole page ported and
+   verified identical (614 elements, both themes). FCP 236ms / 364ms budget.
 5. Build the §10.1 conversational contact form — the CTA is a bare `mailto`
    today. Form a11y is gotcha §5.9; `prototype2-new/` has a usable structure.
 
@@ -255,9 +263,12 @@ Ordered per §4a. Nothing here is prototype work any more.
 11. Selected Work is three placeholder cards. Its final layout depends on what a
     real case study actually contains.
 
-**Open design decision carried over:** the hero's mobile CTA sits 162px below an
-844px fold (PROTOTYPE3-BRIEF §4e). Decide it during the hero port — accept it,
-halve the mark on mobile, or show two sentences below `sm:`.
+**Two open items, both measured in the app (`npm run verify`):**
+- The hero's mobile CTA sits **162px below** an 844px fold (PROTOTYPE3-BRIEF
+  §4e) — accept it, halve the mark on mobile, or show two sentences below `sm:`.
+- The H1 wraps to **3 lines at ≥1536px**: `2xl:text-7xl` needs ~830px and
+  `2xl:max-w-[48rem]` is 768px, i.e. identical to `max-w-3xl`, so the override
+  does nothing. One-token fix: `2xl:max-w-[53rem]`.
 
 ---
 
@@ -322,6 +333,9 @@ node --check prototype3/script.js
 node .verify-index.mjs        # hero: mobile fold, H1 lines, fonts, theme
 node .short-vp.mjs            # 1280 / 1440 / 1920 / 2560 sweep
 node .dark-audit.mjs          # per-section dark screenshots
+
+# --- port fidelity (needs `npm start` in next-js/ on :3000) --------------
+node .fidelity.mjs            # prototype vs Next, element by element
 ```
 
 Playwright scripts must be **ESM** (`.mjs`), run from the repo root, and use
