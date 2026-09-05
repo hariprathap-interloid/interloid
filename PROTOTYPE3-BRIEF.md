@@ -123,7 +123,8 @@ so the dark wordmark and toggle would be invisible).
 | 9 | Display face + line-2 treatment | all | ☑ `hero-type-lab.html`; **Outfit → Satoshi**, line 2 stays solid |
 | 9b | Lead rewritten to carry the risk reversal | 01 | ☑ Three sentences; mobile rebalanced around it |
 | 10 | Lead refactored: drop the aggressive and the negative, lead on speed | 01 | ☑ Two sentences; agentic AI named as mechanism, not identity |
-| 11 | Full 60-word lead, split as deck + body | 01 | ◐ Desktop good; **mobile CTA now 162px below the fold** — open decision |
+| 11 | Full 60-word lead, split as deck + body | 01 | ◐ Desktop good; **mobile CTA 162px below the fold** — open decision |
+| 12 | Nav legibility over the mark; viewport sweep | 01 | ☑ Scrim top cap; bottom-fade z-order bug; cue collision; H1 scales with its column |
 
 ---
 
@@ -344,6 +345,37 @@ Three ways out, none of them free — **user's call, nothing chosen yet**:
    two sessions to build.
 3. **Show sentences 1–2 on mobile, all three at `sm:` and up.** Keeps the mark
    and the fold; costs content parity between mobile and desktop.
+
+---
+
+## 4f. Round 12 — the viewport sweep
+
+Started from one report — the cloud showing through the nav's right-hand
+controls — and a sweep at 1280/1440/1920/2560 turned up three more.
+
+1. **The nav had no ground on the right.** The desktop scrim is a single 90deg
+   ramp that protects the LEFT, where the copy is; the nav is full-width and
+   transparent at rest, so the theme toggle and "Let's talk" sat over the
+   densest part of the cloud. `.scrim` is now two layers — a 180deg **top cap**
+   (solid through 78px, spent by 170px, stops in **px** because what must be
+   covered is the nav's fixed height, not a fraction of the section) over the
+   existing 90deg ramp. The mark's own top edge is ~144px, so it is grazed, not
+   clipped.
+2. **The bottom fade was painting over the CTAs.** It carried `z-10` — the same
+   level as the copy — and sat later in the DOM, so it won. Invisible at 900px
+   tall, but at **1280×720** it washed out both buttons completely. Now `z-[2]`:
+   above the scrim, below the copy.
+3. **The scroll cue collided with the CTA row** on short viewports. Hidden
+   under `max-height: 780px`; it is an affordance, not content.
+4. **The H1 was 72px in a 768px column at ≥1536px**, wrapping as "The problem
+   isn't / ideas." — the same mid-idea break round 9 fixed, reintroduced when
+   the size step moved to `2xl:text-7xl`. The size is kept; the **column now
+   scales with it** (`2xl:max-w-[53rem]`), because 72px needs ~830px for line 1.
+   Measured 2 lines at 1280 / 1440 / 1920 / 2560.
+
+**The H1 size and its column are one unit.** Change either and line 1 wraps
+mid-idea; `.short-vp.mjs` reports font size, column width and line count at
+four widths.
 
 ---
 

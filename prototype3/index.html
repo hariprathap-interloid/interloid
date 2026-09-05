@@ -358,23 +358,48 @@
         inset: 0;
         z-index: 1;
         pointer-events: none;
-        background: linear-gradient(
-          90deg,
-          var(--hero-bg) 0%,
-          var(--hero-bg) 30%,
-          color-mix(in oklab, var(--hero-bg) 82%, transparent) 46%,
-          color-mix(in oklab, var(--hero-bg) 30%, transparent) 62%,
-          transparent 76%
-        );
+        /* TWO layers, and both are load-bearing.
+
+           1. The top cap. The 90deg ramp below only protects the LEFT, where
+              the copy is — but the nav is full-width and transparent at rest,
+              so its right-hand controls (theme toggle, "Let's talk") sat over
+              the densest part of the cloud with nothing behind them. Stops are
+              in px, not %, because what has to be covered is the nav's fixed
+              height, not a fraction of the section. Solid through 78px covers
+              the pill (24–80px); the fade is spent by 170px, and the mark's
+              own top edge is at ~144px, so it is grazed, not clipped.
+           2. The 90deg ramp that keeps the copy readable over the cloud. */
+        background:
+          linear-gradient(
+            180deg,
+            var(--hero-bg) 0px,
+            color-mix(in oklab, var(--hero-bg) 82%, transparent) 78px,
+            transparent 170px
+          ),
+          linear-gradient(
+            90deg,
+            var(--hero-bg) 0%,
+            var(--hero-bg) 30%,
+            color-mix(in oklab, var(--hero-bg) 82%, transparent) 46%,
+            color-mix(in oklab, var(--hero-bg) 30%, transparent) 62%,
+            transparent 76%
+          );
       }
       html.dark .scrim {
-        background: linear-gradient(
-          90deg,
-          var(--hero-bg) 0%,
-          color-mix(in oklab, var(--hero-bg) 88%, transparent) 34%,
-          color-mix(in oklab, var(--hero-bg) 40%, transparent) 52%,
-          transparent 68%
-        );
+        background:
+          linear-gradient(
+            180deg,
+            var(--hero-bg) 0px,
+            color-mix(in oklab, var(--hero-bg) 82%, transparent) 78px,
+            transparent 170px
+          ),
+          linear-gradient(
+            90deg,
+            var(--hero-bg) 0%,
+            color-mix(in oklab, var(--hero-bg) 88%, transparent) 34%,
+            color-mix(in oklab, var(--hero-bg) 40%, transparent) 52%,
+            transparent 68%
+          );
       }
 
       /* Below 900px hero-logo.js moves the mark to a band across the TOP and
@@ -418,6 +443,15 @@
       /* Only two hero-local tokens are needed; everything else is a theme.css
          semantic token, so it flips with `.dark` for free. §5.8: #289dbe is
          3.15:1 on white, so light uses --brand for the display line. */
+      /* The cue sits bottom-centre; on a short viewport the CTA row is already
+         down there and the two collide (seen at 1280x720). It is an affordance,
+         not content — drop it rather than move the buttons. */
+      @media (max-height: 780px) {
+        .scroll-cue {
+          display: none !important;
+        }
+      }
+
       .t-accent {
         color: var(--brand);
       }
@@ -748,7 +782,9 @@
         <div class="scrim" aria-hidden="true"></div>
 
         <div class="relative z-10 mx-auto w-full max-w-[1400px]">
-          <div class="max-w-3xl">
+          <!-- The column widens with the H1 at 2xl: 72px needs ~830px for
+               line 1 and max-w-3xl is 768. Keep these two in step. -->
+          <div class="max-w-3xl 2xl:max-w-[53rem]">
             <!-- DS §7.2 hero badge: pill, dot, sentence case at text-sm. NOT
                  the §3.2 uppercase micro-label eyebrow the section headers use
                  — they are different components and the hero takes this one.
@@ -787,7 +823,7 @@
             <h1
               data-reveal
               style="--delay: 100ms"
-              class="mb-7 font-display text-[2.6rem] font-black leading-[1.04] tracking-tight text-foreground sm:text-5xl md:text-[3.5rem] 2xl:text-7xl"
+              class="mb-7 font-display text-[2.6rem] font-black leading-[1.04] tracking-tight text-foreground sm:text-5xl md:text-[3.5rem] lg:text-[4rem] 2xl:text-[4.5rem]"
             >
               The problem isn&rsquo;t ideas.<br /><span class="t-accent"
                 >It&rsquo;s shipping.</span
@@ -907,8 +943,12 @@
           </svg>
         </a>
 
+        <!-- z-[2], above the scrim (1) and below the copy (10). At z-10 it sat
+             at the SAME level as the content and later in the DOM, so it
+             painted over the CTAs at any viewport short enough to bring them
+             within 128px of the bottom — 1280x720 washed both buttons out. -->
         <div
-          class="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-32 bg-gradient-to-t from-[var(--hero-bg)] to-transparent"
+          class="pointer-events-none absolute bottom-0 left-0 right-0 z-[2] h-32 bg-gradient-to-t from-[var(--hero-bg)] to-transparent"
           aria-hidden="true"
         ></div>
       </section>
