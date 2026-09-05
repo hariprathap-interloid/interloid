@@ -3,8 +3,16 @@
 **Last updated:** 2026-09-05 (evening) · Written to close a design session.
 Read this first; it replaces re-reading the whole conversation.
 
-**The next session is a CONTENT session.** The design direction is settled.
-Start at §7 — those are the blockers, and they are business decisions.
+**The next session covers BOTH content and design.**
+
+- The hero is settled and approved (§3). The *rest* of the design still has
+  real work in it — see §6.
+- The content gates in §7 are the launch blockers, and they are business
+  decisions the user must make, not design problems to solve around.
+
+Read §6 and §7 together. Several design tasks are blocked on a content answer
+(there is no point styling a case-study card before there is a case study), so
+sequence them rather than treating them as two separate tracks.
 
 ---
 
@@ -22,7 +30,7 @@ Nothing has been deployed. The live site is untouched.
 | Path | What it is | Status |
 | --- | --- | --- |
 | `DESIGN-SYSTEM.md` | Visual language reverse-engineered from conversedatasolutions.com. **Reference only now** — see §4. | Stable |
-| `INTERLOID-WEBSITE-REVIEW.md` | Content/strategy audit of the live site (~890 lines). **This is the key document for the next session.** | Stable |
+| `INTERLOID-WEBSITE-REVIEW.md` | Content/strategy audit of the live site (~890 lines). **The key document for the content half.** | Stable |
 | `PROTOTYPE3-BRIEF.md` | P3 build brief, section ledger, round log | Live |
 | `TAILWIND-MAP.md` | Next.js + Tailwind v4 port notes and checklist | Live |
 | `ELEMENT-CATALOGUE.md` | Element inventory of prototypes 1–2. Superseded; kept for reference. | Archive |
@@ -97,15 +105,30 @@ a 14-second auto loop. Dark by default, light toggle present.
 
 ---
 
-## 6. Outstanding work
+## 6. Outstanding work — design
 
-**Design (small, mechanical):**
+**Mechanical, unblocked, do these first:**
 1. Fold `hero-logo.html`'s hero into `index.html` as the real hero.
 2. Delete the superseded labs listed in §3.
-3. `about.html` and `career.html` are linked from nav and footer but **do not exist** — 4 links 404 today (flagged `data-placeholder`).
-4. Not yet built: a Why page, and the §10.1 conversational form (the CTA is a `mailto`).
+3. Build the §10.1 conversational contact form — the CTA is a bare `mailto`
+   today. Form a11y is gotcha §5.9.
 
-**Content — this is the next session's job. See §7.**
+**Blocked on a content answer (see §7) — do not build these blind:**
+4. `about.html` and `career.html` are linked from the nav and footer but **do
+   not exist**; 4 links 404 today. About needs real team content, and §7 says
+   do not launch with invented people.
+5. The Why page. Its five commitments must be verified against the real
+   contract first, or the page becomes fabricated proof.
+6. The Selected Work section is three placeholder cards. Its final layout
+   depends on what a real case study actually contains.
+
+**Never run:** the adversarial review has not been run on `prototype3/` at all.
+Use §5 as the checklist seed. Every gotcha in that list was found by review
+*after* something passed a naive smoke test.
+
+**Also unverified:** no a11y audit, no 400% zoom / reflow pass, and no
+performance measurement of the WebGL hero against the live site's FCP 364ms
+budget (§8). The hero is the single most likely thing to regress it.
 
 ---
 
