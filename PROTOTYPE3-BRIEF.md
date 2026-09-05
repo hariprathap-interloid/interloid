@@ -118,6 +118,7 @@ so the dark wordmark and toggle would be invisible).
 | 7 | Hero animation: particles condense into the mark | 01 | ☑ `hero-logo.html` approved. No rotation, no glow, no cursor modes |
 | 8 | Hero content + design; fold into `index.html` | 01, 00 | ☑ 4 treatments in `hero-copy-lab.html`; **C "Terms"** chosen and folded in. Theme toggle now ships. |
 | 8b | Hero copy pass 2 | 01 | ☑ Headline → the contrast line; subhead names the audience; "See the proof"; Proposal row dropped |
+| 8c | Hero copy pass 3 | 01 | ☑ DS §7.2 badge replaces the mono eyebrow and carries the audience; lead cut to two sentences; **terms rail removed** |
 
 ---
 
@@ -128,24 +129,35 @@ whole; round 8b kept its structure — left copy over the mark, proof as an
 editorial label→value rail rather than a chip row — and swapped the headline
 back to the contrast line, which carries more:
 
+> `● For founders & business leaders`
 > **The problem isn't ideas. / It's shipping.**
-> Interloid is a senior engineering team for founders and product leaders. We
-> take defined problems to deployed software — in your accounts, on your repos,
-> with a working demo every week. No vendor relationship to manage.
+> Defined problems in, deployed software out. Interloid is a senior engineering
+> team working in your accounts and on your repos.
 > `Book a free 30-min consult` · `See the proof`
-> Cadence · Ownership · Exit
 
 Round 8's note said the hero could not say *who it is for* without inventing
-client data. **8b resolves that a different way:** the subhead names the
-audience — "founders and product leaders". That is a *positioning* claim about
+client data. **8b/8c resolve that a different way:** the hero names the
+audience — "founders & business leaders". That is a *positioning* claim about
 who we sell to, not a *proof* claim about who we have served, so it needs no
-source. This is the first audience statement the hero has had, and it is what
-review §9.2 was asking for. The eyebrow stays geography ("India-based · US & UK
-overlap hours"); the eyebrow says where we are, the subhead says who we are for.
+source, and it is what review §9.2 was asking for.
 
-The **Proposal / 48 hours** row was dropped from the rail at the user's
-instruction. The claim still stands on the CTA slab (§07) and in Process (§05),
-so nothing was lost from the page — only from the hero.
+**The split, and why it must stay split:** the **badge carries the audience**,
+the **lead carries the offer**. The full mockup string, "Senior product
+engineering · for founders and business leaders", wrapped to a two-line pill at
+390px — the dot then floats mid-left and it reads as broken — and it duplicated
+"senior engineering team" in the lead directly beneath it. One clause each.
+
+The geography line ("India-based · US & UK overlap hours") left the hero with
+the old eyebrow. It is still in the footer. That was the hero's last §7 P1 flag,
+so the hero now has **zero** `data-placeholder` elements (page total 15 → 14).
+
+**The hero no longer states any engagement terms.** 8b dropped the Proposal
+row; 8c removed the whole Cadence / Ownership / Exit rail, and the lead does
+not repeat the weekly demo. Every one of those claims still stands on the CTA
+slab (§07), Process (§05) and Why Interloid (§04) — nothing was lost from the
+page — but the hero itself no longer carries proof, which is a deliberate
+reversal of what round 8 chose treatment C for. Worth re-reading alongside the
+review's core finding before launch.
 
 **`See the proof` points at §06 Selected Work, which is three placeholder
 cards.** That makes HANDOFF §7's case-study P0 into a hero-level promise: the
@@ -165,6 +177,12 @@ blending — the two can never fight over who set the theme.
 
 **Found and fixed on the way:**
 
+- **The mobile fold is the binding constraint on hero copy.** 8b's 42-word lead
+  pushed both CTAs off a 390×844 screen; 8c's 20-word lead and the removed rail
+  bought it back, so the DS-specified `text-xl` lead was restored at every width
+  (8b had stepped it down to `text-lg` below `sm:`). The verification script
+  measures the primary CTA's bottom edge against the viewport — 771 of 844 at
+  the time of writing. Re-run it whenever hero copy grows.
 - **Mobile was broken, twice.** First: the mark spanned ~60% of the viewport
   and ran through the H1, and the scrim ran horizontally where the layout
   stacks vertically. Then, once 8b's longer subhead landed, the mark came back

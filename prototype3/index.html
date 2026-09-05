@@ -690,10 +690,15 @@
      needs no source; every VALUE in the rail below is still on HANDOFF §7's
      allowed list, so none of it is data-placeholder.
 
-     The 48-hour proposal was dropped from the rail this round (still stated on
-     the CTA slab). "See the proof" points at §06 Selected Work, which is three
-     placeholder cards today — that makes HANDOFF §7's case-study P0 a
-     hero-level promise. Either land the case studies or repoint this link.
+     The terms rail (Cadence / Ownership / Exit) was removed in pass 3 at the
+     user's instruction, after the 48-hour proposal row went in pass 2. The
+     hero now states NO engagement terms at all — every one of them still
+     stands on the CTA slab (§07), Process (§05) and Why Interloid (§04), so
+     nothing is lost from the page, but the hero itself no longer carries proof.
+
+     "See the proof" points at §06 Selected Work, which is three placeholder
+     cards today — that makes HANDOFF §7's case-study P0 a hero-level promise.
+     Either land the case studies or repoint this link.
 
      Visual: the mark condenses out of a particle cloud on a 14s loop
      (hero-logo.js). No rotation, ever — HANDOFF §5.15.
@@ -709,14 +714,27 @@
 
         <div class="relative z-10 mx-auto w-full max-w-[1400px]">
           <div class="max-w-3xl">
-            <p
+            <!-- DS §7.2 hero badge: pill, dot, sentence case at text-sm. NOT
+                 the §3.2 uppercase micro-label eyebrow the section headers use
+                 — they are different components and the hero takes this one.
+                 The geography line that stood here moved out entirely; it is
+                 still in the footer, and it was the hero's last §7 P1 flag.
+
+                 THE BADGE CARRIES THE AUDIENCE, the lead carries the offer.
+                 Keep it that way: the full mockup string "Senior product
+                 engineering · for founders and business leaders" wrapped to a
+                 two-line pill at 390px (the dot then floats mid-left and it
+                 reads as broken), and it duplicated "senior engineering team"
+                 in the lead directly beneath. -->
+            <div
               data-reveal
-              data-placeholder="geography framing — needs confirmation, HANDOFF §7 P1"
-              class="mb-6 flex items-center gap-3 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="mb-7 inline-flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2 shadow-sm"
             >
-              <span class="hero-rule h-px w-8 border-t" aria-hidden="true"></span>
-              India-based &middot; US &amp; UK overlap hours
-            </p>
+              <span class="size-2 rounded-full bg-accent" aria-hidden="true"></span>
+              <span class="text-sm font-medium text-muted-foreground"
+                >For founders &amp; business leaders</span
+              >
+            </div>
 
             <!-- DS §3.2: the hero H1 is the only place font-black (900) is used.
                  No gradient clip here — HANDOFF §5.13 makes a split gradient
@@ -731,23 +749,29 @@
               >
             </h1>
 
-            <!-- The audience statement lives here, not in the eyebrow: the
-                 eyebrow is where we are, this is who we are for. -->
+            <!-- DS §7.2: "one or two sentences". The opening fragment mirrors
+                 the H1's contrast structure so the two read as one gesture.
+                 The weekly-demo claim deliberately is NOT repeated here — it
+                 lives in Process (§05); review §3.2 flags verbatim hero/section
+                 duplication as a defect. max-w-2xl, not DS §3.3's max-w-3xl:
+                 at 3xl the lead reaches the same edge as the H1 and pushes into
+                 the mark. Considered deviation, not drift.
+
+                 text-xl at every width — pass 2's mobile step-down to text-lg
+                 was a compromise for a 42-word lead and is no longer needed. -->
             <p
               data-reveal
               style="--delay: 200ms"
-              class="mb-9 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
+              class="mb-10 max-w-2xl text-xl leading-relaxed text-muted-foreground"
             >
-              Interloid is a senior engineering team for founders and product
-              leaders. We take defined problems to deployed software &mdash; in
-              your accounts, on your repos, with a working demo every week. No
-              vendor relationship to manage.
+              Defined problems in, deployed software out. Interloid is a senior
+              engineering team working in your accounts and on your repos.
             </p>
 
             <div
               data-reveal
               style="--delay: 300ms"
-              class="mb-10 flex flex-wrap items-center gap-4"
+              class="flex flex-wrap items-center gap-4"
             >
               <a
                 href="#contact"
@@ -775,51 +799,6 @@
               >
             </div>
 
-            <!-- The proof rail. Every value here is on HANDOFF §7's allowed
-                 list, so none of it is data-placeholder. The 48-hour proposal
-                 row was removed 2026-09-05 at the user's instruction; the
-                 claim still appears on the CTA slab (§07) and in Process. The
-                 first row carries no top border — it is the head of the list. -->
-            <dl
-              data-reveal
-              style="--delay: 400ms"
-              class="hero-rule max-w-md border-l pl-6 text-sm"
-            >
-              <div class="flex items-baseline justify-between gap-6 py-2.5">
-                <dt
-                  class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
-                >
-                  Cadence
-                </dt>
-                <dd class="font-medium text-foreground">
-                  A working demo every week
-                </dd>
-              </div>
-              <div
-                class="hero-rule flex items-baseline justify-between gap-6 border-t py-2.5"
-              >
-                <dt
-                  class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
-                >
-                  Ownership
-                </dt>
-                <dd class="font-medium text-foreground">
-                  100% of the code and IP
-                </dd>
-              </div>
-              <div
-                class="hero-rule flex items-baseline justify-between gap-6 border-t py-2.5"
-              >
-                <dt
-                  class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
-                >
-                  Exit
-                </dt>
-                <dd class="font-medium text-foreground">
-                  30 days&rsquo; notice, either way
-                </dd>
-              </div>
-            </dl>
           </div>
         </div>
 
