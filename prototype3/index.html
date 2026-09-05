@@ -229,7 +229,7 @@
 
         <!-- §6.2 a pill inside a pill -->
         <div
-          class="hidden items-center gap-1 rounded-full border border-white/40 bg-card/50 p-1 shadow-sm backdrop-blur-sm lg:flex py-2 px-3"
+          class="hidden items-center gap-1 rounded-full border  border-white/40 bg-card/70 p-1 shadow-sm backdrop-blur-sm xl:flex py-2 px-3"
         >
           <a
             href="#home"
@@ -271,14 +271,14 @@
             href="career.html"
             data-placeholder="page not built yet"
             class="nav-link rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-card hover:text-primary"
-            >Career</a
+            >Careers</a
           >
         </div>
 
         <div class="flex items-center gap-2">
           <a
             href="#contact"
-            class="hidden rounded-full bg-primary px-6 py-2 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-brand-light hover:shadow-primary/40 lg:inline-flex"
+            class="active:scale-95 hidden rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-brand-light hover:shadow-primary/40 xl:inline-flex"
             >Let's talk</a
           >
           <button
@@ -287,7 +287,7 @@
             aria-label="Open menu"
             aria-expanded="false"
             aria-controls="mobileMenu"
-            class="grid size-11 place-items-center rounded-full text-foreground transition-colors hover:bg-muted lg:hidden"
+            class="grid size-11 place-items-center rounded-full text-foreground transition-colors hover:bg-muted xl:hidden"
           >
             <!-- Two SVGs toggled by class, never innerHTML: HANDOFF §5.3's dead-tap
              bug cannot occur if the click target is never detached. -->
@@ -325,7 +325,7 @@
     <div
       id="mobileMenu"
       aria-label="Mobile"
-      class="invisible fixed left-4 right-4 top-24 z-40 origin-top scale-95 rounded-3xl border border-border bg-card p-6 opacity-0 shadow-2xl transition-all duration-300 ease-in-out lg:hidden"
+      class="invisible fixed left-4 right-4 top-24 z-40 origin-top scale-95 rounded-3xl border border-border bg-card p-6 opacity-0 shadow-2xl transition-all duration-300 ease-in-out xl:hidden"
     >
       <nav class="flex flex-col">
         <a
@@ -359,23 +359,37 @@
           >Work</a
         >
         <a
-          href="career.html"
-          data-placeholder="page not built yet"
-          class="rounded-xl px-2 py-3.5 font-display text-lg font-semibold text-foreground transition-colors hover:text-primary"
-          >Career</a
-        >
-        <a
           href="about.html"
           data-placeholder="page not built yet"
           class="rounded-xl px-2 py-3.5 font-display text-lg font-semibold text-foreground transition-colors hover:text-primary"
           >About us</a
         >
+        <a
+          href="career.html"
+          data-placeholder="page not built yet"
+          class="rounded-xl px-2 py-3.5 font-display text-lg font-semibold text-foreground transition-colors hover:text-primary"
+          >Careers</a
+        >
         <hr class="my-4 border-border" />
         <a
           href="#contact"
-          class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 font-medium text-primary-foreground shadow-lg shadow-primary/25"
-          >Book a free 30-min consult</a
+          class="active:scale-95 group inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 font-medium text-primary-foreground shadow-lg shadow-primary/25"
         >
+          Book a free 30-min consult
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-5 transition-transform group-hover:translate-x-1"
+            aria-hidden="true"
+          >
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </a>
       </nav>
     </div>
 
@@ -459,7 +473,7 @@
           >
             <a
               href="#contact"
-              class="group inline-flex h-14 items-center gap-2 rounded-full bg-primary px-10 text-lg font-medium text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:bg-brand-light hover:shadow-2xl hover:shadow-primary/40"
+              class="active:scale-95 group inline-flex h-14 items-center gap-2 rounded-full bg-primary px-10 text-lg font-medium text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:bg-brand-light hover:shadow-2xl hover:shadow-primary/40"
             >
               Book a free 30-min consult
               <svg
@@ -478,9 +492,22 @@
             </a>
             <a
               href="#process"
-              class="inline-flex h-14 items-center rounded-full border border-border bg-card/60 px-10 text-lg font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary hover:bg-card hover:text-primary"
+              class="active:scale-95 group inline-flex h-14 items-center rounded-full border border-border bg-card/60 px-10 text-lg font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary hover:bg-card hover:text-primary"
             >
               See how we work
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-5 transition-transform group-hover:translate-x-1"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
             </a>
           </div>
         </div>
@@ -771,18 +798,18 @@
               <h2
                 class="mb-8 font-display text-4xl font-medium leading-tight tracking-tight text-white md:text-5xl lg:text-7xl"
               >
-                Ready to ship the thing<br />
+                Ready to turn a plan<br />
                 <span
                   class="bg-gradient-to-r from-accent to-brand-light bg-clip-text text-transparent"
-                  >you keep postponing?</span
+                  >into working software?</span
                 >
               </h2>
 
               <a
                 href="mailto:hello@interloid.com"
-                class="on-dark group inline-flex h-14 items-center gap-2 rounded-full border border-white/10 bg-accent px-10 text-lg font-bold text-white shadow-[0_0_40px_-10px_var(--accent)] transition-all hover:scale-105 hover:shadow-[0_0_60px_-10px_var(--accent)]"
+                class="active:scale-95 on-dark group inline-flex h-14 items-center gap-2 rounded-full border border-white/10 bg-accent px-10 text-lg font-bold text-white shadow-[0_0_40px_-10px_var(--accent)] transition-all hover:scale-105 hover:shadow-[0_0_60px_-10px_var(--accent)]"
               >
-                Start the conversation
+                Book a free 30-min consult
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -920,7 +947,7 @@
                   href="career.html"
                   class="transition-colors hover:text-white"
                   data-placeholder="page not built yet"
-                  >Career</a
+                  >Careers</a
                 >
               </li>
             </ul>

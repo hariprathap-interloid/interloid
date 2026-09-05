@@ -236,7 +236,7 @@
         ${s.tags.map((t) => `<span class="rounded-full bg-muted px-3.5 py-1.5 text-sm font-medium text-foreground ring-1 ring-border">${t}</span>`).join("")}
       </div>
       <a href="#contact" class="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-brand-light hover:shadow-primary/40">
-        Talk about this
+        Book a call
         <span class="transition-transform group-hover:translate-x-1">${svg("arrow", "size-4")}</span>
       </a>
     </div>`;
