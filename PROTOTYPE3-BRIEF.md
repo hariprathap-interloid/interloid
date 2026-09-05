@@ -19,9 +19,11 @@ branding is reproduced.
 
 | File | What |
 | --- | --- |
-| `theme.css` | **The colour system. The only file to edit when re-theming.** |
+| `theme.css` | **The colour system. The only file to edit when re-theming.** Ships both `:root` (light) and `.dark`. |
 | `index.html` | Markup + the `@theme inline` mapping + non-utility CSS |
-| `script.js` | Content arrays + behaviour (nav, selector, reveals, spotlight) |
+| `script.js` | Content arrays + behaviour (nav, theme toggle, selector, reveals, spotlight) |
+| `hero-logo.js` + `logo-points.json` | The hero's WebGL mark. Observes the `.dark` class; never sets it. |
+| `hero-copy-lab.html` | The four hero copy/layout treatments A–D. C shipped; the rest are kept as the record of what was rejected and why. |
 
 No build step, but **it must be served over http** — Live Server is fine.
 Opening `index.html` from the filesystem leaves it unstyled.
@@ -36,9 +38,9 @@ Opening `index.html` from the filesystem leaves it unstyled.
 | # | Section | DS ref | Notes | State |
 | --- | --- | --- | --- | --- |
 | 00 | Morphing nav | §6.1–6.5 | max-w-7xl→6xl, transparent→glass, 0→rounded-full, 300ms. Pill-in-pill links. | ◐ |
-| 01 | Hero | §7.2 | min-h-screen slate-50, 3 orbs, `font-black` H1 (only place), animated gradient line 2 | ◐ |
+| 01 | Hero | — | **Treatment C "Terms".** Left-aligned copy over the WebGL mark, proof as a label→value rail. Orbs/dot-grid/gradient-clip headline all removed. Deliberately ignores DS §7.2. | ☑ |
 | 02 | Services | §8.4 / §8.6 | 5/7 split: selector rows + L4 feature panel. ARIA tablist, roving tabindex | ◐ |
-| 03 | Stack marquee | §8.10 | Tripled list, edge fades, 28s linear | ◐ |
+| 03 | Stack marquee | §8.10 | Tripled list, edge fades, 28s linear. Uses `text-faint`, not `text-border`. | ◐ |
 | 04 | Advantage bento | §8.2 / §14.3 | Glass tiles on slate-50, cursor spotlight | ◐ |
 | 05 | Process | §8.9 | Self-drawing connector, 80px nodes, ghost numerals | ◐ |
 | 06 | Selected work | §8.3 | 3 image cards — **all P0 placeholders** | ◐ |
@@ -65,13 +67,15 @@ Interloid blue rather than near-black.
 
 Architecture is shadcn-shaped: `theme.css` holds semantic tokens in `:root`
 (oklch), `@theme inline` re-exports them as Tailwind colours. **Re-theming
-touches one file; no component class changes.** A `.dark` block is declared and
-verified working, but nothing activates it — DS §1.2 rule 1 is light-first.
+touches one file; no component class changes.** Light stays the default
+(DS §1.2 rule 1); as of round 8 the `.dark` block is **live and toggled from the
+nav**, not merely declared. Note `--faint`: faint *display text* needs its own
+token, because `--border` in dark is white at 10% alpha.
 
 The radius scale is one knob: `--radius: 0.75rem` drives `rounded-sm` …
 `rounded-4xl` via `calc()`.
 
-## 3. Verified (Playwright, 2026-09-05)
+## 3. Verified (Playwright, 2026-09-05 — pre-round-8 figures)
 
 Matches the live reference exactly where it should:
 
@@ -81,7 +85,7 @@ Matches the live reference exactly where it should:
 | Body | Inter, `slate-600` | Inter, `slate-600` |
 | Hero bg | `--secondary` #eef3f9 | `slate-50` (retinted to brand) |
 | Nav rest → scrolled | 1280 → 1152px, glass, rounded-full | 1280 → 1152px, glass, rounded-full |
-| Page height | 6131px | 6151px |
+| Page height | 6131px (6167px after the round-8 hero) | 6151px |
 
 Also passing: zero console errors · one `h1` · **no heading-level skips** · no
 dead anchors · both fonts loading · all 26 reveals fire · the rail draws · tab
@@ -111,6 +115,47 @@ so the dark wordmark and toggle would be invisible).
 | 4 | Copy/tone audit of nav, header and buttons; CTA label system | 00, 01, 07 | ◐ 3 labels down from 5; nav to `xl:` breakpoint |
 | 5 | Hero: fix the split headline, add life | 01 | ◐ H1 restructured, orb parallax, chips, dot grid, shine, cue |
 | 6 | Explore "make it alive": 3 treatments + engagement timeline | — | ◐ `hero-lab.html`; dark tried on index then reverted, parked |
+| 7 | Hero animation: particles condense into the mark | 01 | ☑ `hero-logo.html` approved. No rotation, no glow, no cursor modes |
+| 8 | Hero content + design; fold into `index.html` | 01, 00 | ☑ 4 treatments in `hero-copy-lab.html`; **C "Terms"** chosen and folded in. Theme toggle now ships. |
+
+---
+
+## 4b. Round 8 detail — the hero that shipped
+
+**Content position.** The engagement terms are the differentiator, so they carry
+the headline: *"Software that ships. / Terms that don't trap you."* Proof is an
+editorial label→value rail (Proposal · Cadence · Ownership · Exit), not a chip
+row. Review §9.2 asks the hero to say *who it is for*; with no verified client
+data that specificity cannot come from **who we serve** without inventing it, so
+every treatment drew its specificity from **how the engagement works** instead.
+Every value in the rail is on HANDOFF §7's allowed list, so none is a placeholder.
+
+The three treatments not taken are still in `hero-copy-lab.html`:
+A *Contrast* (the old "The problem isn't ideas. / It's shipping." — memorable,
+least specific), B *Ledger* ("Live in production. / Not in a backlog." with a
+three-column evidence strip), D *Plain* (literal, maximum air, one CTA).
+
+**Theme.** The toggle ships. `.dark` on `<html>` is the one convention across the
+page and both labs; light stays the default. An inline head script resolves it
+before first paint so a stored dark preference does not flash. `script.js` owns
+the class; `hero-logo.js` *observes* it via MutationObserver and only re-tunes
+blending — the two can never fight over who set the theme.
+
+**Found and fixed on the way:**
+
+- **Mobile was broken.** Below 900px the mark spanned ~60% of the viewport and
+  ran through the H1, and the scrim ran horizontally where the layout stacks
+  vertically. Mark is now `.19` scale in a top band, the scrim runs downward in
+  two layers (the first caps the top 13% so the cloud stops running through the
+  transparent nav), and the copy clears 40vh.
+- **`text-border` is not a text colour.** The marquee and the inactive selector
+  arrows used it; in dark `--border` is white at 10% alpha and they vanished.
+  New `--faint` token, same value in light, opaque in dark.
+- `hero-logo.js`'s `#state` readout is guarded — it is lab-only chrome.
+
+**Dark mode is verified for the hero only.** Sections 02–08 were spot-checked
+section-by-section and hold up because they are token-based, but that is not an
+audit — see HANDOFF §6.
 
 ---
 

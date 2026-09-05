@@ -36,7 +36,7 @@ import * as THREE from 'three';
 
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $  = (s, r = document) => r.querySelector(s);
-const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
 /* sRGB equivalents of theme.css --brand / --accent. */
@@ -45,26 +45,28 @@ const C = {
   accent: new THREE.Color('#289dbe'),
 };
 
-const hero   = $('#hero');
+/* index.html anchors the section as #home (the nav link); the labs use
+   #hero. data-hero is the stable hook. */
+const hero   = $('[data-hero]') || $('#hero');
 const stage  = $('.stage');
 const canvas = $('canvas', stage);
 const stateL = $('#state');
 
-let isLight = false;
+/* THEME
+   The stage does not own the theme — it observes it. The site convention is
+   `.dark` on <html>, light being the default (theme.css). Whoever flips that
+   class (script.js on the page, the toggle bar in the labs) is the single
+   source of truth; this observer just re-tunes blending, because additive
+   blending only brightens and is useless on a pale ground (gotcha 5.17). */
+let isLight = !document.documentElement.classList.contains('dark');
 let applyTheme = () => {};
 
-function setTheme(t) {
-  isLight = t === 'light';
-  document.documentElement.classList.toggle('light', isLight);
-  $$('.th').forEach(b => {
-    const on = b.dataset.theme === t;
-    b.classList.toggle('bg-accent', on);
-    b.classList.toggle('text-white', on);
-    b.classList.toggle('text-ink-foreground', !on);
-  });
+new MutationObserver(() => {
+  const now = !document.documentElement.classList.contains('dark');
+  if (now === isLight) return;
+  isLight = now;
   applyTheme();
-}
-$$('.th').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.theme)));
+}).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
 function webglOK() {
   try {
@@ -184,9 +186,14 @@ async function boot() {
     const narrow = w < 900;
     /* A fixed fraction of the viewport, so the mark is the same size on a
        1280 laptop and a 2560 monitor. */
-    SCALE = FRAME.h * (narrow ? .30 : .34);
+    /* Narrow: the mark moves to a band across the TOP and the copy sits under
+       it, so it has to be much smaller than the 900+ side-by-side framing —
+       at .30 it spanned 60% of the viewport and ran straight through the H1.
+       .19 + a .32 lift keeps it inside the top ~40%, which is what the mobile
+       scrim and the hero's 40vh top padding are cut to. */
+    SCALE = FRAME.h * (narrow ? .19 : .34);
     HOME_X = narrow ? 0 : Math.min(FRAME.w * .26, FRAME.w / 2 - SCALE * 1.05);
-    HOME_Y = narrow ? FRAME.h * .20 : 0;
+    HOME_Y = narrow ? FRAME.h * .32 : 0;
   };
   resize();
   addEventListener('resize', resize);
@@ -206,7 +213,8 @@ async function boot() {
     const k = ease(clamp(shown));
     const away = 1 - k;
 
-    stateL.textContent = shown < .12 ? 'Dispersed' : shown < .75 ? 'Condensing' : 'Resolved';
+    /* Lab-only readout. index.html has no #state, so this must stay guarded. */
+    if (stateL) stateL.textContent = shown < .12 ? 'Dispersed' : shown < .75 ? 'Condensing' : 'Resolved';
 
     ptr.x += (ptr.tx - ptr.x) * .07;
     ptr.y += (ptr.ty - ptr.y) * .07;
@@ -247,7 +255,7 @@ async function boot() {
     }
     aPos.needsUpdate = true;
     points.position.set(HOME_X, HOME_Y, 0);
-    stateL.textContent = 'Resolved';
+    if (stateL) stateL.textContent = 'Resolved';
     renderer.render(scene, camera);
     return;
   }
@@ -258,7 +266,6 @@ async function boot() {
   }, { threshold: 0 }).observe(hero);
 }
 
-setTheme('dark');
 if (webglOK()) {
   if ('requestIdleCallback' in window) requestIdleCallback(boot, { timeout: 1200 });
   else setTimeout(boot, 200);

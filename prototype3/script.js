@@ -123,42 +123,45 @@
   }
 
   /* ==========================================================================
-   HERO ORB PARALLAX — §7.2. Each orb's transform is driven imperatively from
-   pointer position and scroll offset. Displacement stays under 200px and the
-   depth factors differ per orb so they separate as the cursor moves.
+   THEME — light-first (theme.css :root), `.dark` on <html> opts in.
+
+   This button is the single source of truth: hero-logo.js OBSERVES the class
+   rather than owning it, so the WebGL stage re-tunes its blending (additive
+   only brightens and is useless on a pale ground — HANDOFF §5.17) without the
+   two ever fighting over who set the theme.
+
+   The icons are two SVGs toggled by class, never innerHTML — §5.3: swapping a
+   button's contents detaches the click's original target.
+
+   The hero's orb parallax that used to live here went with the orbs; the mark
+   has its own ~20px pointer parallax inside hero-logo.js.
    ========================================================================== */
-const orbs = $$('[data-orb]');
-if (orbs.length && !REDUCED) {
-  const DEPTH = { 1: 60, 2: 110, 3: 85 };          /* px of travel per orb */
-  let px = 0, py = 0, sy = 0, queued = false;
+  const themeBtn = $("#themeToggle");
+  if (themeBtn) {
+    const moon = $('[data-icon="moon"]', themeBtn);
+    const sun = $('[data-icon="sun"]', themeBtn);
 
-  const paint = () => {
-    queued = false;
-    orbs.forEach(el => {
-      const d = DEPTH[el.dataset.orb] || 70;
-      /* scroll drifts the orbs up more slowly than the page, so the hero
-         gains depth as it leaves rather than moving as one flat plane */
-      const y = py * d + sy * (d / 220);
-      el.style.translate = `${(px * d).toFixed(1)}px ${y.toFixed(1)}px`;
-    });
-  };
-  const queue = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
+    const applyTheme = (dark) => {
+      document.documentElement.classList.toggle("dark", dark);
+      moon.classList.toggle("hidden", dark);
+      sun.classList.toggle("hidden", !dark);
+      themeBtn.setAttribute("aria-pressed", String(dark));
+      themeBtn.setAttribute(
+        "aria-label",
+        dark ? "Switch to light theme" : "Switch to dark theme",
+      );
+      try {
+        localStorage.setItem("interloid-theme", dark ? "dark" : "light");
+      } catch {}
+    };
 
-  const hero = $('#home');
-  hero.addEventListener('pointermove', (e) => {
-    const r = hero.getBoundingClientRect();
-    px = (e.clientX - r.left) / r.width  - 0.5;    /* -0.5 … 0.5 */
-    py = (e.clientY - r.top)  / r.height - 0.5;
-    queue();
-  });
-  hero.addEventListener('pointerleave', () => { px = 0; py = 0; queue(); });
-  addEventListener('scroll', () => {
-    if (window.scrollY > window.innerHeight) return;   /* hero is off-screen */
-    sy = window.scrollY;
-    queue();
-  }, { passive: true });
-  paint();
-}
+    /* The head has already set the class from storage / OS preference to avoid
+       a flash; this only syncs the button's own state to it. */
+    applyTheme(document.documentElement.classList.contains("dark"));
+    themeBtn.addEventListener("click", () =>
+      applyTheme(!document.documentElement.classList.contains("dark")),
+    );
+  }
 
 /* ==========================================================================
    SERVICES — §8.6 selector rows + §8.4 feature panel.
@@ -254,7 +257,7 @@ if (orbs.length && !REDUCED) {
         ${svg(s.k, "size-5")}
       </span>
       <span class="font-display text-base font-bold ${on ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}">${s.name}</span>
-      <span class="ml-auto ${on ? h.text : "text-border"} transition-transform group-hover:translate-x-1">${svg("arrow", "size-5")}</span>
+      <span class="ml-auto ${on ? h.text : "text-faint"} transition-transform group-hover:translate-x-1">${svg("arrow", "size-5")}</span>
     </button>`;
     }).join("");
   }
@@ -324,7 +327,7 @@ if (orbs.length && !REDUCED) {
   const marquee = $("#marquee");
   if (marquee) {
     const item = (n) =>
-      `<div class="flex shrink-0 cursor-default items-center gap-3 font-display text-2xl font-bold text-border transition-colors hover:text-primary">${svg("layers", "size-6")}${n}</div>`;
+      `<div class="flex shrink-0 cursor-default items-center gap-3 font-display text-2xl font-bold text-faint transition-colors hover:text-primary">${svg("layers", "size-6")}${n}</div>`;
     marquee.innerHTML = [...STACK, ...STACK, ...STACK].map(item).join("");
     if (REDUCED) marquee.classList.remove("animate-marquee");
   }
@@ -441,7 +444,7 @@ if (orbs.length && !REDUCED) {
         <div class="relative z-10 grid size-[80px] place-items-center rounded-full border-4 border-card bg-card shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:shadow-[0_0_30px_-5px_rgba(31,93,160,.35)]">
           <div class="grid size-14 place-items-center rounded-full bg-brand/10 text-brand ring-1 ring-brand/15">${svg(s.k, "size-6")}</div>
         </div>
-        <div class="pointer-events-none absolute -right-4 -top-6 z-0 select-none font-display text-[60px] font-bold text-border/40 transition-colors group-hover:text-primary/10 lg:-right-8 lg:-top-8 lg:text-[80px]">${s.n}</div>
+        <div class="pointer-events-none absolute -right-4 -top-6 z-0 select-none font-display text-[60px] font-bold text-faint/40 transition-colors group-hover:text-primary/10 lg:-right-8 lg:-top-8 lg:text-[80px]">${s.n}</div>
       </div>
       <div class="ml-8 flex flex-col items-start pt-2 text-left lg:ml-0 lg:mt-10 lg:items-center lg:text-center">
         <span class="mb-2 rounded-full bg-muted px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-widest text-muted-foreground ring-1 ring-border">${s.when}</span>

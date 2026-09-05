@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interloid — Hero copy &amp; layout lab</title>
+
+<!-- ===========================================================================
+     HERO COPY LAB
+     The animation is settled (hero-logo.html / hero-logo.js) and is NOT under
+     review here. What is under review is the copy layer that sits on it and the
+     shape that layer takes. Four complete treatments, each a different content
+     POSITION with a layout that suits it — not four skins on one message.
+
+       A  Contrast   the approved line. Punchy, memorable, least specific.
+       B  Ledger     outcome-led, proof as a three-column evidence strip.
+       C  Terms      engagement terms ARE the differentiator; editorial rail.
+       D  Plain      literal, no cleverness, maximum air, one CTA.
+
+     Honest-specificity note (review 9.2 asks the hero to say who / what /
+     proof): we have no verified client data, so specificity cannot come from
+     WHO we serve without inventing it. Every treatment below draws its
+     specificity from HOW the engagement works instead — which is defensible.
+     Only the six allowed numeric claims appear (HANDOFF 7).
+     =========================================================================== -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="theme.css">
+
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--background); --color-foreground: var(--foreground);
+    --color-card: var(--card); --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary); --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent); --color-accent-strong: var(--accent-strong);
+    --color-border: var(--border); --color-ring: var(--ring);
+    --color-ink: var(--ink); --color-ink-deep: var(--ink-deep);
+    --color-ink-foreground: var(--ink-foreground);
+    --color-brand: var(--brand); --color-brand-light: var(--brand-light);
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  }
+</style>
+
+<style>
+  canvas { display: block; width: 100%; height: 100%; }
+  .stage { position: absolute; inset: 0; z-index: 0; }
+  .stage canvas { opacity: 0; transition: opacity 1s ease-out; }
+  .stage.ready canvas { opacity: 1; }
+
+  /* ---- Dark (default) ---------------------------------------------------- */
+  #hero { background: var(--ink-deep); }
+  .fallback {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(55% 50% at 74% 45%, color-mix(in oklab, var(--brand) 40%, transparent), transparent 70%),
+      radial-gradient(40% 40% at 86% 55%, color-mix(in oklab, var(--accent) 34%, transparent), transparent 70%),
+      var(--ink-deep);
+  }
+  .scrim {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(90deg, var(--ink-deep) 0%,
+      color-mix(in oklab, var(--ink-deep) 88%, transparent) 34%,
+      color-mix(in oklab, var(--ink-deep) 40%, transparent) 52%, transparent 68%);
+  }
+
+  /* Below 900px hero-logo.js moves the mark to CENTRE-TOP (HOME_X 0, HOME_Y
+     +20%) and the copy sits under it. A horizontal scrim protects nothing in
+     that arrangement — it has to run vertically. This was wrong in
+     hero-logo.html; it is fixed here and must carry into index.html. */
+  @media (max-width: 899px) {
+    /* Stack, don't overlay: mark in the top band, copy beneath it. Vertically
+       centred copy fought the mark for the same pixels. */
+    #hero { align-items: flex-start; padding-top: 40vh; padding-bottom: 5rem; }
+    .scrim {
+      background: linear-gradient(180deg, transparent 0%,
+        color-mix(in oklab, var(--ink-deep) 30%, transparent) 22%,
+        color-mix(in oklab, var(--ink-deep) 90%, transparent) 34%,
+        var(--ink-deep) 42%);
+    }
+    html:not(.dark) .scrim {
+      background: linear-gradient(180deg, transparent 0%,
+        color-mix(in oklab, var(--secondary) 35%, transparent) 20%,
+        color-mix(in oklab, var(--secondary) 90%, transparent) 32%,
+        var(--secondary) 40%) !important;
+    }
+  }
+
+  /* ---- Light ------------------------------------------------------------- */
+  html:not(.dark) #hero { background: var(--secondary); }
+  html:not(.dark) .fallback {
+    background:
+      radial-gradient(55% 50% at 78% 45%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 70%),
+      var(--secondary);
+  }
+  html:not(.dark) .scrim {
+    background: linear-gradient(90deg, var(--secondary) 0%,
+      var(--secondary) 30%,
+      color-mix(in oklab, var(--secondary) 82%, transparent) 46%,
+      color-mix(in oklab, var(--secondary) 30%, transparent) 62%, transparent 76%);
+  }
+
+  /* ---- Ink tokens, one set, theme-swapped -------------------------------- */
+  .t-strong { color: #fff; }
+  .t-accent { color: var(--accent); }
+  .t-body   { color: color-mix(in oklab, var(--ink-foreground) 88%, transparent); }
+  .t-meta   { color: color-mix(in oklab, var(--ink-foreground) 55%, transparent); }
+  .rule     { border-color: rgba(255,255,255,.14); }
+  .chip     { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); color: var(--ink-foreground); }
+  .btn-1    { background: var(--accent); color: #fff; box-shadow: 0 0 50px -12px var(--accent); }
+  .btn-2    { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.15); color: #fff; }
+  .link     { color: #fff; text-decoration-color: color-mix(in oklab, var(--accent) 70%, transparent); }
+
+  html:not(.dark) .t-strong { color: var(--foreground); }
+  /* 5.8: #289dbe is 3.15:1 on white. Display sizes only — at body size the
+     accent must be the darker --accent-strong. */
+  html:not(.dark) .t-accent { color: var(--brand); }
+  html:not(.dark) .t-body   { color: var(--muted-foreground); }
+  html:not(.dark) .t-meta   { color: var(--muted-foreground); }
+  html:not(.dark) .rule     { border-color: var(--border); }
+  html:not(.dark) .chip     { background: var(--card); border-color: var(--border); color: var(--muted-foreground); }
+  html:not(.dark) .btn-1    { background: var(--primary); color: var(--primary-foreground); box-shadow: 0 18px 40px -18px var(--primary); }
+  html:not(.dark) .btn-2    { background: var(--card); border-color: var(--border); color: var(--foreground); }
+  html:not(.dark) .link     { color: var(--foreground); text-decoration-color: var(--ring); }
+
+  .mono { font-variant-numeric: tabular-nums; letter-spacing: .18em; }
+
+  .rise { opacity: 0; transform: translateY(16px); animation: rise .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay: var(--d,0ms); }
+  @keyframes rise { to { opacity: 1; transform: none } }
+
+  :focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ink-deep), 0 0 0 4px var(--accent); }
+  html:not(.dark) :focus-visible { box-shadow: 0 0 0 2px var(--secondary), 0 0 0 4px var(--ring); }
+
+  /* ---- Variant switching -------------------------------------------------- */
+  .v { display: none; }
+  body[data-v="a"] .v-a, body[data-v="b"] .v-b,
+  body[data-v="c"] .v-c, body[data-v="d"] .v-d { display: block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,*::before,*::after { animation: none !important; transition-duration: .01ms !important }
+    .rise { opacity: 1; transform: none }
+  }
+</style>
+</head>
+
+<body class="font-sans antialiased" data-v="a">
+
+<!-- Lab chrome. Ships with none of this. -->
+<div class="fixed left-1/2 top-4 z-100 flex -translate-x-1/2 flex-wrap items-center justify-center gap-1 rounded-full border border-white/10 bg-white/10 p-1 shadow-lg backdrop-blur">
+  <button data-v="a" class="vb rounded-full px-3.5 py-1.5 text-xs font-semibold">A Contrast</button>
+  <button data-v="b" class="vb rounded-full px-3.5 py-1.5 text-xs font-semibold">B Ledger</button>
+  <button data-v="c" class="vb rounded-full px-3.5 py-1.5 text-xs font-semibold">C Terms</button>
+  <button data-v="d" class="vb rounded-full px-3.5 py-1.5 text-xs font-semibold">D Plain</button>
+  <span class="mx-1 h-4 w-px bg-white/15"></span>
+  <button data-theme="dark"  class="th rounded-full px-3.5 py-1.5 text-xs font-semibold">Dark</button>
+  <button data-theme="light" class="th rounded-full px-3.5 py-1.5 text-xs font-semibold">Light</button>
+</div>
+
+<section id="hero" class="relative flex min-h-screen items-center overflow-hidden px-6 pt-28 pb-16 lg:px-16 lg:pt-16">
+  <div class="fallback"></div>
+  <div class="stage"><canvas></canvas></div>
+  <div class="scrim"></div>
+
+  <div class="relative z-10 mx-auto w-full max-w-[1400px]">
+
+    <!-- =====================================================================
+         A — CONTRAST.  The approved line, cleaned up.
+         Strength: memorable, sets up the whole page's argument in six words.
+         Cost: says nothing concrete until the subhead. Proof is a chip row,
+         which is the same device the light hero already uses.
+         ===================================================================== -->
+    <div class="v v-a max-w-2xl">
+      <p class="chip rise mb-7 inline-flex items-center gap-2.5 rounded-full border px-4 py-2 text-sm font-medium backdrop-blur" style="--d:60ms">
+        <span class="size-2 rounded-full bg-accent"></span>Senior product engineering
+      </p>
+
+      <h1 class="rise mb-7 font-display text-5xl font-black leading-[1.02] tracking-tight md:text-6xl lg:text-7xl" style="--d:160ms">
+        <span class="t-strong">The problem isn&rsquo;t ideas.</span><br><span class="t-accent">It&rsquo;s shipping.</span>
+      </h1>
+
+      <p class="t-body rise mb-9 max-w-xl text-xl leading-relaxed" style="--d:260ms">
+        Interloid takes a defined problem to deployed software &mdash; in your accounts,
+        on your repos, with a working demo every week.
+      </p>
+
+      <div class="rise mb-9 flex flex-wrap items-center gap-4" style="--d:360ms">
+        <a href="#contact" class="btn-1 group inline-flex h-14 items-center gap-2 rounded-full px-9 text-lg font-bold transition-transform hover:scale-[1.03] active:scale-95">
+          Book a free 30-min consult
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="#process" class="btn-2 inline-flex h-14 items-center rounded-full border px-8 text-lg font-medium backdrop-blur transition-colors">See how we work</a>
+      </div>
+
+      <ul class="rise flex flex-wrap gap-2.5" style="--d:460ms">
+        <li class="chip inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium backdrop-blur">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You own 100% of the code
+        </li>
+        <li class="chip inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium backdrop-blur">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Written proposal in 48 hours
+        </li>
+        <li class="chip inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium backdrop-blur">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>30-day notice, either way
+        </li>
+      </ul>
+    </div>
+
+    <!-- =====================================================================
+         B — LEDGER.  Outcome-led headline; proof promoted out of chip-form
+         into a three-column evidence strip that reads as terms, not garnish.
+         Strength: answers "what do I get" in the H1 and backs it immediately.
+         Cost: "backlog" assumes the reader has one.
+         ===================================================================== -->
+    <div class="v v-b max-w-3xl">
+      <p class="t-meta rise mb-6 flex items-center gap-3 font-mono text-[11px] font-medium uppercase mono" style="--d:60ms">
+        <span class="rule h-px w-8 border-t"></span>Senior product engineering
+      </p>
+
+      <h1 class="rise mb-7 font-display text-5xl font-black leading-[1.02] tracking-tight md:text-6xl lg:text-7xl" style="--d:160ms">
+        <span class="t-strong">Live in production.</span><br><span class="t-accent">Not in a backlog.</span>
+      </h1>
+
+      <p class="t-body rise mb-9 max-w-xl text-xl leading-relaxed" style="--d:260ms">
+        A small senior team working inside your accounts and your repos. You bring a defined
+        problem; we hand back your product, deployed &mdash; with a demo you can use every week.
+      </p>
+
+      <div class="rise mb-11 flex flex-wrap items-center gap-4" style="--d:360ms">
+        <a href="#contact" class="btn-1 group inline-flex h-14 items-center gap-2 rounded-full px-9 text-lg font-bold transition-transform hover:scale-[1.03] active:scale-95">
+          Book a free 30-min consult
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="#process" class="btn-2 inline-flex h-14 items-center rounded-full border px-8 text-lg font-medium backdrop-blur transition-colors">See how we work</a>
+      </div>
+
+      <dl class="rule rise grid max-w-xl grid-cols-3 gap-px overflow-hidden border-t pt-6" style="--d:460ms">
+        <div class="pr-5">
+          <dt class="t-strong font-display text-2xl font-extrabold tracking-tight">48 hrs</dt>
+          <dd class="t-meta mt-1 text-[13px] leading-snug">to a written proposal</dd>
+        </div>
+        <div class="rule border-l pl-5 pr-5">
+          <dt class="t-strong font-display text-2xl font-extrabold tracking-tight">Weekly</dt>
+          <dd class="t-meta mt-1 text-[13px] leading-snug">a working demo, weekly</dd>
+        </div>
+        <div class="rule border-l pl-5">
+          <dt class="t-strong font-display text-2xl font-extrabold tracking-tight">100%</dt>
+          <dd class="t-meta mt-1 text-[13px] leading-snug">of the code and IP is yours</dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- =====================================================================
+         C — TERMS.  The engagement terms are the differentiator, so they carry
+         the headline. Editorial label/value rail instead of a chip row.
+         Strength: the most defensible position we own — every claim here is on
+         the allowed list. Reads senior rather than salesy.
+         Cost: two abstract nouns in the H1; less emotive than A.
+         ===================================================================== -->
+    <div class="v v-c max-w-3xl">
+      <p class="t-meta rise mb-6 flex items-center gap-3 font-mono text-[11px] font-medium uppercase mono" style="--d:60ms">
+        <span class="rule h-px w-8 border-t"></span>India-based &middot; US &amp; UK overlap hours
+      </p>
+
+      <h1 class="rise mb-7 font-display text-[2.75rem] font-black leading-[1.04] tracking-tight md:text-5xl lg:text-6xl" style="--d:160ms">
+        <span class="t-strong">Software that ships.</span><br><span class="t-accent">Terms that don&rsquo;t trap you.</span>
+      </h1>
+
+      <p class="t-body rise mb-9 max-w-xl text-xl leading-relaxed" style="--d:260ms">
+        Defined problem in, deployed software out &mdash; in your cloud, on your repos,
+        by senior engineers you actually talk to.
+      </p>
+
+      <div class="rise mb-10 flex flex-wrap items-center gap-4" style="--d:360ms">
+        <a href="#contact" class="btn-1 group inline-flex h-14 items-center gap-2 rounded-full px-9 text-lg font-bold transition-transform hover:scale-[1.03] active:scale-95">
+          Book a free 30-min consult
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="#process" class="btn-2 inline-flex h-14 items-center rounded-full border px-8 text-lg font-medium backdrop-blur transition-colors">See how we work</a>
+      </div>
+
+      <dl class="rule rise max-w-md border-l pl-6 text-sm" style="--d:460ms">
+        <div class="flex items-baseline justify-between gap-6 py-2.5">
+          <dt class="t-meta font-mono text-[11px] uppercase mono">Proposal</dt>
+          <dd class="t-strong font-medium">Written, within 48 hours</dd>
+        </div>
+        <div class="rule flex items-baseline justify-between gap-6 border-t py-2.5">
+          <dt class="t-meta font-mono text-[11px] uppercase mono">Cadence</dt>
+          <dd class="t-strong font-medium">A working demo every week</dd>
+        </div>
+        <div class="rule flex items-baseline justify-between gap-6 border-t py-2.5">
+          <dt class="t-meta font-mono text-[11px] uppercase mono">Ownership</dt>
+          <dd class="t-strong font-medium">100% of the code and IP</dd>
+        </div>
+        <div class="rule flex items-baseline justify-between gap-6 border-t py-2.5">
+          <dt class="t-meta font-mono text-[11px] uppercase mono">Exit</dt>
+          <dd class="t-strong font-medium">30 days&rsquo; notice, either way</dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- =====================================================================
+         D — PLAIN.  No cleverness, maximum air, one CTA. The mark is doing the
+         work; the copy stays out of its way.
+         Strength: quietest and most confident; pairs best with the animation.
+         Cost: no hook — it informs rather than persuades.
+         ===================================================================== -->
+    <div class="v v-d max-w-3xl">
+      <p class="t-meta rise mb-7 font-mono text-[11px] font-medium uppercase mono" style="--d:60ms">
+        Interloid &mdash; senior product engineering
+      </p>
+
+      <h1 class="rise mb-8 font-display text-[2.75rem] font-black leading-[1.04] tracking-tight md:text-5xl lg:text-[4rem]" style="--d:160ms">
+        <span class="t-strong">From defined problem</span><br><span class="t-accent">to deployed software.</span>
+      </h1>
+
+      <p class="t-body rise mb-10 max-w-lg text-xl leading-relaxed" style="--d:260ms">
+        We work in your accounts and your repos, ship a working demo every week,
+        and hand over 100% of the code.
+      </p>
+
+      <div class="rise flex flex-wrap items-center gap-x-8 gap-y-4" style="--d:360ms">
+        <a href="#contact" class="btn-1 group inline-flex h-14 items-center gap-2 rounded-full px-9 text-lg font-bold transition-transform hover:scale-[1.03] active:scale-95">
+          Book a free 30-min consult
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="#process" class="link text-lg font-medium underline decoration-2 underline-offset-8 transition-opacity hover:opacity-70">See how we work</a>
+      </div>
+
+      <p class="t-meta rise mt-12 text-sm" style="--d:460ms">
+        Free 30-minute consult &middot; written proposal in 48 hours &middot; 30 days&rsquo; notice, either way
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module" src="hero-logo.js"></script>
+
+<script>
+  /* Lab-only. Variant switch persists across reloads so a theme flip and a
+     variant flip do not fight each other during comparison. */
+  const vbs = [...document.querySelectorAll('.vb')];
+  function setV(v) {
+    document.body.dataset.v = v;
+    try { localStorage.setItem('hero-v', v); } catch {}
+    vbs.forEach(b => {
+      const on = b.dataset.v === v;
+      b.classList.toggle('bg-accent', on);
+      b.classList.toggle('text-white', on);
+      b.classList.toggle('text-ink-foreground', !on);
+    });
+  }
+  vbs.forEach(b => b.addEventListener('click', () => setV(b.dataset.v)));
+  let saved = 'a';
+  try { saved = localStorage.getItem('hero-v') || 'a'; } catch {}
+  setV(saved);
+</script>
+
+<script>
+  /* Lab-only theme control. The page owns the `.dark` class; hero-logo.js
+     observes it. Site convention: light is default, `.dark` opts in. */
+  (function () {
+    const ths = [...document.querySelectorAll('.th')];
+    function setTheme(t) {
+      document.documentElement.classList.toggle('dark', t === 'dark');
+      try { localStorage.setItem('hero-theme', t); } catch {}
+      ths.forEach(b => {
+        const on = b.dataset.theme === t;
+        b.classList.toggle('bg-accent', on);
+        b.classList.toggle('text-white', on);
+        b.classList.toggle('text-ink-foreground', !on);
+      });
+    }
+    ths.forEach(b => b.addEventListener('click', () => setTheme(b.dataset.theme)));
+    let t = 'dark';
+    try { t = localStorage.getItem('hero-theme') || 'dark'; } catch {}
+    setTheme(t);
+  })();
+</script>
+</body>
+</html>

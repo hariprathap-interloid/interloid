@@ -50,6 +50,11 @@
   --muted:                oklch(0.9683 0.0069 247.9);  /* #f1f5f9 */
   --muted-foreground:     oklch(0.5544 0.0407 257.42); /* #64748b body copy   */
   --border:               oklch(0.9288 0.0126 255.51); /* #e2e8f0 */
+  /* Faint DISPLAY text (the stack marquee, inactive selector arrows). This used
+     to borrow --border, which works on light only: in dark --border is white at
+     10% alpha and the marquee all but disappeared. A border colour and a text
+     colour are not the same thing — they need separate tokens. */
+  --faint:                oklch(0.9288 0.0126 255.51); /* #e2e8f0 */
   --hairline:             oklch(0.9683 0.0069 247.9);  /* #f1f5f9 */
   --input:                oklch(0.9288 0.0126 255.51);
   --ring:                 oklch(0.4751 0.1249 253.47);
@@ -87,6 +92,7 @@
   --muted:                oklch(0.2795 0.0368 260.03);
   --muted-foreground:     oklch(0.7107 0.0351 256.79);
   --border:               oklch(1 0 0 / 10%);
+  --faint:                oklch(0.3400 0.0300 260);   /* opaque: alpha reads as nothing on ink */
   --hairline:             oklch(1 0 0 / 6%);
   --input:                oklch(1 0 0 / 15%);
   --ring:                 oklch(0.6481 0.1094 221.82);

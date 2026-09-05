@@ -1,12 +1,12 @@
 # Interloid Website Project — Session Handoff
 
-**Last updated:** 2026-09-05 (evening) · Written to close a design session.
+**Last updated:** 2026-09-05 (late) · Written to close a design session.
 Read this first; it replaces re-reading the whole conversation.
 
 **The next session covers BOTH content and design.**
 
-- The hero is settled and approved (§3). The *rest* of the design still has
-  real work in it — see §6.
+- The hero is settled, approved **and now folded into `index.html`** (§3). The
+  *rest* of the design still has real work in it — see §6.
 - The content gates in §7 are the launch blockers, and they are business
   decisions the user must make, not design problems to solve around.
 
@@ -45,9 +45,11 @@ Nothing has been deployed. The live site is untouched.
 
 | File | Status |
 | --- | --- |
-| `theme.css` | **The colour system. The only file to edit when re-theming.** |
+| `theme.css` | **The colour system. The only file to edit when re-theming.** `:root` is light, `.dark` is live. |
 | `index.html` + `script.js` | The full page: nav, hero, services, marquee, bento, process, work, CTA, footer |
-| `hero-logo.html` + `hero-logo.js` + `logo-points.json` | ✅ **THE APPROVED HERO.** Not yet folded into `index.html`. |
+| `hero-logo.js` + `logo-points.json` | ✅ **THE APPROVED HERO STAGE.** Now folded into `index.html`. |
+| `hero-logo.html` | The animation on its own, for working on the motion without the page. |
+| `hero-copy-lab.html` | The four hero copy/layout treatments. **C "Terms" shipped**; A/B/D kept as the record of what was rejected. |
 | `smaples-for-my-refernace/` | The exploration labs, kept for reference. All superseded — **nothing here ships.** Their `theme.css` / `logo-points.json` paths are `../`, so they only work from inside that folder. |
 
 **Serving:** must be served over http (Live Server is fine). `theme.css` loads
@@ -56,7 +58,13 @@ via `<link>`; opening `index.html` from the filesystem leaves it unstyled.
 ### The approved hero
 
 Particles disperse into a cloud and re-condense into the **Interloid mark**, on
-a 14-second auto loop. Dark by default, light toggle present.
+a 14-second auto loop. It now lives in `index.html` as section 01, carrying
+treatment **C "Terms"** — see PROTOTYPE3-BRIEF §4b for the copy decision and the
+three treatments that were not taken.
+
+The page is **light by default with a working dark toggle in the nav**; the mark
+reads in both. This supersedes the earlier "light-first, no dark mode" stance —
+but only the hero is verified in dark (§6).
 
 - Logo sampled offline to `logo-points.json` (3,810 points, 48 KB) from the
   jittered-grid sampler. The 568 KB source asset is never shipped.
@@ -83,7 +91,7 @@ a 14-second auto loop. Dark by default, light toggle present.
 
 ## 5. Hard-won gotchas — re-read before touching CSS/JS
 
-1–11 are from earlier sessions and still apply. 12–17 are new.
+1–17 are from earlier sessions and still apply. 18–20 came out of folding the hero into the page.
 
 1. **`overflow: hidden` on a section silently defeats `position: sticky`** inside it. Use `overflow: clip`.
 2. **A component's own `box-shadow` out-cascades the global `:focus-visible` ring.** Compose the ring into the component's shadow, never replace.
@@ -102,14 +110,25 @@ a 14-second auto loop. Dark by default, light toggle present.
 15. **Never rotate a flat point cloud.** `rotation.y = t * 0.05 * (1 - k)` is *cumulative in elapsed time* — measured 42° at 14s, 94° at 41s, 184° at 72s. Every pass through 90° collapses the flat cloud to a **line** and reads as a card flipping. It looks fine for the first cycle, which is why it survived review three times.
 16. **`PointsMaterial` draws squares.** For round dots you need a `ShaderMaterial` with a circular alpha in the fragment stage. Square points were a large part of why particle builds read as "noise".
 17. **`gl_PointSize` is in device pixels**, and additive blending is useless on light backgrounds (it only brightens). Blend mode must switch per theme.
+18. **A border token is not a text token.** The marquee and the inactive selector arrows used `text-border`; `--border` in dark is white at **10% alpha**, so both effectively disappeared. `--faint` now exists for faint *display text* — same value in light, opaque in dark.
+19. **One theme owner.** `script.js` sets the `.dark` class; `hero-logo.js` only *observes* it (MutationObserver). Two owners is a race waiting to happen, so the stage was rewritten to observe rather than own. The class must also be resolved by an inline head script placed before the stylesheets, or a stored dark preference flashes light on every load.
+20. **A hero designed at desktop width is not a mobile hero.** At `.30` scale the mark covered ~60% of a 390px viewport and ran through the H1, and the horizontal desktop scrim protected nothing once the layout stacked. Mobile needs its own scale, its own vertical scrim — and a second scrim layer capping the top, because the nav is transparent at rest and the cloud ran straight through the wordmark.
 
 ---
 
 ## 6. Outstanding work — design
 
 **Mechanical, unblocked, do these first:**
-1. Fold `hero-logo.html`'s hero into `index.html` as the real hero.
-2. Build the §10.1 conversational contact form — the CTA is a bare `mailto`
+1. ~~Fold `hero-logo.html`'s hero into `index.html`.~~ **Done** — treatment C
+   "Terms", see PROTOTYPE3-BRIEF §4b.
+2. **Finish the dark pass.** The theme toggle now ships (light default, `.dark`
+   opts in, nav button). The hero is verified in both. Sections 02–08 were only
+   *spot-checked* — they mostly hold up because they are token-based, but a
+   real audit has not been run and contrast has not been measured anywhere in
+   dark. `text-white` (12), `bg-white` (24) and `bg-white/*` borders are still
+   in the tree; most are the intentionally-dark CTA slab and footer, but they
+   have not been separated from the accidental ones.
+3. Build the §10.1 conversational contact form — the CTA is a bare `mailto`
    today. Form a11y is gotcha §5.9.
 
 **Blocked on a content answer (see §7) — do not build these blind:**

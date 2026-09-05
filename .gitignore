@@ -34,3 +34,6 @@ coverage
 # scratch playwright scripts
 .*.mjs
 .*.png
+
+# screenshot output from the verification scripts
+shots/

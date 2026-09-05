@@ -9,6 +9,19 @@
       content="Interloid is a senior product-engineering team. Defined problems to deployed software, in your accounts, on your repos."
     />
 
+    <!-- Theme, resolved before first paint so a stored dark preference does not
+         flash light. Must stay inline and BEFORE the stylesheets; script.js
+         only syncs the button's state to whatever this decided. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("interloid-theme");
+          if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches))
+            document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -43,6 +56,7 @@
         --color-accent-foreground: var(--accent-foreground);
         --color-destructive: var(--destructive);
         --color-border: var(--border);
+        --color-faint: var(--faint);
         --color-input: var(--input);
         --color-ring: var(--ring);
 
@@ -257,6 +271,130 @@
         pointer-events: none;
       }
 
+
+      /* ======================================================================
+         HERO STAGE — the WebGL mark (hero-logo.js + logo-points.json).
+         Replaces the orb/dot-grid hero. Light-first like the rest of the page;
+         `.dark` on <html> opts in and is a real, shipping mode here.
+
+         --hero-bg is the one knob: the fallback, the scrim and the bottom fade
+         all read it, so the two themes differ by a single declaration.
+         ====================================================================== */
+      #home {
+        --hero-bg: var(--secondary);
+        background: var(--hero-bg);
+      }
+      html.dark #home {
+        --hero-bg: var(--ink-deep);
+      }
+
+      .stage {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+      }
+      .stage canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-out;
+      }
+      .stage.ready canvas {
+        opacity: 1;
+      }
+
+      /* Stands in until (or instead of) WebGL. z-index 0, under the canvas. */
+      .hero-fallback {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background:
+          radial-gradient(55% 50% at 78% 45%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 70%),
+          var(--hero-bg);
+      }
+      html.dark .hero-fallback {
+        background:
+          radial-gradient(55% 50% at 74% 45%, color-mix(in oklab, var(--brand) 40%, transparent), transparent 70%),
+          radial-gradient(40% 40% at 86% 55%, color-mix(in oklab, var(--accent) 34%, transparent), transparent 70%),
+          var(--hero-bg);
+      }
+
+      /* The scrim is what keeps the copy readable over the cloud. Light is the
+         harder case — dark particles on a pale ground compete with dark text —
+         so the light scrim is wider and more opaque, not the same ramp. */
+      .scrim {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: linear-gradient(
+          90deg,
+          var(--hero-bg) 0%,
+          var(--hero-bg) 30%,
+          color-mix(in oklab, var(--hero-bg) 82%, transparent) 46%,
+          color-mix(in oklab, var(--hero-bg) 30%, transparent) 62%,
+          transparent 76%
+        );
+      }
+      html.dark .scrim {
+        background: linear-gradient(
+          90deg,
+          var(--hero-bg) 0%,
+          color-mix(in oklab, var(--hero-bg) 88%, transparent) 34%,
+          color-mix(in oklab, var(--hero-bg) 40%, transparent) 52%,
+          transparent 68%
+        );
+      }
+
+      /* Below 900px hero-logo.js moves the mark to a band across the TOP and
+         the copy stacks under it. A horizontal scrim protects nothing in that
+         arrangement, and vertically-centred copy fought the mark for the same
+         pixels — so: align to the top, clear 40vh, and run the ramp downward. */
+      @media (max-width: 899px) {
+        #home {
+          align-items: flex-start;
+          padding-top: 40vh;
+          padding-bottom: 5rem;
+        }
+        /* Two layers. The second is the main downward ramp that clears the
+           copy; the first is a cap over the top ~13%, because the nav is
+           transparent at rest and the cloud ran straight through the wordmark
+           — badly in light, where both are dark on pale. */
+        .scrim {
+          background:
+            linear-gradient(
+              180deg,
+              var(--hero-bg) 0%,
+              color-mix(in oklab, var(--hero-bg) 72%, transparent) 6%,
+              transparent 13%
+            ),
+            linear-gradient(
+              180deg,
+              transparent 0%,
+              color-mix(in oklab, var(--hero-bg) 40%, transparent) 19%,
+              color-mix(in oklab, var(--hero-bg) 92%, transparent) 30%,
+              var(--hero-bg) 37%
+            );
+        }
+      }
+
+      /* Only two hero-local tokens are needed; everything else is a theme.css
+         semantic token, so it flips with `.dark` for free. §5.8: #289dbe is
+         3.15:1 on white, so light uses --brand for the display line. */
+      .t-accent {
+        color: var(--brand);
+      }
+      html.dark .t-accent {
+        color: var(--accent);
+      }
+      .hero-rule {
+        border-color: var(--border);
+      }
+      html.dark .hero-rule {
+        border-color: rgb(255 255 255 / 0.14);
+      }
+
       @media (prefers-reduced-motion: reduce) {
         html {
           scroll-behavior: auto;
@@ -379,6 +517,45 @@
         </div>
 
         <div class="flex items-center gap-2">
+          <!-- Theme toggle. Two SVGs swapped by class, never innerHTML —
+               HANDOFF §5.3: replacing a button's contents detaches the click's
+               original target. hero-logo.js observes the `.dark` class rather
+               than owning it, so this button is the single source of truth. -->
+          <button
+            id="themeToggle"
+            type="button"
+            aria-label="Switch to dark theme"
+            aria-pressed="false"
+            class="grid size-11 place-items-center rounded-full text-foreground transition-colors hover:bg-muted"
+          >
+            <svg
+              data-icon="moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-5"
+              aria-hidden="true"
+            >
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+            </svg>
+            <svg
+              data-icon="sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="hidden size-5"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+            </svg>
+          </button>
           <a
             href="#contact"
             class="active:scale-95 hidden rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-brand-light hover:shadow-primary/40 xl:inline-flex"
@@ -498,192 +675,155 @@
 
     <main id="main">
       <!-- ==========================================================================
-     1. HERO - DS 7.2. min-h-screen, centred, orbs behind, bottom fade out.
-     A dark treatment of this section is parked in hero-signal.html.
+     1. HERO — treatment C "Terms" (chosen 2026-09-05 from hero-copy-lab.html).
+
+     Position: the engagement terms ARE the differentiator, so they carry the
+     headline and the proof is an editorial label->value rail rather than a
+     chip row. The review's core finding is that the site "asks for trust while
+     showing no proof"; every line below is on HANDOFF §7's allowed list, so
+     this is the one hero position that is fully defensible today.
+
+     Review §9.2 asks the hero to say WHO it is for. We have no verified client
+     data, so that specificity cannot come from who we serve without inventing
+     it — it comes from how the engagement works instead.
+
+     Visual: the mark condenses out of a particle cloud on a 14s loop
+     (hero-logo.js). No rotation, ever — HANDOFF §5.15.
      ========================================================================== -->
       <section
         id="home"
-        class="relative flex min-h-screen items-center justify-center overflow-hidden bg-secondary pt-20"
+        data-hero
+        class="relative flex min-h-screen items-center overflow-hidden px-6 pt-24 lg:px-16"
       >
-        <!-- DS 2.6 dot grid, radially masked so it fades out at the edges -->
-        <div
-          class="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(var(--border)_1.5px,transparent_1.5px)] bg-[size:26px_26px] [mask-image:radial-gradient(ellipse_65%_60%_at_50%_45%,#000_10%,transparent_100%)]"
-          aria-hidden="true"
-        ></div>
+        <div class="hero-fallback" aria-hidden="true"></div>
+        <div class="stage" aria-hidden="true"><canvas></canvas></div>
+        <div class="scrim" aria-hidden="true"></div>
 
-        <!-- DS 2.5 ambient orbs. Positioned with left/top, never transform:
-             transform belongs to the pointer/scroll parallax (DS 7.2). -->
-        <div
-          id="orbs"
-          class="pointer-events-none absolute inset-0 z-[1] overflow-hidden"
-          aria-hidden="true"
-        >
-          <div
-            data-orb="1"
-            class="absolute left-[6%] top-[8%] size-[440px] rounded-full bg-brand/35 blur-[110px] animate-orb"
-          ></div>
-          <div
-            data-orb="2"
-            class="absolute left-[46%] top-[20%] size-[560px] rounded-full bg-accent/30 blur-[120px] animate-orb [animation-delay:2s]"
-          ></div>
-          <div
-            data-orb="3"
-            class="absolute left-[18%] top-[50%] size-[420px] rounded-full bg-brand-light/30 blur-[110px] animate-orb [animation-delay:4s]"
-          ></div>
-        </div>
+        <div class="relative z-10 mx-auto w-full max-w-[1400px]">
+          <div class="max-w-3xl">
+            <p
+              data-reveal
+              data-placeholder="geography framing — needs confirmation, HANDOFF §7 P1"
+              class="mb-6 flex items-center gap-3 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            >
+              <span class="hero-rule h-px w-8 border-t" aria-hidden="true"></span>
+              India-based &middot; US &amp; UK overlap hours
+            </p>
 
-        <div class="relative z-20 mx-auto max-w-7xl px-6 text-center">
-          <div
-            data-reveal
-            class="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 shadow-sm"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="size-4 text-accent-strong"
-              aria-hidden="true"
+            <!-- DS §3.2: the hero H1 is the only place font-black (900) is used.
+                 No gradient clip here — HANDOFF §5.13 makes a split gradient
+                 headline render as nothing, and the two-tone split is the point. -->
+            <h1
+              data-reveal
+              style="--delay: 100ms"
+              class="mb-7 font-display text-[2.75rem] font-black leading-[1.04] tracking-tight text-foreground md:text-5xl lg:text-6xl"
             >
-              <path
-                d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"
-              />
-            </svg>
-            <span class="text-sm font-medium text-muted-foreground"
-              >Senior product engineering</span
-            >
-          </div>
-
-          <!-- DS 3.2: the hero H1 is the only place font-black (900) is used.
-               DS 1.2 rule 4: exactly one gradient phrase per heading. -->
-          <h1
-            data-reveal
-            style="--delay: 100ms"
-            class="mb-8 font-display text-5xl font-black leading-[1.02] tracking-tight md:text-6xl lg:text-7xl xl:text-8xl"
-          >
-            <span class="block text-foreground"
-              >The problem isn&#39;t ideas.</span
-            >
-            <span
-              class="block bg-gradient-to-r from-brand via-accent to-brand-light bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient"
-              >It&#39;s shipping.</span
-            >
-          </h1>
-
-          <p
-            data-reveal
-            style="--delay: 200ms"
-            class="mx-auto mb-12 max-w-3xl text-xl leading-relaxed text-muted-foreground"
-          >
-            Interloid takes defined problems to deployed software &mdash; in
-            your accounts, on your repos, with a working demo every week. No
-            vendor relationship to manage.
-          </p>
-
-          <div
-            data-reveal
-            style="--delay: 300ms"
-            class="flex flex-wrap items-center justify-center gap-6"
-          >
-            <a
-              href="#contact"
-              class="shine active:scale-95 group relative overflow-hidden inline-flex h-14 items-center gap-2 rounded-full bg-primary px-10 text-lg font-medium text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:bg-brand-light hover:shadow-2xl hover:shadow-primary/40"
-            >
-              Book a free 30-min consult
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="size-5 transition-transform group-hover:translate-x-1"
-                aria-hidden="true"
+              Software that ships.<br /><span class="t-accent"
+                >Terms that don&rsquo;t trap you.</span
               >
-                <path d="M5 12h14" />
-                <path d="m12 5 7 7-7 7" />
-              </svg>
-            </a>
-            <a
-              href="#process"
-              class="active:scale-95 group inline-flex h-14 items-center gap-2 rounded-full border border-border bg-card/60 px-10 text-lg font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary hover:bg-card hover:text-primary"
-            >
-              See how we work
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="size-5 transition-transform group-hover:translate-x-1"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14" />
-                <path d="m12 5 7 7-7 7" />
-              </svg>
-            </a>
-          </div>
+            </h1>
 
-          <div
-            data-reveal
-            style="--delay: 400ms"
-            class="mt-10 flex flex-wrap items-center justify-center gap-3"
-          >
-            <span
-              class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"
-              ><svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="size-3.5 text-accent-strong"
-                aria-hidden="true"
-              >
-                <path d="M20 6 9 17l-5-5" /></svg
-              >You own 100% of the code</span
+            <p
+              data-reveal
+              style="--delay: 200ms"
+              class="mb-9 max-w-xl text-xl leading-relaxed text-muted-foreground"
             >
-            <span
-              class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"
-              ><svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="size-3.5 text-accent-strong"
-                aria-hidden="true"
-              >
-                <path d="M20 6 9 17l-5-5" /></svg
-              >Written proposal in 48 hours</span
+              Defined problem in, deployed software out &mdash; in your cloud,
+              on your repos, by senior engineers you actually talk to.
+            </p>
+
+            <div
+              data-reveal
+              style="--delay: 300ms"
+              class="mb-10 flex flex-wrap items-center gap-4"
             >
-            <span
-              class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"
-              ><svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="size-3.5 text-accent-strong"
-                aria-hidden="true"
+              <a
+                href="#contact"
+                class="shine active:scale-95 group relative overflow-hidden inline-flex h-14 items-center gap-2 rounded-full bg-primary px-9 text-lg font-medium text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:bg-brand-light hover:shadow-2xl hover:shadow-primary/40"
               >
-                <path d="M20 6 9 17l-5-5" /></svg
-              >30-day notice, either way</span
+                Book a free 30-min consult
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-5 transition-transform group-hover:translate-x-1"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </a>
+              <a
+                href="#process"
+                class="active:scale-95 inline-flex h-14 items-center rounded-full border border-border bg-card/60 px-8 text-lg font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary hover:bg-card hover:text-primary"
+                >See how we work</a
+              >
+            </div>
+
+            <!-- The proof rail. Every value here is on HANDOFF §7's allowed
+                 list, so none of it is data-placeholder. -->
+            <dl
+              data-reveal
+              style="--delay: 400ms"
+              class="hero-rule max-w-md border-l pl-6 text-sm"
             >
+              <div class="flex items-baseline justify-between gap-6 py-2.5">
+                <dt
+                  class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
+                >
+                  Proposal
+                </dt>
+                <dd class="font-medium text-foreground">
+                  Written, within 48 hours
+                </dd>
+              </div>
+              <div
+                class="hero-rule flex items-baseline justify-between gap-6 border-t py-2.5"
+              >
+                <dt
+                  class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
+                >
+                  Cadence
+                </dt>
+                <dd class="font-medium text-foreground">
+                  A working demo every week
+                </dd>
+              </div>
+              <div
+                class="hero-rule flex items-baseline justify-between gap-6 border-t py-2.5"
+              >
+                <dt
+                  class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
+                >
+                  Ownership
+                </dt>
+                <dd class="font-medium text-foreground">
+                  100% of the code and IP
+                </dd>
+              </div>
+              <div
+                class="hero-rule flex items-baseline justify-between gap-6 border-t py-2.5"
+              >
+                <dt
+                  class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
+                >
+                  Exit
+                </dt>
+                <dd class="font-medium text-foreground">
+                  30 days&rsquo; notice, either way
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
 
         <a
           href="#services"
           aria-label="Scroll to what we build"
-          class="scroll-cue absolute bottom-8 left-1/2 z-20 -translate-x-1/2 grid size-11 place-items-center rounded-full border border-border bg-card/70 text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:border-primary hover:text-primary"
+          class="scroll-cue absolute bottom-8 left-1/2 z-20 -translate-x-1/2 hidden size-11 place-items-center rounded-full border border-border bg-card/70 text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:border-primary hover:text-primary min-[900px]:grid"
         >
           <svg
             viewBox="0 0 24 24"
@@ -700,7 +840,7 @@
         </a>
 
         <div
-          class="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-32 bg-gradient-to-t from-secondary to-transparent"
+          class="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-32 bg-gradient-to-t from-[var(--hero-bg)] to-transparent"
           aria-hidden="true"
         ></div>
       </section>
@@ -1205,5 +1345,13 @@
     </button>
 
     <script src="script.js"></script>
+
+    <!-- The hero stage. Deferred behind requestIdleCallback inside hero-logo.js
+         so it cannot touch first paint — the live site measures FCP 364ms and
+         the review says do not regress it (HANDOFF §8). -->
+    <script type="importmap">
+      { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+    </script>
+    <script type="module" src="hero-logo.js"></script>
   </body>
 </html>

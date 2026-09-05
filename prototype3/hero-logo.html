@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -55,25 +55,25 @@
      Light is the readability problem: dark particles on a pale ground compete
      with dark text. Three defences, not one — a wider and more opaque scrim,
      a dimmer cloud, and the mark pushed further right. ---------------------- */
-  html.light #hero { background: var(--secondary); }
-  html.light .fallback {
+  html:not(.dark) #hero { background: var(--secondary); }
+  html:not(.dark) .fallback {
     background:
       radial-gradient(55% 50% at 78% 45%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 70%),
       var(--secondary);
   }
-  html.light .scrim {
+  html:not(.dark) .scrim {
     background: linear-gradient(90deg, var(--secondary) 0%,
       var(--secondary) 30%,
       color-mix(in oklab, var(--secondary) 82%, transparent) 46%,
       color-mix(in oklab, var(--secondary) 30%, transparent) 62%, transparent 76%);
   }
-  html.light .t-strong { color: var(--foreground); }
-  html.light .t-accent { color: var(--brand); }
-  html.light .t-body   { color: var(--muted-foreground); }
-  html.light .t-meta   { color: var(--muted-foreground); }
-  html.light .chip     { background: var(--card); border-color: var(--border); color: var(--muted-foreground); }
-  html.light .btn-1    { background: var(--primary); color: var(--primary-foreground); }
-  html.light .btn-2    { background: var(--card); border-color: var(--border); color: var(--foreground); }
+  html:not(.dark) .t-strong { color: var(--foreground); }
+  html:not(.dark) .t-accent { color: var(--brand); }
+  html:not(.dark) .t-body   { color: var(--muted-foreground); }
+  html:not(.dark) .t-meta   { color: var(--muted-foreground); }
+  html:not(.dark) .chip     { background: var(--card); border-color: var(--border); color: var(--muted-foreground); }
+  html:not(.dark) .btn-1    { background: var(--primary); color: var(--primary-foreground); }
+  html:not(.dark) .btn-2    { background: var(--card); border-color: var(--border); color: var(--foreground); }
 
   .t-strong { color: #fff; }
   .t-accent { color: var(--accent); }
@@ -87,7 +87,7 @@
   @keyframes rise { to { opacity: 1; transform: none } }
 
   :focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ink-deep), 0 0 0 4px var(--accent); }
-  html.light :focus-visible { box-shadow: 0 0 0 2px var(--secondary), 0 0 0 4px var(--ring); }
+  html:not(.dark) :focus-visible { box-shadow: 0 0 0 2px var(--secondary), 0 0 0 4px var(--ring); }
 
   @media (prefers-reduced-motion: reduce) {
     *,*::before,*::after { animation: none !important; transition-duration: .01ms !important }
@@ -142,5 +142,27 @@
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
 </script>
 <script type="module" src="hero-logo.js"></script>
+
+<script>
+  /* Lab-only theme control. The page owns the `.dark` class; hero-logo.js
+     observes it. Site convention: light is default, `.dark` opts in. */
+  (function () {
+    const ths = [...document.querySelectorAll('.th')];
+    function setTheme(t) {
+      document.documentElement.classList.toggle('dark', t === 'dark');
+      try { localStorage.setItem('hero-theme', t); } catch {}
+      ths.forEach(b => {
+        const on = b.dataset.theme === t;
+        b.classList.toggle('bg-accent', on);
+        b.classList.toggle('text-white', on);
+        b.classList.toggle('text-ink-foreground', !on);
+      });
+    }
+    ths.forEach(b => b.addEventListener('click', () => setTheme(b.dataset.theme)));
+    let t = 'dark';
+    try { t = localStorage.getItem('hero-theme') || 'dark'; } catch {}
+    setTheme(t);
+  })();
+</script>
 </body>
 </html>
