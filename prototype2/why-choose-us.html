@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Why Interloid — Prototype 2</title>
-<meta name="description" content="Why teams choose Interloid: plain-language commitments on ownership, people, price, visibility and exit — presented as the working agreement every engagement carries.">
+<meta name="description" content="Five commitments that shape every Interloid engagement — ownership, people, price, visibility and exit — with the evidence behind each one.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
@@ -15,304 +15,338 @@
 
 <a class="skip-link" href="#main">Skip to content</a>
 
-<!-- ================================================================ NAV -->
-<nav class="nav" id="nav" aria-label="Primary">
-  <div class="nav__inner">
-    <a class="logo" href="index.html" aria-label="Interloid home">
-      <span class="logo__mark" aria-hidden="true">
+<!-- ============================ CENTRED COMMAND BAR ==================== -->
+<nav class="cmd" id="cmd" aria-label="Primary">
+  <div class="cmd__pill">
+    <a class="cmd__mark" href="index.html" aria-label="Interloid home">
+      <span class="dot" aria-hidden="true">
         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
       </span>
       Interloid
     </a>
 
-    <div class="nav__links">
-      <a class="nav__link" href="index.html">Home</a>
-      <a class="nav__link" href="#agreement">The&nbsp;Agreement</a>
-      <a class="nav__link" href="#week">A&nbsp;Week&nbsp;With&nbsp;Us</a>
-      <a class="nav__link" href="#answers">Answers</a>
-      <a class="nav__link" href="index.html#work">Work</a>
+    <span class="cmd__div" aria-hidden="true"></span>
+
+    <div class="cmd__links">
+      <a class="cmd__link" href="index.html">Home</a>
+      <a class="cmd__link" href="#commitments">Commitments</a>
+      <a class="cmd__link" href="#practice">In practice</a>
+      <a class="cmd__link" href="#answers">Answers</a>
+      <a class="cmd__link" href="index.html#work">Work</a>
     </div>
 
-    <a class="btn btn--primary btn--sm nav__cta" href="index.html#contact">Book a free consult <svg aria-hidden="true" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+    <a class="btn btn--primary btn--sm cmd__cta" href="index.html#contact">
+      Book a consult
+      <svg aria-hidden="true" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </a>
 
-    <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-      <svg aria-hidden="true" id="navToggleIcon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+    <button class="cmd__toggle" id="cmdToggle" aria-label="Open menu" aria-expanded="false" aria-controls="sheet">
+      <svg aria-hidden="true" id="cmdToggleIcon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
     </button>
   </div>
 </nav>
 
-<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
+<nav class="sheet" id="sheet" aria-label="Mobile">
   <a href="index.html">Home</a>
-  <a href="#agreement">The Agreement</a>
-  <a href="#week">A Week With Us</a>
+  <a href="#commitments">Commitments</a>
+  <a href="#practice">In practice</a>
   <a href="#answers">Answers</a>
   <a href="index.html#work">Work</a>
   <hr>
-  <a class="btn btn--primary btn--md btn--block" href="index.html#contact">Book a free 30-min consult <svg aria-hidden="true" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+  <a class="btn btn--primary btn--md btn--block" href="index.html#contact">
+    Book a free 30-min consult
+    <svg aria-hidden="true" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+  </a>
 </nav>
 
 <main id="main">
 
-<!-- ============================================= HERO — left-aligned -->
-<section class="hero" aria-labelledby="page-title">
-  <div class="line-grid" aria-hidden="true"></div>
-  <div class="orb orb--brand orb--tr" aria-hidden="true"></div>
+<!-- ==================================== HERO — centred ================= -->
+<section class="hero hero--page" aria-labelledby="page-title">
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="orb orb--brand orb--c" aria-hidden="true"></div>
 
-  <div class="container">
-    <div style="max-width:46rem">
-      <p class="kicker" data-reveal>Why Interloid</p>
-      <h1 class="h-hero h-hero--sub" id="page-title" data-reveal style="--delay:80ms">
-        <span>Every vendor sounds identical.</span>
-        <span class="grad">Our contract doesn't.</span>
-      </h1>
-      <p class="lead" data-reveal style="--delay:160ms">
-        The pitch-deck promises are the same everywhere: senior people,
-        transparency, partnership. So we stopped asking clients to take our
-        word for it. Below is what working with Interloid commits us to,
-        in plain language.
-      </p>
-      <div class="hero__cta" data-reveal style="--delay:240ms">
-        <a class="btn btn--primary btn--lg" href="index.html#contact">
-          Book a free 30-min consult
-          <svg aria-hidden="true" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-        <a class="tlink tlink--down" href="#agreement">
-          Read the agreement
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================================ THE WORKING AGREEMENT (document) -->
-<section class="section section--lg section--slate" id="agreement">
-  <div class="orb orb--accent orb--tr" aria-hidden="true"></div>
-  <div class="container">
-    <div class="sec-head">
-      <p class="kicker" data-reveal>The commitments</p>
-      <h2 class="h-section" data-reveal style="--delay:80ms">
-        The working agreement, <span class="grad">in plain language.</span>
-      </h2>
-      <p class="intro" data-reveal style="--delay:160ms">
-        Five clauses that shape every engagement. The contract version says
-        the same things with more commas.
-      </p>
-    </div>
-
-    <div class="doc" data-reveal="fade" style="--delay:120ms">
-      <div class="doc__head">
-        <h3>Working agreement &mdash; summary of terms</h3>
-        <span>Applies to every engagement</span>
-      </div>
-
-      <article class="clause">
-        <span class="clause__id">Clause 01 <em>Ownership</em></span>
-        <div>
-          <h4>Everything is yours from the first commit</h4>
-          <p>
-            Work happens in your GitHub organisation and your cloud accounts.
-            Code, infrastructure, credentials and documentation are yours
-            throughout &mdash; there is no handover ceremony at the end because
-            there is nothing of yours in our hands.
-          </p>
-        </div>
-        <div class="clause__figure" aria-hidden="true"><strong>100%</strong><span>code &amp; IP, yours</span></div>
-      </article>
-
-      <article class="clause">
-        <span class="clause__id">Clause 02 <em>People</em></span>
-        <div>
-          <h4>The engineers you meet are the engineers you get</h4>
-          <p>
-            The proposal names the individuals on your project. They are the
-            people on your discovery call, and later in your standups. Any change
-            of personnel goes through you, in writing, before it happens.
-          </p>
-        </div>
-        <div class="clause__figure" aria-hidden="true"><strong>Named</strong><span>in the proposal</span></div>
-      </article>
-
-      <article class="clause">
-        <span class="clause__id">Clause 03 <em>Price</em></span>
-        <div>
-          <h4>The number comes before the work</h4>
-          <p>
-            A fixed price or a transparent hourly rate, in writing within 48
-            hours of the first call. Scope changes are quoted and approved
-            before work continues &mdash; nothing is billed that you haven't
-            approved in advance.
-          </p>
-        </div>
-        <div class="clause__figure" aria-hidden="true"><strong>48 hrs</strong><span>to a written price</span></div>
-      </article>
-
-      <article class="clause">
-        <span class="clause__id">Clause 04 <em>Visibility</em></span>
-        <div>
-          <h4>You watch progress &mdash; you don't request updates</h4>
-          <p>
-            A working demo every week, plus standing access to the repository
-            and the sprint board. A bad week surfaces in that week's demo &mdash;
-            never in a month-end surprise.
-          </p>
-        </div>
-        <div class="clause__figure" aria-hidden="true"><strong>Weekly</strong><span>working demo</span></div>
-      </article>
-
-      <article class="clause">
-        <span class="clause__id">Clause 05 <em>Exit</em></span>
-        <div>
-          <h4>Leaving must cost you nothing</h4>
-          <p>
-            Because everything already lives in your accounts, walking away takes
-            one conversation &mdash; there is nothing to migrate, export or unwind.
-            Every build includes 30 days of post-launch support; a retainer after
-            that is an option, never a dependency.
-          </p>
-        </div>
-        <div class="clause__figure" aria-hidden="true"><strong>30 days</strong><span>support included</span></div>
-      </article>
-
-      <div class="doc__foot">
-        <span data-placeholder="Verify: the engagement contract must actually carry these clauses"><strong>Interloid Technologies Private Limited</strong> &mdash; these clauses are carried into every engagement agreement.</span>
-        <span>India-based &middot; US &amp; UK overlap hours</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================ A NORMAL WEEK (band) -->
-<section class="section section--lg section--edge" id="week">
-  <div class="orb orb--brand orb--bl" aria-hidden="true"></div>
-  <div class="container">
-    <div class="sec-head">
-      <p class="kicker" data-reveal>Direct, by default</p>
-      <h2 class="h-section" data-reveal style="--delay:80ms">
-        A normal week, <span class="grad">working with us.</span>
-      </h2>
-      <p class="intro" data-reveal style="--delay:160ms">
-        No account managers relaying messages, no monthly steering decks.
-        This is what the communication actually looks like.
-      </p>
-    </div>
-
-    <div class="week" data-stagger>
-      <div class="day">
-        <span class="day__tag">Monday</span>
-        <h3>Standup, in your channel</h3>
-        <p>The week's plan lands in your Slack or Teams &mdash; written by the engineers, not summarised by a manager.</p>
-      </div>
-      <div class="day">
-        <span class="day__tag">Tue &ndash; Wed</span>
-        <h3>PRs into your repo</h3>
-        <p>Reviews in the open. Your team can comment, question and learn from every change as it happens.</p>
-      </div>
-      <div class="day">
-        <span class="day__tag">Thursday</span>
-        <h3>Blockers, raised early</h3>
-        <p>Anything at risk for the demo is flagged now &mdash; with options, not excuses.</p>
-      </div>
-      <div class="day day--hi">
-        <span class="day__tag">Friday</span>
-        <h3>The working demo</h3>
-        <p>Software you can click, plus a short written summary. The ceremony the whole week is built around.</p>
-      </div>
-      <div class="day">
-        <span class="day__tag">Anytime</span>
-        <h3>A direct line</h3>
-        <p>Questions go to the engineer doing the work, in your timezone overlap. No relay, no ticket queue.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================ PROOF — quote + link -->
-<section class="section section--slate" aria-label="Client feedback">
-  <div class="container">
-    <figure class="pullquote" data-reveal data-placeholder="Replace with a real, permissioned quote">
-      <div class="pullquote__mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2-2-2H4c-1.25 0-2 .75-2 2v7c0 1.25.75 2 2 2h3"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2-2-2h-4c-1.25 0-2 .75-2 2v7c0 1.25.75 2 2 2h3"/></svg>
-      </div>
-      <blockquote>
-        <p>Six months after handover we haven't needed them once &mdash; which,
-        strangely, is exactly why we'd hire them again.</p>
-      </blockquote>
-      <figcaption><strong>Placeholder Name</strong> &middot; CTO, Placeholder Co</figcaption>
-    </figure>
-    <p style="text-align:center;margin-top:2.5rem" data-reveal>
-      <a class="tlink" href="index.html#work">See the work behind the words
-        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+  <div class="wrap">
+    <p class="hero__eyebrow" data-reveal>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V6l8-4 8 4Z"/><path d="m9 12 2 2 4-4"/></svg>
+      Why Interloid
     </p>
+
+    <h1 class="t-page" id="page-title" data-reveal style="--delay:80ms">
+      Anyone can promise this.<br>
+      <span class="grad">We put it in the contract.</span>
+    </h1>
+
+    <p class="lead" style="max-width:38rem;margin:1.75rem auto 0" data-reveal style="--delay:160ms">
+      Senior people, transparency, partnership &mdash; every agency site says
+      the same four things. The only question worth asking is which of them
+      survive into the agreement you sign. These five do.
+    </p>
+
+    <div class="hero__cta" data-reveal style="--delay:240ms">
+      <a class="btn btn--primary btn--lg" href="index.html#contact">
+        Book a free 30-min consult
+        <svg aria-hidden="true" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a class="btn btn--ghost btn--lg" href="#commitments">Read the five</a>
+    </div>
   </div>
 </section>
 
-<!-- =========================================== STRAIGHT ANSWERS (grid) -->
-<section class="section section--lg" id="answers">
-  <div class="orb orb--accent orb--bl" aria-hidden="true"></div>
-  <div class="container">
-    <div class="sec-head">
-      <p class="kicker" data-reveal>No sales call required</p>
-      <h2 class="h-section" data-reveal style="--delay:80ms">
-        Straight answers to the <span class="grad">awkward questions.</span>
-      </h2>
-      <p class="intro" data-reveal style="--delay:160ms">
-        The things buyers usually have to sit through a pitch to find out.
-        All open, no accordion.
-      </p>
+<!-- ========================= 01 — THE FIVE COMMITMENTS ================= -->
+<section id="commitments" aria-labelledby="commitments-title">
+  <div class="sec sec--tight sec--edge">
+    <div class="wrap">
+      <header class="head" style="margin-bottom:0">
+        <div class="chapter" data-reveal>
+          <span class="chapter__rule" aria-hidden="true"></span>
+          <span class="chapter__n">01</span>
+          <span class="chapter__label">The commitments</span>
+        </div>
+        <h2 class="t-sec" id="commitments-title" data-reveal style="--delay:80ms">
+          Five things we <span class="grad">actually sign.</span>
+        </h2>
+        <p class="intro" data-reveal style="--delay:160ms">
+          Written here the way we'd say them out loud. The contract version
+          says the same things with more commas.
+        </p>
+      </header>
     </div>
+  </div>
 
-    <div class="answers" data-stagger>
-      <article class="answer">
-        <h3><span class="qn" aria-hidden="true">Q1</span>Where are you actually based?</h3>
+  <div class="bands">
+    <article class="band">
+      <span class="band__ghost" aria-hidden="true">01</span>
+      <div class="band__in" data-reveal>
+        <span class="band__k">Ownership</span>
+        <h3>Everything is yours from the first commit</h3>
         <p>
-          Gobichettipalayam, Tamil Nadu, India &mdash; and we keep deliberate
-          overlap with US and UK business hours for standups, demos and anything
-          urgent. Async by default, with a scheduled live window every working day.
+          Work happens in your GitHub organisation and your cloud accounts, not
+          ours. Code, infrastructure, credentials and documentation are yours
+          the whole way through &mdash; so there is no handover ceremony at the
+          end, because we were never holding anything.
         </p>
-      </article>
-      <article class="answer">
-        <h3><span class="qn" aria-hidden="true">Q2</span>Who actually writes the code?</h3>
+        <span class="band__pill">100% of code &amp; IP &mdash; yours</span>
+      </div>
+    </article>
+
+    <article class="band">
+      <span class="band__ghost" aria-hidden="true">02</span>
+      <div class="band__in" data-reveal>
+        <span class="band__k">People</span>
+        <h3>The engineers you meet are the engineers you get</h3>
         <p>
-          Senior engineers, named in your proposal. The people on your discovery
-          call are the people in your repo &mdash; there's no swap to a junior
-          bench after signature, because we don't have one.
+          Your proposal names individuals, not roles. They're the people on your
+          discovery call and the people in your standups. Any change of
+          personnel goes through you, in writing, before it happens.
         </p>
-      </article>
-      <article class="answer">
-        <h3><span class="qn" aria-hidden="true">Q3</span>We already have a team. Does that work?</h3>
-        <p>
-          It's most of what we do. Our engineers work inside your repo and your
-          rituals, not alongside them &mdash; and step out with 30 days' notice
-          once you've hired.
-        </p>
-      </article>
-      <article class="answer">
-        <h3><span class="qn" aria-hidden="true">Q4</span>What does it cost?</h3>
+        <span class="band__pill">Named in the proposal</span>
+      </div>
+    </article>
+
+    <article class="band">
+      <span class="band__ghost" aria-hidden="true">03</span>
+      <div class="band__in" data-reveal>
+        <span class="band__k">Price</span>
+        <h3>The number comes before the work</h3>
         <p>
           A fixed price or a transparent hourly rate, in writing within 48 hours
-          of the first call. If budget and scope do not line up, you hear it on
-          that call &mdash; and if the honest number is smaller than you planned
-          to spend, you hear that too.
+          of the first call. Scope changes get quoted and approved before work
+          continues &mdash; nothing is billed that you haven't agreed to first.
         </p>
-      </article>
+        <span class="band__pill">48 hrs to a written price</span>
+      </div>
+    </article>
+
+    <article class="band">
+      <span class="band__ghost" aria-hidden="true">04</span>
+      <div class="band__in" data-reveal>
+        <span class="band__k">Visibility</span>
+        <h3>You watch progress &mdash; you don't request updates</h3>
+        <p>
+          A working demo every week, plus standing access to the repository and
+          the board from day one. A bad week shows up in that week's demo,
+          never as a surprise at the deadline.
+        </p>
+        <span class="band__pill">Weekly working demo</span>
+      </div>
+    </article>
+
+    <article class="band">
+      <span class="band__ghost" aria-hidden="true">05</span>
+      <div class="band__in" data-reveal>
+        <span class="band__k">Exit</span>
+        <h3>Leaving should take one conversation</h3>
+        <p>
+          Because everything already lives in your accounts, there is nothing to
+          migrate, export or unwind. Every build includes 30 days of post-launch
+          support; a retainer after that is an option, never a dependency.
+        </p>
+        <span class="band__pill">30 days support included</span>
+      </div>
+    </article>
+  </div>
+
+  <div class="sec sec--tight sec--edge">
+    <div class="wrap">
+      <p class="people__note" data-reveal data-placeholder="Verify: the engagement contract must actually carry these clauses">
+        These five are carried into every engagement agreement we sign.
+        If any of them matter to you, ask us to point at the clause on the call.
+      </p>
     </div>
   </div>
 </section>
 
-<!-- ================================================== CLOSING SLAB -->
+<!-- ============================ 02 — IN PRACTICE ======================= -->
+<section class="sec sec--slate" id="practice">
+  <div class="orb orb--accent orb--c" aria-hidden="true"></div>
+  <div class="wrap">
+    <header class="head">
+      <div class="chapter" data-reveal>
+        <span class="chapter__rule" aria-hidden="true"></span>
+        <span class="chapter__n">02</span>
+        <span class="chapter__label">In practice</span>
+      </div>
+      <h2 class="t-sec" data-reveal style="--delay:80ms">
+        What that looks like on <span class="grad">an ordinary Tuesday.</span>
+      </h2>
+      <p class="intro" data-reveal style="--delay:160ms">
+        Commitments are easy to write. Here's the mechanism behind each one
+        &mdash; reveal a card to see what actually makes it true.
+      </p>
+    </header>
+
+    <div class="rcards" data-stagger>
+
+      <button class="rcard" type="button" aria-expanded="false">
+        <span class="rcard__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </span>
+        <span class="rcard__face">
+          <h3>&ldquo;You own everything&rdquo;</h3>
+          <span class="small">Most vendors say it. Few structure for it.</span>
+          <span class="rcard__hint">Reveal the mechanism</span>
+        </span>
+        <span class="rcard__back">
+          <strong>The mechanism</strong>
+          <p>
+            Day one is an access request, not a repo creation. We commit into
+            your organisation and deploy into your account &mdash; so ownership
+            isn't transferred at the end, it simply never left.
+          </p>
+        </span>
+      </button>
+
+      <button class="rcard" type="button" aria-expanded="false">
+        <span class="rcard__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        </span>
+        <span class="rcard__face">
+          <h3>&ldquo;Senior people only&rdquo;</h3>
+          <span class="small">The claim every agency makes after signature.</span>
+          <span class="rcard__hint">Reveal the mechanism</span>
+        </span>
+        <span class="rcard__back">
+          <strong>The mechanism</strong>
+          <p>
+            We're small enough that there is no bench to rotate you onto. The
+            proposal names individuals, and swapping one requires your written
+            sign-off &mdash; which makes quiet substitution impossible.
+          </p>
+        </span>
+      </button>
+
+      <button class="rcard" type="button" aria-expanded="false">
+        <span class="rcard__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>
+        </span>
+        <span class="rcard__face">
+          <h3>&ldquo;Full transparency&rdquo;</h3>
+          <span class="small">Usually meaning a deck once a month.</span>
+          <span class="rcard__hint">Reveal the mechanism</span>
+        </span>
+        <span class="rcard__back">
+          <strong>The mechanism</strong>
+          <p>
+            You hold repository and board access from the first day, and every
+            week ends in software you can click. There is no reporting layer
+            between you and the work, so there's nothing to filter.
+          </p>
+        </span>
+      </button>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 03 — STRAIGHT ANSWERS ================== -->
+<section class="sec sec--edge" id="answers">
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="wrap">
+    <header class="head">
+      <div class="chapter" data-reveal>
+        <span class="chapter__rule" aria-hidden="true"></span>
+        <span class="chapter__n">03</span>
+        <span class="chapter__label">Straight answers</span>
+      </div>
+      <h2 class="t-sec" data-reveal style="--delay:80ms">
+        The questions people ask <span class="grad">on call two.</span>
+      </h2>
+      <p class="intro" data-reveal style="--delay:160ms">
+        Answered here instead, so you can skip a meeting.
+      </p>
+    </header>
+
+    <div class="qa" data-stagger>
+      <div class="qa__i">
+        <h3><span class="n" aria-hidden="true">Q1</span>Where are you actually based?</h3>
+        <p>
+          Gobichettipalayam, Tamil Nadu, India. We keep deliberate overlap with
+          US and UK business hours for standups, demos and anything urgent
+          &mdash; async by default, with a scheduled live window every working day.
+        </p>
+      </div>
+      <div class="qa__i">
+        <h3><span class="n" aria-hidden="true">Q2</span>What does an engagement cost?</h3>
+        <p>
+          A fixed price or a transparent hourly rate, in writing within 48 hours
+          of the first call. If budget and scope don't line up you'll hear it on
+          that call &mdash; including when the honest number is smaller than you
+          planned to spend.
+        </p>
+      </div>
+      <div class="qa__i">
+        <h3><span class="n" aria-hidden="true">Q3</span>We already have a team. Does this work?</h3>
+        <p>
+          It's most of what we do. Our engineers work inside your repository and
+          your rituals rather than alongside them, and step out on 30 days'
+          notice once you've hired. Making ourselves unnecessary is the goal.
+        </p>
+      </div>
+      <div class="qa__i">
+        <h3><span class="n" aria-hidden="true">Q4</span>What if the project goes wrong?</h3>
+        <p>
+          You'll know in that week's demo rather than at the deadline, and
+          because the code and infrastructure are already yours, changing course
+          &mdash; with us or without us &mdash; costs a conversation, not a migration.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================ CTA SLAB =========================== -->
 <div class="slab-wrap">
-  <div class="container">
-    <section class="slab" aria-labelledby="cta-title" style="text-align:center">
+  <div class="wrap">
+    <section class="slab" aria-labelledby="cta-title">
       <div class="slab__glow" aria-hidden="true"></div>
-      <div style="position:relative;z-index:1;max-width:46rem;margin-inline:auto">
+      <div class="slab__in">
         <h2 id="cta-title" data-reveal>
-          Hold us <span class="grad--dark">to all of it.</span>
+          Test every one of them <span class="grad--dark">on a call.</span>
         </h2>
-        <p data-reveal style="--delay:80ms; color:var(--slate-300); font-size:1.0625rem; line-height:1.7; max-width:32rem; margin:0 auto 2.5rem">
-          Book 30 minutes and test every clause on this page against your
-          project. If the honest answer is "don't hire us," that is the
-          answer you'll get.
+        <p data-reveal style="--delay:80ms">
+          Bring this page with you and hold us to it. If the honest answer is
+          &ldquo;don't hire us,&rdquo; that's the answer you'll get.
         </p>
         <div data-reveal style="--delay:160ms">
           <a class="btn btn--glow btn--lg" href="index.html#contact">
@@ -320,7 +354,12 @@
             <svg aria-hidden="true" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
-        <p class="slab__alt" data-reveal style="--delay:240ms">
+        <div class="slab__meta" data-reveal style="--delay:240ms">
+          <div><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No obligation</div>
+          <div><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Straight answers</div>
+          <div><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Proposal in 48 hrs</div>
+        </div>
+        <p class="slab__alt" data-reveal style="--delay:320ms">
           or write to <a href="mailto:connect@interloid.com">connect@interloid.com</a>
         </p>
       </div>
@@ -330,60 +369,59 @@
 
 </main>
 
-<!-- ============================================================ FOOTER -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer__main">
-      <div>
-        <a class="logo" href="index.html">
-          <span class="logo__mark" aria-hidden="true">
-            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
-          </span>
-          Interloid
-        </a>
-        <p class="footer__about">
-          Senior product engineering. Defined problems, deployed software,
-          everything in your accounts.
-        </p>
-      </div>
-      <div class="footer__col">
-        <h3>Explore</h3>
-        <ul>
-          <li><a href="index.html#solutions">Solutions</a></li>
-          <li><a href="index.html#work">Work</a></li>
-          <li><a href="index.html#process">Process</a></li>
-          <li><a href="#agreement">Why Interloid</a></li>
-          <li><a href="index.html#contact">Contact</a></li>
-        </ul>
-      </div>
-      <div class="footer__col">
-        <h3>Contact</h3>
-        <address class="footer__addr">
-          Interloid Technologies Private Limited<br>
-          Gobichettipalayam, Tamil Nadu 638453, India<br>
-          <a href="mailto:connect@interloid.com">connect@interloid.com</a><br>
-          <a href="tel:+919042032424">+91 90420 32424</a>
-        </address>
+<!-- ================================= FOOTER ============================ -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__top">
+      <a class="cmd__mark" href="index.html">
+        <span class="dot" aria-hidden="true">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+        </span>
+        Interloid
+      </a>
+      <p class="foot__about">
+        Senior product engineering for founders and product teams. Defined
+        problems, deployed software, everything in your accounts.
+      </p>
+
+      <nav class="foot__nav" aria-label="Footer">
+        <a href="index.html#build">What we build</a>
+        <a href="index.html#work">Work</a>
+        <a href="index.html#engagement">Engagement</a>
+        <a href="index.html#people">People</a>
+        <a href="#commitments">Why Interloid</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+
+      <address class="foot__contact">
+        <span>Interloid Technologies Private Limited</span>
+        <span class="sep" aria-hidden="true">&middot;</span>
+        <span>Gobichettipalayam, Tamil Nadu 638453, India</span>
+        <span class="sep" aria-hidden="true">&middot;</span>
+        <a href="mailto:connect@interloid.com">connect@interloid.com</a>
+        <span class="sep" aria-hidden="true">&middot;</span>
+        <a href="tel:+919042032424">+91 90420 32424</a>
+      </address>
+
+      <div class="social">
+        <a href="https://www.linkedin.com/company/interloid-technologies" aria-label="LinkedIn" rel="noopener" target="_blank"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM2 9h6v12H2zM9.5 9H15v1.7c.8-1.3 2.3-2 3.9-2 3 0 4.6 1.9 4.6 5.4V21h-6v-6c0-1.5-.5-2.5-1.9-2.5-1 0-1.6.7-1.9 1.4-.1.3-.1.7-.1 1V21h-6s.1-10.8 0-12Z"/></svg></a>
+        <a href="https://x.com/InterloidTech" aria-label="X" rel="noopener" target="_blank"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-7.3L5.9 22H2.8l7.5-8.6L2.4 2h6.6l4.5 6.7L18.9 2Zm-1.1 18h1.7L7.3 3.8H5.5L17.8 20Z"/></svg></a>
+        <a href="https://www.youtube.com/@InterloidTechnologies" aria-label="YouTube" rel="noopener" target="_blank"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.7-.5-5.4a2.8 2.8 0 0 0-2-2C18.8 4 12 4 12 4s-6.8 0-8.5.6a2.8 2.8 0 0 0-2 2C1 8.3 1 12 1 12s0 3.7.5 5.4a2.8 2.8 0 0 0 2 2C5.2 20 12 20 12 20s6.8 0 8.5-.6a2.8 2.8 0 0 0 2-2C23 15.7 23 12 23 12ZM9.8 15.3V8.7l5.7 3.3-5.7 3.3Z"/></svg></a>
       </div>
     </div>
-    <div class="footer__bar">
+
+    <div class="foot__bar">
       <p>&copy; 2026 Interloid Technologies Private Limited. All rights reserved.</p>
-      <div style="display:flex;align-items:center;gap:1.5rem">
-        <a href="#" data-placeholder="Must exist before launch">Privacy</a>
-        <a href="#" data-placeholder="Must exist before launch">Terms</a>
-        <div class="social">
-          <a href="https://www.linkedin.com/company/interloid-technologies" aria-label="LinkedIn" rel="noopener" target="_blank"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM2 9h6v12H2zM9.5 9H15v1.7c.8-1.3 2.3-2 3.9-2 3 0 4.6 1.9 4.6 5.4V21h-6v-6c0-1.5-.5-2.5-1.9-2.5-1 0-1.6.7-1.9 1.4-.1.3-.1.7-.1 1V21h-6s.1-10.8 0-12Z"/></svg></a>
-          <a href="https://x.com/InterloidTech" aria-label="X" rel="noopener" target="_blank"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-7.3L5.9 22H2.8l7.5-8.6L2.4 2h6.6l4.5 6.7L18.9 2Zm-1.1 18h1.7L7.3 3.8H5.5L17.8 20Z"/></svg></a>
-          <a href="https://www.youtube.com/@InterloidTechnologies" aria-label="YouTube" rel="noopener" target="_blank"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.7-.5-5.4a2.8 2.8 0 0 0-2-2C18.8 4 12 4 12 4s-6.8 0-8.5.6a2.8 2.8 0 0 0-2 2C1 8.3 1 12 1 12s0 3.7.5 5.4a2.8 2.8 0 0 0 2 2C5.2 20 12 20 12 20s6.8 0 8.5-.6a2.8 2.8 0 0 0 2-2C23 15.7 23 12 23 12ZM9.8 15.3V8.7l5.7 3.3-5.7 3.3Z"/></svg></a>
-        </div>
-      </div>
+      <span aria-hidden="true" class="sep">&middot;</span>
+      <a href="#" data-placeholder="Must exist before launch">Privacy</a>
+      <a href="#" data-placeholder="Must exist before launch">Terms</a>
     </div>
   </div>
 </footer>
 
-<button class="review-toggle" id="reviewToggle">
+<button class="ph-toggle" id="phToggle">
   <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-  <span id="reviewToggleLabel">Show placeholders</span>
+  <span id="phToggleLabel">Show placeholders</span>
 </button>
 
 <script src="script.js"></script>
