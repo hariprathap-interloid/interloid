@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interloid — Hero directions v2</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="theme.css">
+
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--background); --color-foreground: var(--foreground);
+    --color-card: var(--card); --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary); --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent); --color-accent-strong: var(--accent-strong);
+    --color-border: var(--border); --color-ring: var(--ring);
+    --color-ink: var(--ink); --color-ink-deep: var(--ink-deep);
+    --color-ink-foreground: var(--ink-foreground);
+    --color-brand: var(--brand); --color-brand-light: var(--brand-light);
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+    --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+    --radius-3xl: calc(var(--radius) * 2.2);
+  }
+</style>
+
+<style>
+  html { scroll-behavior: smooth; }
+
+  /* Entrance: a single vertical wipe per block. No blobs, no float. */
+  .rise { opacity: 0; transform: translateY(14px); }
+  .in .rise { animation: rise .8s cubic-bezier(.16,1,.3,1) forwards; animation-delay: var(--d,0ms); }
+  @keyframes rise { to { opacity: 1; transform: none } }
+
+  /* A rule that draws itself instead of just appearing. */
+  .rule { transform: scaleX(0); transform-origin: left; }
+  .in .rule { animation: ruleIn .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay: var(--d,0ms); }
+  @keyframes ruleIn { to { transform: scaleX(1) } }
+
+  /* Proof rows reveal by counting up, not by fading. */
+  .row { border-top: 1px solid var(--border); }
+  .row:last-child { border-bottom: 1px solid var(--border); }
+  .row .fig { transition: color .45s, transform .45s cubic-bezier(.2,.8,.2,1); }
+  .row:hover .fig { color: var(--brand); transform: translateX(6px); }
+  .row .note { transition: color .45s; }
+  .row:hover .note { color: var(--foreground); }
+
+  :focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto }
+    *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important }
+    .rise { opacity:1; transform:none } .rule { transform: scaleX(1) }
+  }
+</style>
+</head>
+
+<body class="bg-background font-sans text-muted-foreground antialiased">
+
+<div class="fixed left-1/2 top-4 z-100 flex -translate-x-1/2 items-center gap-1 rounded-full border border-border bg-card/90 p-1 shadow-lg backdrop-blur">
+  <button data-go="ed" class="sw rounded-full px-4 py-2 text-sm font-semibold">Editorial</button>
+  <button data-go="pf" class="sw rounded-full px-4 py-2 text-sm font-semibold">Proof-first</button>
+</div>
+
+<!-- ==========================================================================
+     EDITORIAL
+     No orbs, no badge pill, no gradient headline. Identity comes from a serif
+     against Outfit, hairline rules, an asymmetric grid and a folio number —
+     the vocabulary of a printed publication, not a SaaS template.
+     ========================================================================== -->
+<section id="ed" data-hero class="relative flex min-h-screen flex-col justify-center bg-background px-6 py-24 lg:px-12">
+  <div class="mx-auto w-full max-w-[1400px]">
+
+    <!-- masthead -->
+    <div class="rise mb-10 flex flex-wrap items-baseline justify-between gap-4 border-b border-foreground pb-4" style="--d:0ms">
+      <p class="font-display text-sm font-bold uppercase tracking-[.24em] text-foreground">Interloid</p>
+      <p class="text-[11px] uppercase tracking-[.2em] text-muted-foreground">Senior product engineering &middot; Tamil Nadu, India</p>
+    </div>
+
+    <div class="grid gap-x-12 gap-y-10 lg:grid-cols-12">
+      <!-- folio -->
+      <div class="rise hidden lg:col-span-1 lg:block" style="--d:80ms">
+        <p class="font-serif text-6xl leading-none text-border">01</p>
+      </div>
+
+      <!-- headline -->
+      <div class="lg:col-span-8">
+        <h1 class="rise font-serif text-[clamp(3rem,8.5vw,7.5rem)] leading-[.92] tracking-[-.02em] text-foreground" style="--d:120ms">
+          The problem isn&rsquo;t ideas.<br>
+          It&rsquo;s <em class="italic text-brand">shipping</em>.
+        </h1>
+
+        <div class="rule mt-10 h-px w-full bg-border" style="--d:520ms"></div>
+
+        <p class="rise mt-8 max-w-2xl text-xl leading-relaxed text-muted-foreground" style="--d:600ms">
+          <span class="float-left mr-3 font-serif text-[3.4rem] leading-[.78] text-foreground">I</span>nterloid
+          takes defined problems to deployed software &mdash; in your accounts, on your repos,
+          with a working demo every week. There is no vendor relationship to manage, and no
+          part of the result you do not own.
+        </p>
+
+        <div class="rise mt-10 flex flex-wrap items-center gap-6" style="--d:700ms">
+          <a href="#" class="group inline-flex items-center gap-3 border-b-2 border-foreground pb-1 font-display text-lg font-semibold text-foreground transition-colors hover:border-brand hover:text-brand">
+            Book a free 30-minute consult
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a href="#" class="text-lg text-muted-foreground underline decoration-border underline-offset-[6px] transition-colors hover:text-foreground hover:decoration-foreground">See how we work</a>
+        </div>
+      </div>
+
+      <!-- terms column, set like a sidebar -->
+      <aside class="rise lg:col-span-3" style="--d:400ms">
+        <p class="mb-5 border-b border-border pb-3 text-[11px] font-bold uppercase tracking-[.2em] text-muted-foreground">In writing, from day one</p>
+        <dl id="edTerms" class="space-y-4"></dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     PROOF-FIRST
+     The evidence is the hero. Four figures at display scale carry the page;
+     the sentence is demoted to a caption. Converse structurally cannot copy
+     this — they have no published terms to put in the slot.
+     ========================================================================== -->
+<section id="pf" data-hero class="relative flex min-h-screen flex-col justify-center bg-secondary px-6 py-24 lg:px-12">
+  <div class="mx-auto w-full max-w-[1400px]">
+
+    <div class="rise mb-12 flex flex-wrap items-end justify-between gap-6" style="--d:0ms">
+      <div>
+        <p class="mb-4 font-mono text-[11px] font-bold uppercase tracking-[.22em] text-accent-strong">What you get &mdash; in writing</p>
+        <h1 class="max-w-3xl font-display text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
+          The problem isn&rsquo;t ideas. It&rsquo;s shipping &mdash; so we put the terms up front,
+          before you ever talk to us.
+        </h1>
+      </div>
+      <a href="#" class="group inline-flex h-14 shrink-0 items-center gap-2 rounded-full bg-primary px-8 text-lg font-medium text-primary-foreground shadow-xl shadow-primary/25 transition-all hover:bg-brand-light active:scale-95">
+        Book a free 30-min consult
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div id="ledger"></div>
+
+    <p class="rise mt-8 max-w-3xl text-base text-muted-foreground" style="--d:900ms">
+      Every line above is a term we will sign. Nothing on this page is a projection,
+      an average, or a case study we cannot name.
+    </p>
+  </div>
+</section>
+
+<script src="hero-v2.js"></script>
+</body>
+</html>
