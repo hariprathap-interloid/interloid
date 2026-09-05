@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Hero — the mark condenses out of smoke, and glows under the cursor.
+   Hero — the mark disperses into smoke and re-forms. Auto loop.
 
    Where the shape comes from
    --------------------------
@@ -9,24 +9,28 @@
    568 KB asset and rasterising it on every load. The sampler keeps only
    non-white pixels, which is what preserves the counters in the monogram.
 
-   Three things this build fixes
-   -----------------------------
-   1. NO CARD FLIP. The old version scattered points onto a fixed sphere and
-      span the whole cloud. Because that shell was flattened, the spin read as
-      a card turning over. Points now disperse OUTWARD FROM THEIR OWN PLACE in
-      the mark, and nothing rotates. The mark comes apart in situ.
+   What changed in this pass
+   -------------------------
+   1. GLOW REMOVED. The cursor no longer recolours or swells anything.
 
-   2. SMOKE, NOT A BLOB. Dispersal is radial-plus-random with an upward bias,
-      and every point drifts on its own sine phase, so the cloud curls instead
-      of sitting in a sphere.
+   2. NO ROTATION. A 360 orbit was tried and dropped — turning the mark makes
+      it unreadable through most of the sweep. The cursor now only shifts the
+      cloud a couple of pixels of parallax.
 
-   3. A SOFTER GLOW. The old one drove colour to white, which read as harsh.
-      It now warms toward an airy brand blue over a wider radius with a
-      smootherstep falloff, and a swollen dot fades at its edges so the effect
-      is haze rather than a hard disc getting bigger.
+   3. NO HOLE IN THE CENTRE. Dispersal is to a filled shell, not a radial
+      push outward from the mark's own centre — that is what used to empty
+      the middle.
 
-   Interaction is glow-only: nothing is displaced, so the cursor can never
-   damage the mark.
+   4. DISPERSAL MODEL from hero-logo-lab: points gather in from a common
+      flattened shell rather than loosening in place.
+
+      NO SPIN. The lab's `rotation.y = t * 0.05 * (1 - k)` is CUMULATIVE in
+      elapsed time, so the angle grows without bound — measured at 42 deg by
+      14s, 94 deg by 41s, 184 deg by 72s. The cloud is flat (z = 0, shell
+      flattened to 0.35), so every time it passes 90 deg it collapses to a
+      LINE and reads as a card flipping over. It looks fine for the first
+      cycle, which is why it survived earlier review. Do not reintroduce a
+      rotation on a flat point cloud.
    ========================================================================== */
 import * as THREE from 'three';
 
@@ -35,11 +39,10 @@ const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
-/* sRGB equivalents of theme.css --brand / --accent, plus the glow target. */
+/* sRGB equivalents of theme.css --brand / --accent. */
 const C = {
   brand:  new THREE.Color('#1f5da0'),
   accent: new THREE.Color('#289dbe'),
-  halo:   new THREE.Color('#7fc4de'),   /* airy, still unmistakably brand */
 };
 
 const hero   = $('#hero');
@@ -85,88 +88,76 @@ async function boot() {
   const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
   camera.position.z = 15;
 
-  const unit  = new Float32Array(N * 2);   /* logo position, unit space    */
-  const smoke = new Float32Array(N * 3);   /* dispersal vector, unit space */
-  const phase = new Float32Array(N * 2);   /* turbulence phase + speed     */
+  const home  = new Float32Array(N * 3);   /* mark position, unit space     */
+  const smoke = new Float32Array(N * 3);   /* dispersal offset, unit space  */
+  const phase = new Float32Array(N * 2);
   const pos   = new Float32Array(N * 3);
   const col   = new Float32Array(N * 3);
-  const rest  = new Float32Array(N * 3);   /* colour at rest, for the glow mix */
-  const size  = new Float32Array(N);
 
-  let SCALE = 4, OFFSET_X = 4.6;
+  let SCALE = 4, HOME_X = 4.6, HOME_Y = 0;
   const FRAME = { w: 14, h: 14 };
   const tmp = new THREE.Color();
 
   for (let i = 0; i < N; i++) {
     const x = src[i*2], y = src[i*2+1];
-    unit[i*2] = x; unit[i*2+1] = y;
 
-    /* Disperse outward from where the point already sits, not from a shared
-       centre — that is what makes it read as the mark coming apart rather
-       than as a cloud flying in from elsewhere. */
-    const len = Math.hypot(x, y) || 1e-4;
-    const a = (Math.random() - .5) * 1.9;            /* wander off pure radial */
-    const dx = x / len, dy = y / len;
-    const reach = .55 + Math.random() * 1.5;
+    home[i*3]     = x;
+    home[i*3+1]   = y;
+    /* Flat, and nothing rotates it — see the NO SPIN note in the header. */
+    home[i*3+2]   = 0;
 
-    smoke[i*3]   = (dx * Math.cos(a) - dy * Math.sin(a)) * reach;
-    smoke[i*3+1] = (dx * Math.sin(a) + dy * Math.cos(a)) * reach + .45 + Math.random() * .5;
-    smoke[i*3+2] = (Math.random() - .5) * .8;
+    /* The lab's dispersal, which reads better than the per-point version:
+       every point travels to a common flattened shell around the mark's
+       centre, so the cloud gathers INTO the logo rather than the logo merely
+       loosening in place. Flattened on y and z (0.66 / 0.35) so it stays a
+       drift rather than a ball. */
+    const r  = 1.5 + Math.random() * 1.6;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    smoke[i*3]   = r * Math.sin(ph) * Math.cos(th);
+    smoke[i*3+1] = r * Math.sin(ph) * Math.sin(th) * .66;
+    smoke[i*3+2] = r * Math.cos(ph) * .35;
 
     phase[i*2]   = Math.random() * Math.PI * 2;
     phase[i*2+1] = .5 + Math.random() * .9;
 
     tmp.copy(C.brand).lerp(C.accent, clamp((x + 1) / 2));
-    col[i*3] = rest[i*3] = tmp.r;
-    col[i*3+1] = rest[i*3+1] = tmp.g;
-    col[i*3+2] = rest[i*3+2] = tmp.b;
-    size[i] = 1;
+    col[i*3] = tmp.r; col[i*3+1] = tmp.g; col[i*3+2] = tmp.b;
   }
 
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
   geo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
-  geo.setAttribute('aSize',    new THREE.BufferAttribute(size, 1));
 
   /* ShaderMaterial rather than PointsMaterial: PointsMaterial draws SQUARES,
-     which was most of why earlier builds read as noise. It also gives the
-     per-point size attribute the glow needs. gl_PointSize is device pixels. */
+     which was most of why earlier builds read as noise. gl_PointSize is in
+     device pixels. */
   const uni = { uSize: { value: 1.9 }, uOpacity: { value: .95 }, uDpr: { value: DPR } };
   const mat = new THREE.ShaderMaterial({
     uniforms: uni, transparent: true, depthWrite: false, vertexColors: true,
     vertexShader: `
-      attribute float aSize;
       varying vec3 vColor;
-      varying float vSwell;
       uniform float uSize, uDpr;
       void main() {
         vColor = color;
-        vSwell = aSize;
         vec4 mv = modelViewMatrix * vec4(position, 1.0);
-        gl_PointSize = aSize * uSize * uDpr * (60.0 / -mv.z);
+        gl_PointSize = uSize * uDpr * (60.0 / -mv.z);
         gl_Position = projectionMatrix * mv;
       }`,
     fragmentShader: `
       varying vec3 vColor;
-      varying float vSwell;
       uniform float uOpacity;
       void main() {
         float d = length(gl_PointCoord - 0.5);
-        /* The more a dot has swollen, the softer and fainter it gets, so the
-           glow reads as smoke rather than as a hard disc growing. */
-        float s = clamp(vSwell - 1.0, 0.0, 1.0);
-        float inner = mix(0.32, 0.0, s);
-        float a = smoothstep(0.5, inner, d);
+        float a = smoothstep(0.5, 0.32, d);
         if (a < 0.01) discard;
-        gl_FragColor = vec4(vColor, a * uOpacity * mix(1.0, 0.42, s));
+        gl_FragColor = vec4(vColor, a * uOpacity);
       }`,
   });
 
   const points = new THREE.Points(geo, mat);
   scene.add(points);
   const aPos = geo.getAttribute('position');
-  const aCol = geo.getAttribute('color');
-  const aSz  = geo.getAttribute('aSize');
 
   applyTheme = () => {
     mat.blending = isLight ? THREE.NormalBlending : THREE.AdditiveBlending;
@@ -175,14 +166,13 @@ async function boot() {
   };
   applyTheme();
 
-  const ptr = { x: 0, y: 0, tx: 0, ty: 0, inside: false };
+  const ptr = { x: 0, y: 0, tx: 0, ty: 0 };
   hero.addEventListener('pointermove', (e) => {
     const r = hero.getBoundingClientRect();
     ptr.tx = (e.clientX - r.left) / r.width * 2 - 1;
     ptr.ty = -((e.clientY - r.top) / r.height * 2 - 1);
-    ptr.inside = true;
   });
-  hero.addEventListener('pointerleave', () => { ptr.inside = false; });
+  hero.addEventListener('pointerleave', () => { ptr.tx = 0; ptr.ty = 0; });
 
   const resize = () => {
     const w = hero.clientWidth, h = hero.clientHeight;
@@ -195,15 +185,14 @@ async function boot() {
     /* A fixed fraction of the viewport, so the mark is the same size on a
        1280 laptop and a 2560 monitor. */
     SCALE = FRAME.h * (narrow ? .30 : .34);
-    OFFSET_X = narrow ? 0 : Math.min(FRAME.w * .26, FRAME.w / 2 - SCALE * 1.05);
-    points.position.y = narrow ? FRAME.h * .20 : 0;
+    HOME_X = narrow ? 0 : Math.min(FRAME.w * .26, FRAME.w / 2 - SCALE * 1.05);
+    HOME_Y = narrow ? FRAME.h * .20 : 0;
   };
   resize();
   addEventListener('resize', resize);
 
   const ease = (t) => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3) / 2;
   const CYCLE = 14;
-  const R = 3.4;                       /* glow radius, world units */
   let raf = null, t0 = performance.now(), shown = 0;
 
   function frame(now) {
@@ -219,58 +208,31 @@ async function boot() {
 
     stateL.textContent = shown < .12 ? 'Dispersed' : shown < .75 ? 'Condensing' : 'Resolved';
 
-    ptr.x += (ptr.tx - ptr.x) * .12;
-    ptr.y += (ptr.ty - ptr.y) * .12;
-    const cx = ptr.x * FRAME.w / 2, cy = ptr.y * FRAME.h / 2;
-    const active = ptr.inside && !REDUCED;
+    ptr.x += (ptr.tx - ptr.x) * .07;
+    ptr.y += (ptr.ty - ptr.y) * .07;
 
     for (let n = 0; n < N; n++) {
       const j = n * 3, u = n * 2;
-
-      const hx = unit[u] * SCALE + OFFSET_X;
-      const hy = unit[u+1] * SCALE;
-
-      /* All turbulence lives in the dispersal term, so a resolved mark is
-         perfectly still and a dispersed one curls. */
       const ph = phase[u], sp = phase[u+1];
-      const tx = Math.sin(t * sp + ph) * .30;
-      const ty = Math.cos(t * sp * .8 + ph * 1.7) * .26;
-      const rise = Math.sin(t * .22 + ph) * .18;
 
-      const x = hx + (smoke[j]   + tx)         * SCALE * away;
-      const y = hy + (smoke[j+1] + ty + rise)  * SCALE * away;
-      const z =       smoke[j+2]               * SCALE * away;
+      /* Turbulence and breathing both fade out with k, so a resolved mark is
+         perfectly still. */
+      const tx = Math.sin(t * sp + ph) * .26;
+      const ty = Math.cos(t * sp * .8 + ph * 1.7) * .22;
+      const b  = 1 + Math.sin(t * .7 + n * .013) * .09 * away;
 
-      pos[j] = x; pos[j+1] = y; pos[j+2] = z;
-
-      /* ---- glow: brightness and size only, never position ---- */
-      let g = 0;
-      if (active) {
-        const dx = x - cx, dy = y - cy;
-        const d2 = dx*dx + dy*dy;
-        if (d2 < R * R) {
-          const f = 1 - Math.sqrt(d2) / R;
-          g = f*f*f * (f * (f * 6 - 15) + 10) * 0.5;      /* smootherstep */
-        }
-      }
-
-      size[n] = 1 + g * 1.9;
-      if (g > .002) {
-        col[j]   = rest[j]   + (C.halo.r - rest[j])   * g;
-        col[j+1] = rest[j+1] + (C.halo.g - rest[j+1]) * g;
-        col[j+2] = rest[j+2] + (C.halo.b - rest[j+2]) * g;
-      } else {
-        col[j] = rest[j]; col[j+1] = rest[j+1]; col[j+2] = rest[j+2];
-      }
+      pos[j]   = ((smoke[j]   + tx) * away + home[j]   * k) * SCALE * b;
+      pos[j+1] = ((smoke[j+1] + ty) * away + home[j+1] * k) * SCALE * b;
+      pos[j+2] = ( smoke[j+2]       * away + home[j+2] * k) * SCALE;
     }
-
     aPos.needsUpdate = true;
-    aCol.needsUpdate = true;
-    aSz.needsUpdate  = true;
 
-    /* A whisper of parallax. Nothing rotates — rotation is what made the
-       dispersed cloud look like a card being flipped. */
-    points.position.x = ptr.x * .18;
+    /* No rotation. A whisper of parallax only — the mark stays square-on,
+       which is the only way it stays legible as a logo. */
+    points.position.x = HOME_X + ptr.x * .20;
+    points.position.y = HOME_Y + ptr.y * .12;
+
+
     renderer.render(scene, camera);
   }
 
@@ -279,11 +241,12 @@ async function boot() {
 
   if (REDUCED) {
     for (let n = 0; n < N; n++) {
-      pos[n*3]   = unit[n*2] * SCALE + OFFSET_X;
-      pos[n*3+1] = unit[n*2+1] * SCALE;
+      pos[n*3]   = home[n*3]   * SCALE;
+      pos[n*3+1] = home[n*3+1] * SCALE;
       pos[n*3+2] = 0;
     }
     aPos.needsUpdate = true;
+    points.position.set(HOME_X, HOME_Y, 0);
     stateL.textContent = 'Resolved';
     renderer.render(scene, camera);
     return;
