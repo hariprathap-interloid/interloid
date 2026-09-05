@@ -1,13 +1,17 @@
 # Prototype 3 — Build Brief
 
-**Status:** v1 built and verified · **Folder:** `prototype3/`
+**Status (2026-09-06): CLOSED — reference artifact.** Work moved to Next.js;
+read HANDOFF §4a first. Read this file, port from it, do not extend it. The
+round log below is the record of how the header and hero reached signoff.
+
+**Folder:** `prototype3/`
 **Direction (2026-09-05):** built directly against `DESIGN-SYSTEM.md` — the
 conversedatasolutions.com visual language — in **Tailwind v4**, rather than by
 mixing elements from prototypes 1–2. That earlier mix-and-match plan is
 superseded; `ELEMENT-CATALOGUE.md` is kept for reference only.
 
-**Stack:** Tailwind v4 via browser CDN now, Next.js + Tailwind v4 after signoff.
-See `TAILWIND-MAP.md`.
+**Stack:** Tailwind v4 via browser CDN in this prototype; the app is Next.js +
+Tailwind v4, **and the port has started** (HANDOFF §4a). See `TAILWIND-MAP.md`.
 
 **Scope note:** this is Interloid's site *in Converse's visual language*, not a
 copy of Converse's site. No Converse copy, structure-specific content, or

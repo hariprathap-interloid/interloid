@@ -1,8 +1,14 @@
 # Next.js Port Notes — Prototype 3
 
-**Decisions (2026-09-05):** the app is **Next.js + Tailwind v4**, ported after the
-design is signed off. Prototype 3 is written *in Tailwind already*, so there is
-no CSS translation step — only a JSX and hooks step.
+**Decisions (2026-09-05):** the app is **Next.js + Tailwind v4**. Prototype 3 is
+written *in Tailwind already*, so there is no CSS translation step — only a JSX
+and hooks step.
+
+> **Updated 2026-09-06 — the port starts NOW, not after design signoff.** Only
+> nav + hero are approved; every further prototype pass would be a pass run
+> twice. `prototype3/` is a reference artifact from here: read it, port from it,
+> do not extend it. Rationale, the section order and the deliberately-deferred
+> verification list are in **HANDOFF §4a** — read that before this file.
 
 **Why:** `DESIGN-SYSTEM.md` §0 specifies Tailwind v4 (`@theme`, oklch), and a live
 probe of conversedatasolutions.com confirmed the reference site is itself Tailwind
@@ -91,7 +97,36 @@ the vocabulary (`opacity 0→1, y 20→0, 600ms, once, 100ms stagger`) is unchan
 
 ---
 
-## 5. Port checklist (run at signoff)
+## 4a. Order of work
+
+Per HANDOFF §4a. The order is not arbitrary — item 1 front-loads the only
+genuinely order-dependent risk in the whole port.
+
+1. **Scaffold + §5 checklist.** Pinning v4 is the highest *silent* risk below;
+   the hero's first-paint cost is the one to actually **measure** first.
+2. **Nav + hero**, then measure against FCP 364ms. Under Next the hero stops
+   being an importmap + CDN `three` and becomes an npm dependency inside a
+   dynamically-imported client component, with `logo-points.json` served from
+   `public/`. It renders only while on screen (IntersectionObserver) and caps
+   DPR at 2 — keep both.
+3. **Rebuild the Playwright harness against `next dev`.** The current one points
+   at a static file server and does not survive the move. It measures the CTA
+   against the mobile fold, H1 line count against column width, font loading,
+   theme state and console errors — every hero regression of 2026-09-05/06 was
+   caught by it, none by eye. All deferred verification lands here.
+4. **Sections 02–08**, mechanically.
+5. **The contact form** (§10.1). `prototype2-new/` has a usable structure with
+   `err-email`/`err-name` already in it — take the pattern, not the CSS.
+6. **Content-blocked sections last** — Work, About, Why all wait on HANDOFF §7.
+
+**Do not mine prototypes 1–2 wholesale.** They are 788–957 lines of hand-written
+CSS each with zero Tailwind; moving a component across is a rewrite plus a token
+retrofit. Only the contact form and the Why page's copy are worth taking.
+HANDOFF §4a has the measurements.
+
+---
+
+## 5. Port checklist (run at scaffold)
 
 - [ ] Pin **Tailwind v4** — verify `slate-500` resolves to `#62748e`.
 - [ ] Replace the browser CDN `<script>` with a real Tailwind build.
@@ -105,5 +140,23 @@ the vocabulary (`opacity 0→1, y 20→0, 600ms, once, 100ms stagger`) is unchan
       designed out — P3 toggles two SVGs by class, so nothing detaches, and the
       React version inherits that.
 - [ ] Re-run the Playwright suite against the Next.js build.
-- [ ] **Content gates (HANDOFF §7) are still open** — 8 `data-placeholder`
+- [ ] **Content gates (HANDOFF §7) are still open** — 14 `data-placeholder`
       elements remain, including three P0 case studies and two P0 legal pages.
+
+### 5a. Deferred verification — schedule into step 4a.3, do not drop
+
+Responsive, a11y, 400% zoom/reflow, the dark audit of 02–08 and the adversarial
+review are deferred to the app **on purpose**: markup and class strings port
+unchanged, so they are the same one-place fix either side, and the port
+*centralises* repeated markup, so a systemic issue appearing eight times in
+`index.html` is usually one component fix here. Auditing the prototype first
+buys nothing.
+
+Three a11y items exist **only** after the port and must be added to the suite:
+
+- [ ] **Focus on route change** — Next's client-side nav does not move focus to
+      the new page. Lands as soon as `about` / `career` become routes.
+- [ ] **`useEffect` cleanup** — without it, hot reload stacks scroll and
+      IntersectionObserver listeners (§4). Impossible in the static prototype.
+- [ ] **Hydration vs. the theme class** — the inline no-flash script sets
+      `.dark` on `<html>` before React hydrates; classic mismatch source.

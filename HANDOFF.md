@@ -1,18 +1,23 @@
 # Interloid Website Project — Session Handoff
 
-**Last updated:** 2026-09-05 (late) · Written to close a design session.
+**Last updated:** 2026-09-06 · Written to close a design session.
 Read this first; it replaces re-reading the whole conversation.
 
-**The next session covers BOTH content and design.**
+> **⚠️ THE PROTOTYPE PHASE IS OVER (2026-09-06).** Work moves to Next.js now,
+> not after design signoff. Read §4a before doing anything in `prototype3/` —
+> it is a reference artifact from here on, not the place to build.
 
-- The hero is settled, approved **and now folded into `index.html`** (§3). The
-  *rest* of the design still has real work in it — see §6.
+**The next session builds the Next.js app.**
+
+- Nav and hero are signed off (§3). Everything else is either a mechanical port
+  or blocked on content — §6 is now a build backlog, not a design one.
 - The content gates in §7 are the launch blockers, and they are business
   decisions the user must make, not design problems to solve around.
 
-Read §6 and §7 together. Several design tasks are blocked on a content answer
-(there is no point styling a case-study card before there is a case study), so
-sequence them rather than treating them as two separate tracks.
+Read §4a first for the port decision and its order, then §6 and §7 together.
+Several tasks are blocked on a content answer (there is no point styling a
+case-study card before there is a case study), so sequence them rather than
+treating them as two separate tracks.
 
 ---
 
@@ -31,13 +36,17 @@ Nothing has been deployed. The live site is untouched.
 | --- | --- | --- |
 | `DESIGN-SYSTEM.md` | Visual language reverse-engineered from conversedatasolutions.com. **Reference only now** — see §4. | Stable |
 | `INTERLOID-WEBSITE-REVIEW.md` | Content/strategy audit of the live site (~890 lines). **The key document for the content half.** | Stable |
-| `PROTOTYPE3-BRIEF.md` | P3 build brief, section ledger, round log | Live |
-| `TAILWIND-MAP.md` | Next.js + Tailwind v4 port notes and checklist | Live |
+| `PROTOTYPE3-BRIEF.md` | P3 build brief, section ledger, round log | **Closed** — reference |
+| `TAILWIND-MAP.md` | Next.js + Tailwind v4 port notes, order of work, checklist | **Live — the active doc** |
 | `ELEMENT-CATALOGUE.md` | Element inventory of prototypes 1–2. Superseded; kept for reference. | Archive |
-| `prototype3/` | **The active prototype.** See §3. | Active |
-| `prototype/`, `why-choose-us/`, `prototype2/`, `prototype2-archive/`, `prototype2-new/` | Earlier explorations | Archive |
+| `next-js/` | **Where the app gets built.** Empty as of 2026-09-06 — scaffold here. | Active |
+| `prototype3/` | The design reference to port from. Do not extend. See §3. | Reference |
+| `prototype/`, `why-choose-us/`, `prototype2/`, `prototype2-archive/`, `prototype2-new/` | Earlier explorations. Non-Tailwind; only the contact form and the Why copy are worth taking (§4a). | Archive |
 
 **Tooling:** Playwright + Chromium at repo root. Run scripts **from the repo root**.
+The verification scripts are dot-prefixed (`.verify-index.mjs`, `.short-vp.mjs`,
+`.dark-audit.mjs`, `.nav-crop.mjs`) so `.gitignore` keeps them out of the tree;
+they serve `prototype3/` over http and must be rebuilt against `next dev` (§4a).
 
 ---
 
@@ -78,7 +87,8 @@ but only the hero is verified in dark (§6).
 
 | Decision | Detail |
 | --- | --- |
-| **Stack** | Next.js + **Tailwind v4**, ported after design signoff. Prototype is already written in Tailwind. |
+| **Stack** | Next.js + **Tailwind v4**. Prototype is already written in Tailwind. |
+| **Port starts now** (2026-09-06) | **Supersedes "ported after design signoff."** Only nav + hero are signed off, so the sunk cost is small and only grows: every design pass run in the prototype from here is a pass run twice. See §4a. |
 | **Pin Tailwind v4** | The `slate` ramp differs between v3 and v4 (`v3 #64748b` vs `v4 #62748e`). On v3 every neutral shifts silently. |
 | **Brand colours** | `#1f5da0` Interloid blue · `#289dbe` accent · `#3a7bc8` light. **Probed from the live interloid.com**, not invented. `#06b6d4` is *Converse's* accent and was imported by mistake earlier — do not reintroduce. |
 | **Not white** | Page background is tinted `#f7f9fc`, cards are pure white. White-on-white read as flat. |
@@ -86,6 +96,86 @@ but only the hero is verified in dark (§6).
 | **CTA labels** | Header "Let's talk" · panel "Book a call" · hero/mobile/slab "Book a free 30-min consult". Down from five labels to three. |
 | **Nav** | 8 links, desktop pill at `xl:` (1280px). Below that, the mobile menu. |
 | **Logo asset** | `.claude/skills/interloid-logo.svg` is a **PNG base64'd inside an SVG wrapper**, not a vector. Fine for particles; a real vector is still needed for favicon/small sizes. |
+
+---
+
+## 4a. The port — decided 2026-09-06
+
+**Build in Next.js from here.** `prototype3/` becomes a reference artifact: read
+it, port from it, do not extend it. `TAILWIND-MAP.md` is the how; this is the
+why and the order.
+
+### Why now rather than after signoff
+
+Nine sections are built but only **nav + hero** are approved, so what would be
+thrown away is small — and it grows with every further prototype pass, because
+each one is then done twice. What is still unsettled in the remaining sections
+is unsettled for want of **content** (§7), not for want of design exploration,
+and a prototype cannot fix that.
+
+**Do not run a "gather components from prototypes 1–2 first" phase.** Measured
+2026-09-06: `prototype/`, `prototype2/`, `prototype2-new/` and `why-choose-us/`
+are each **788–957 lines of hand-written CSS with zero Tailwind**, on their own
+custom-property systems. `prototype3/` is Tailwind v4 over a 109-line token
+file. Moving a component across is a rewrite into a different styling paradigm
+plus a retrofit onto the current tokens — the same work as writing it in
+Next.js, done twice. This plan was also already tried and superseded once
+(PROTOTYPE3-BRIEF round 2).
+
+What those folders actually hold that `prototype3/` lacks, from a section-ID
+diff, is **two things**:
+
+| Item | Where | Take |
+| --- | --- | --- |
+| A **contact form** with `err-email`/`err-name` handling | `prototype2-new/`, `prototype2/`, `prototype/` | Yes — the markup and validation *pattern*. Not its CSS. |
+| A **Why page** | `prototype2*/why-choose-us.html` | Its *copy* only, and only once §7 P1 verifies the five commitments |
+
+Everything else in those folders stays archived. `ELEMENT-CATALOGUE.md` is the
+index if you need to look.
+
+### Order — the hero goes first, and it is not sentiment
+
+1. **Nav + hero.** This proves the pipeline *and* front-loads the only genuinely
+   order-dependent risk. The WebGL hero changes shape under Next — importmap +
+   CDN `three` becomes an npm dependency in a dynamically-imported client
+   component, and `fetch('logo-points.json')` becomes a public asset — and it is
+   the single thing most likely to blow the FCP 364ms budget (§8). Find that out
+   with two sections ported, not ten.
+2. **Rebuild the Playwright harness against `next dev`, in week one.** This is
+   the real, non-obvious cost of moving. The current harness measures the CTA
+   against the mobile fold, H1 line count against column width, font loading,
+   theme state and console errors — *every* hero regression of 2026-09-05/06 was
+   caught by it and none by eye. It points at a static file server and does not
+   survive the move. Rebuild it before it becomes the thing that is always
+   postponed; the deferred checks below live in it.
+3. **Sections 02–08 as-is.** Mechanical: the class strings are real Tailwind and
+   `script.js`'s content arrays were written to become `.map()` calls.
+4. **The contact form**, using `prototype2-new/`'s structure as reference.
+5. **Content-blocked sections last** (Work, About, Why) — they wait on §7, and
+   by then the component library exists anyway.
+
+### Deferred to Next.js on purpose
+
+Responsive, a11y, the 400% zoom/reflow pass, the dark audit of 02–08 and the
+adversarial review are **deferred, not skipped**. The reasoning, so nobody
+re-opens it: markup and class strings port unchanged, so these are the same
+one-place fix on either side — and the port *centralises* repeated markup into
+components, so a systemic issue that appears eight times in `index.html` is
+usually **one** component fix in Next. Auditing first buys nothing.
+
+Part of the a11y surface cannot even be tested until after the move, because it
+does not exist yet:
+
+- **Focus on route change.** Next's client-side navigation does not move focus
+  to the new page. Impossible in a single HTML file; arrives the moment `about`
+  and `career` become routes.
+- **`useEffect` cleanup.** Without it, hot reload stacks scroll and
+  IntersectionObserver listeners (TAILWIND-MAP §4).
+- **Hydration vs. the theme class.** The inline no-flash script sets `.dark` on
+  `<html>` before React hydrates — a classic mismatch source.
+
+**Deferred means scheduled.** These belong in the rebuilt harness at step 2, not
+on a someday list.
 
 ---
 
@@ -127,37 +217,47 @@ but only the hero is verified in dark (§6).
 
 ---
 
-## 6. Outstanding work — design
+## 6. Outstanding work — now a Next.js backlog
 
-**Mechanical, unblocked, do these first:**
-1. ~~Fold `hero-logo.html`'s hero into `index.html`.~~ **Done** — treatment C
-   "Terms", see PROTOTYPE3-BRIEF §4b.
-2. **Finish the dark pass.** The theme toggle now ships (light default, `.dark`
-   opts in, nav button). The hero is verified in both. Sections 02–08 were only
-   *spot-checked* — they mostly hold up because they are token-based, but a
-   real audit has not been run and contrast has not been measured anywhere in
-   dark. `text-white` (12), `bg-white` (24) and `bg-white/*` borders are still
-   in the tree; most are the intentionally-dark CTA slab and footer, but they
-   have not been separated from the accidental ones.
-3. Build the §10.1 conversational contact form — the CTA is a bare `mailto`
-   today. Form a11y is gotcha §5.9.
+Ordered per §4a. Nothing here is prototype work any more.
+
+**In the app, unblocked:**
+1. Scaffold Next.js + Tailwind v4 in `next-js/` (empty today) and run the
+   `TAILWIND-MAP.md` §5 checklist.
+   Pinning v4 is listed there as the highest risk; the hero's first-paint cost
+   is the one to *measure* first.
+2. Port nav + hero, and measure the WebGL hero against FCP 364ms (§8).
+3. Rebuild the Playwright harness against `next dev`. Every deferred check
+   below lands here.
+4. Port sections 02–08.
+5. Build the §10.1 conversational contact form — the CTA is a bare `mailto`
+   today. Form a11y is gotcha §5.9; `prototype2-new/` has a usable structure.
+
+**Deferred into the app on purpose (§4a), not skipped:**
+6. **The dark audit of 02–08.** The toggle ships and the hero is verified in
+   both; 02–08 were only *spot-checked*. They mostly hold up because they are
+   token-based, but contrast has been measured nowhere in dark, and
+   `text-white` (12), `bg-white` (24) and `bg-white/*` borders remain in the
+   tree — mostly the intentionally-dark CTA slab and footer, but the deliberate
+   ones have never been separated from the accidental.
+7. **A11y audit and the 400% zoom / reflow pass.** Plus the three Next-only
+   items in §4a that cannot be tested before the move.
+8. **The adversarial review, never run on this design at all.** Use §5 as the
+   checklist seed — every gotcha in that list was found by review *after*
+   something passed a naive smoke test.
 
 **Blocked on a content answer (see §7) — do not build these blind:**
-4. `about.html` and `career.html` are linked from the nav and footer but **do
-   not exist**; 4 links 404 today. About needs real team content, and §7 says
-   do not launch with invented people.
-5. The Why page. Its five commitments must be verified against the real
-   contract first, or the page becomes fabricated proof.
-6. The Selected Work section is three placeholder cards. Its final layout
-   depends on what a real case study actually contains.
+9. `about` and `career` are linked from the nav and footer but **do not exist**;
+   4 links 404 today. About needs real team content, and §7 says do not launch
+   with invented people.
+10. The Why page. Its five commitments must be verified against the real
+    contract first, or the page becomes fabricated proof.
+11. Selected Work is three placeholder cards. Its final layout depends on what a
+    real case study actually contains.
 
-**Never run:** the adversarial review has not been run on `prototype3/` at all.
-Use §5 as the checklist seed. Every gotcha in that list was found by review
-*after* something passed a naive smoke test.
-
-**Also unverified:** no a11y audit, no 400% zoom / reflow pass, and no
-performance measurement of the WebGL hero against the live site's FCP 364ms
-budget (§8). The hero is the single most likely thing to regress it.
+**Open design decision carried over:** the hero's mobile CTA sits 162px below an
+844px fold (PROTOTYPE3-BRIEF §4e). Decide it during the hero port — accept it,
+halve the mark on mobile, or show two sentences below `sm:`.
 
 ---
 
@@ -210,13 +310,25 @@ everything else must be `data-placeholder` or removed): free 30-min consult ·
 ```bash
 cd c:/Users/Hariprathap/Desktop/interloid
 
-# serve (Live Server, or)
-npx serve prototype3
+# --- the app (from 2026-09-06) ------------------------------------------
+# next-js/ is empty; scaffold there. Pin Tailwind v4 — TAILWIND-MAP §5.
+cd next-js
 
-# syntax check
+# --- the design reference ------------------------------------------------
+npx serve prototype3          # or Live Server; it MUST be served over http
 node --check prototype3/script.js
+
+# --- verification (dot-prefixed, gitignored) -----------------------------
+node .verify-index.mjs        # hero: mobile fold, H1 lines, fonts, theme
+node .short-vp.mjs            # 1280 / 1440 / 1920 / 2560 sweep
+node .dark-audit.mjs          # per-section dark screenshots
 ```
 
 Playwright scripts must be **ESM** (`.mjs`), run from the repo root, and use
 `pathToFileURL(path.resolve(...)).href` for `file://` URLs. For WebGL under
 Playwright add `--use-gl=swiftshader --enable-unsafe-swiftshader`.
+
+The three verification scripts each spin up their own static server over
+`prototype3/`. **They do not survive the port** — rebuild them against
+`next dev` as step 3 of §4a, before the deferred a11y and zoom passes need
+somewhere to live.
