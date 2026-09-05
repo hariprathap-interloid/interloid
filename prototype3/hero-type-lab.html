@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interloid — Hero: display face &amp; highlight treatment</title>
+
+<!-- ===========================================================================
+     HERO TYPE LAB — two questions, two axes.
+
+     1. HIGHLIGHT   solid · static gradient · animated gradient
+        The shipped hero uses solid, and `t-accent` resolves to --brand, which
+        is the SAME token value as --primary — so "It's shipping." and the CTA
+        button are pixel-identical blue. That collision is the reason to look.
+
+        The static gradient runs brand -> accent left to right on purpose: that
+        is exactly how hero-logo.js colours the mark beside it (each point is
+        lerped brand->accent across x), so the headline and the mark share one
+        ramp instead of merely sitting next to each other.
+
+        The animated variant is what every SECTION heading on the page uses.
+        It is here to be rejected or confirmed, not because it is the default —
+        the hero already carries a 14s particle loop, and two continuous
+        ambient motions compete in a way they never do on a flat section.
+
+     2. FACE        Outfit (shipped) · Geist · Satoshi
+        All three carry a real 900, which the hero needsz (DS §3.2: the H1 is
+        the only place font-black is used). That ruled out General Sans, which
+        tops out at 700 — it would have forced the H1 down a weight, which is a
+        different design question, not a font swap.
+
+     Judge in §1 (real size, real mark, real scrim). §2 and §3 are direct A/B
+     so you are not comparing across a click. Check BOTH themes: --brand on
+     pale and --accent on ink behave differently, and the gradient's endpoints
+     move with the theme.
+
+     Nothing here ships. Whichever wins is a token change in theme.css plus one
+     class on the H1 span in index.html.
+     =========================================================================== -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Geist:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="theme.css">
+
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--background); --color-foreground: var(--foreground);
+    --color-card: var(--card); --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary); --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent); --color-accent-strong: var(--accent-strong);
+    --color-border: var(--border); --color-ring: var(--ring);
+    --color-faint: var(--faint);
+    --color-ink: var(--ink); --color-ink-deep: var(--ink-deep);
+    --color-ink-foreground: var(--ink-foreground);
+    --color-brand: var(--brand); --color-brand-light: var(--brand-light);
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  }
+</style>
+
+<style>
+  /* ---- The face is one variable, swapped on <body> ------------------------ */
+  body[data-font="outfit"]  { --display: "Outfit", ui-sans-serif, system-ui, sans-serif; }
+  body[data-font="geist"]   { --display: "Geist", ui-sans-serif, system-ui, sans-serif; }
+  body[data-font="satoshi"] { --display: "Satoshi", ui-sans-serif, system-ui, sans-serif; }
+  .font-display { font-family: var(--display); }
+
+  /* ---- The three highlight treatments ------------------------------------
+     `hl` is the span carrying line 2. All three are applied to the same
+     element so nothing else in the composition moves between them.
+
+     No §5.13 risk: this span IS the background-clip parent. That gotcha is
+     about splitting a gradient across WORD spans inside a clip parent, where
+     the inline-block children fall outside the clip and render as nothing. -- */
+  .hl { display: block; }
+
+  body[data-hl="solid"] .hl { color: var(--brand); }
+  html.dark body[data-hl="solid"] .hl { color: var(--accent); }
+
+  body[data-hl="static"] .hl,
+  body[data-hl="anim"] .hl {
+    background-image: linear-gradient(90deg, var(--brand) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* On ink --brand is #3a7bc8 and --accent #289dbe — a short ramp. Reaching for
+     brand-light at the start opens it back up so the gradient reads as one. */
+  html.dark body[data-hl="static"] .hl,
+  html.dark body[data-hl="anim"] .hl {
+    background-image: linear-gradient(90deg, var(--brand-light) 0%, var(--accent) 100%);
+  }
+  body[data-hl="anim"] .hl {
+    background-image: linear-gradient(90deg, var(--brand) 0%, var(--accent) 50%, var(--brand) 100%);
+    background-size: 200% auto;
+    animation: gradient 6s ease infinite;
+  }
+  html.dark body[data-hl="anim"] .hl {
+    background-image: linear-gradient(90deg, var(--brand-light) 0%, var(--accent) 50%, var(--brand-light) 100%);
+  }
+
+  /* ---- Hero stage — lifted verbatim from index.html ----------------------- */
+  #home { --hero-bg: var(--secondary); background: var(--hero-bg); }
+  html.dark #home { --hero-bg: var(--ink-deep); }
+
+  .stage { position: absolute; inset: 0; z-index: 0; }
+  .stage canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-out; }
+  .stage.ready canvas { opacity: 1; }
+
+  .hero-fallback {
+    position: absolute; inset: 0; z-index: 0;
+    background: radial-gradient(55% 50% at 78% 45%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 70%), var(--hero-bg);
+  }
+  html.dark .hero-fallback {
+    background:
+      radial-gradient(55% 50% at 74% 45%, color-mix(in oklab, var(--brand) 40%, transparent), transparent 70%),
+      radial-gradient(40% 40% at 86% 55%, color-mix(in oklab, var(--accent) 34%, transparent), transparent 70%),
+      var(--hero-bg);
+  }
+  .scrim {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(90deg, var(--hero-bg) 0%, var(--hero-bg) 30%,
+      color-mix(in oklab, var(--hero-bg) 82%, transparent) 46%,
+      color-mix(in oklab, var(--hero-bg) 30%, transparent) 62%, transparent 76%);
+  }
+  html.dark .scrim {
+    background: linear-gradient(90deg, var(--hero-bg) 0%,
+      color-mix(in oklab, var(--hero-bg) 88%, transparent) 34%,
+      color-mix(in oklab, var(--hero-bg) 40%, transparent) 52%, transparent 68%);
+  }
+  @media (max-width: 899px) {
+    #home { align-items: flex-start; padding-top: 36vh; padding-bottom: 5rem; }
+    .scrim {
+      background:
+        linear-gradient(180deg, var(--hero-bg) 0%, color-mix(in oklab, var(--hero-bg) 72%, transparent) 6%, transparent 13%),
+        linear-gradient(180deg, transparent 0%,
+          color-mix(in oklab, var(--hero-bg) 40%, transparent) 17%,
+          color-mix(in oklab, var(--hero-bg) 92%, transparent) 27%,
+          var(--hero-bg) 34%);
+    }
+  }
+
+  :focus-visible { outline: none; box-shadow: 0 0 0 2px var(--hero-bg, var(--background)), 0 0 0 4px var(--ring); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,*::before,*::after { animation: none !important; transition-duration: .01ms !important }
+  }
+</style>
+</head>
+
+<body class="bg-background font-sans text-muted-foreground antialiased" data-font="outfit" data-hl="solid">
+
+<!-- Lab chrome. Ships with none of this. -->
+<div class="fixed left-1/2 top-4 z-100 flex max-w-[95vw] -translate-x-1/2 flex-wrap items-center justify-center gap-1 rounded-2xl border border-white/10 bg-black/70 p-1.5 shadow-xl backdrop-blur">
+  <span class="px-2 text-[10px] font-bold uppercase tracking-widest text-white/40">Face</span>
+  <button data-font="outfit"  class="fb rounded-full px-3 py-1.5 text-xs font-semibold">Outfit</button>
+  <button data-font="geist"   class="fb rounded-full px-3 py-1.5 text-xs font-semibold">Geist</button>
+  <button data-font="satoshi" class="fb rounded-full px-3 py-1.5 text-xs font-semibold">Satoshi</button>
+  <span class="mx-1 h-4 w-px bg-white/15"></span>
+  <span class="px-2 text-[10px] font-bold uppercase tracking-widest text-white/40">Line 2</span>
+  <button data-hl="solid"  class="hb rounded-full px-3 py-1.5 text-xs font-semibold">Solid</button>
+  <button data-hl="static" class="hb rounded-full px-3 py-1.5 text-xs font-semibold">Gradient</button>
+  <button data-hl="anim"   class="hb rounded-full px-3 py-1.5 text-xs font-semibold">Animated</button>
+  <span class="mx-1 h-4 w-px bg-white/15"></span>
+  <button data-theme="dark"  class="th rounded-full px-3 py-1.5 text-xs font-semibold">Dark</button>
+  <button data-theme="light" class="th rounded-full px-3 py-1.5 text-xs font-semibold">Light</button>
+</div>
+
+<!-- ========================================================================
+     1. THE REAL THING — judge here. Real size, real mark, real scrim.
+     ======================================================================== -->
+<section id="home" data-hero class="relative flex min-h-screen items-center overflow-hidden px-6 pt-24 lg:px-16">
+  <div class="hero-fallback" aria-hidden="true"></div>
+  <div class="stage" aria-hidden="true"><canvas></canvas></div>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <div class="relative z-10 mx-auto w-full max-w-[1400px]">
+    <div class="max-w-3xl">
+      <div class="mb-7 inline-flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2 shadow-sm">
+        <span class="size-2 rounded-full bg-accent" aria-hidden="true"></span>
+        <span class="text-sm font-medium text-muted-foreground">For founders &amp; business leaders</span>
+      </div>
+
+      <h1 class="mb-7 font-display text-5xl font-black leading-[1.02] tracking-tight text-foreground md:text-6xl lg:text-7xl">
+        The problem isn&rsquo;t ideas.<br /><span class="hl">It&rsquo;s shipping.</span>
+      </h1>
+
+      <p class="mb-10 max-w-2xl text-xl leading-relaxed text-muted-foreground">
+        Defined problems in, deployed software out. Interloid is a senior
+        engineering team working in your accounts and on your repos.
+      </p>
+
+      <div class="flex flex-wrap items-center gap-4">
+        <!-- The collision under test: this button is --primary, and --primary
+             and --brand are the SAME token value. Solid line 2 matches it. -->
+        <a href="#" class="group inline-flex h-14 items-center gap-2 rounded-full bg-primary px-9 text-lg font-medium text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:bg-brand-light active:scale-95">
+          Book a free 30-min consult
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="#" class="inline-flex h-14 items-center rounded-full border border-border bg-card/60 px-8 text-lg font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary hover:bg-card hover:text-primary active:scale-95">See the proof</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================
+     2. HIGHLIGHT A/B — all three at once, current face, no click between them.
+     ======================================================================== -->
+<section class="border-t border-border bg-background px-6 py-24 lg:px-16">
+  <div class="mx-auto max-w-[1400px]">
+    <p class="mb-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Line 2 treatment &mdash; current face</p>
+    <p class="mb-12 max-w-2xl text-base leading-relaxed text-muted-foreground">
+      The question is whether a 410px phrase is long enough to read as a gradient
+      at all, or whether it just reads as a muddier solid. Compare against the
+      CTA blue in §1 &mdash; solid currently matches it exactly.
+    </p>
+
+    <div class="space-y-12">
+      <div>
+        <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Solid &mdash; shipped today</p>
+        <p class="font-display text-5xl font-black leading-[1.02] tracking-tight text-foreground md:text-6xl lg:text-7xl">
+          The problem isn&rsquo;t ideas.<br /><span class="ab-solid">It&rsquo;s shipping.</span>
+        </p>
+      </div>
+      <div>
+        <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Static gradient &mdash; mirrors the mark&rsquo;s own ramp</p>
+        <p class="font-display text-5xl font-black leading-[1.02] tracking-tight text-foreground md:text-6xl lg:text-7xl">
+          The problem isn&rsquo;t ideas.<br /><span class="ab-static">It&rsquo;s shipping.</span>
+        </p>
+      </div>
+      <div>
+        <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Animated &mdash; what every section H2 uses</p>
+        <p class="font-display text-5xl font-black leading-[1.02] tracking-tight text-foreground md:text-6xl lg:text-7xl">
+          The problem isn&rsquo;t ideas.<br /><span class="ab-anim">It&rsquo;s shipping.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================
+     3. FACE A/B — all three faces at once, current highlight treatment.
+     ======================================================================== -->
+<section class="border-t border-border bg-secondary px-6 py-24 lg:px-16">
+  <div class="mx-auto max-w-[1400px]">
+    <p class="mb-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Display face &mdash; current line 2 treatment</p>
+    <p class="mb-12 max-w-2xl text-base leading-relaxed text-muted-foreground">
+      All three carry a real 900. Read them for what they signal, not just shape:
+      the pitch is seniority and terms you can hold us to, and Outfit is the
+      default startup display face.
+    </p>
+
+    <div class="space-y-12">
+      <div>
+        <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Outfit &mdash; shipped today &middot; geometric, round, ubiquitous</p>
+        <p style="font-family: 'Outfit', sans-serif" class="text-5xl font-black leading-[1.02] tracking-tight text-foreground md:text-6xl lg:text-7xl">
+          The problem isn&rsquo;t ideas.<br /><span class="hl">It&rsquo;s shipping.</span>
+        </p>
+      </div>
+      <div>
+        <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Geist &mdash; neutral, engineering-credible, less warmth</p>
+        <p style="font-family: 'Geist', sans-serif" class="text-5xl font-black leading-[1.02] tracking-tight text-foreground md:text-6xl lg:text-7xl">
+          The problem isn&rsquo;t ideas.<br /><span class="hl">It&rsquo;s shipping.</span>
+        </p>
+      </div>
+      <div>
+        <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Satoshi &mdash; Outfit&rsquo;s warmth, more character, far less common</p>
+        <p style="font-family: 'Satoshi', sans-serif" class="text-5xl font-black leading-[1.02] tracking-tight text-foreground md:text-6xl lg:text-7xl">
+          The problem isn&rsquo;t ideas.<br /><span class="hl">It&rsquo;s shipping.</span>
+        </p>
+      </div>
+    </div>
+
+    <p id="fontstatus" class="mt-12 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"></p>
+  </div>
+</section>
+
+<style>
+  /* §2's three are fixed treatments, independent of the switcher. */
+  .ab-solid  { display: block; color: var(--brand); }
+  html.dark .ab-solid { color: var(--accent); }
+  .ab-static, .ab-anim {
+    display: block;
+    background-image: linear-gradient(90deg, var(--brand) 0%, var(--accent) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  html.dark .ab-static { background-image: linear-gradient(90deg, var(--brand-light) 0%, var(--accent) 100%); }
+  .ab-anim {
+    background-image: linear-gradient(90deg, var(--brand) 0%, var(--accent) 50%, var(--brand) 100%);
+    background-size: 200% auto; animation: gradient 6s ease infinite;
+  }
+  html.dark .ab-anim { background-image: linear-gradient(90deg, var(--brand-light) 0%, var(--accent) 50%, var(--brand-light) 100%); }
+</style>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module" src="hero-logo.js"></script>
+
+<script>
+  (function () {
+    const body = document.body;
+    function group(sel, attr, key) {
+      const btns = [...document.querySelectorAll(sel)];
+      const set = (v) => {
+        if (attr === 'class') document.documentElement.classList.toggle('dark', v === 'dark');
+        else body.dataset[attr] = v;
+        try { localStorage.setItem(key, v); } catch {}
+        btns.forEach(b => {
+          const on = b.dataset[attr === 'class' ? 'theme' : attr] === v;
+          b.classList.toggle('bg-accent', on);
+          b.classList.toggle('text-white', on);
+          b.classList.toggle('text-white/60', !on);
+        });
+      };
+      btns.forEach(b => b.addEventListener('click', () => set(b.dataset[attr === 'class' ? 'theme' : attr])));
+      let saved = null;
+      try { saved = localStorage.getItem(key); } catch {}
+      set(saved || btns[0].dataset[attr === 'class' ? 'theme' : attr]);
+    }
+    group('.fb', 'font', 'hero-face');
+    group('.hb', 'hl', 'hero-hl');
+    group('.th', 'class', 'hero-theme');
+
+    /* Fontshare is a second origin and can fail where Google Fonts does not.
+       Say so rather than letting Satoshi silently fall back to system-ui and
+       be judged as if it were Satoshi. */
+    document.fonts.ready.then(() => {
+      const status = ['Outfit', 'Geist', 'Satoshi']
+        .map(f => `${f}: ${document.fonts.check(`900 72px "${f}"`) ? 'loaded' : 'NOT LOADED — falling back'}`)
+        .join('  ·  ');
+      document.getElementById('fontstatus').textContent = status;
+    });
+  })();
+</script>
+</body>
+</html>

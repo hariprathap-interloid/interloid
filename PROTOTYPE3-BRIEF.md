@@ -24,6 +24,7 @@ branding is reproduced.
 | `script.js` | Content arrays + behaviour (nav, theme toggle, selector, reveals, spotlight) |
 | `hero-logo.js` + `logo-points.json` | The hero's WebGL mark. Observes the `.dark` class; never sets it. |
 | `hero-copy-lab.html` | The four hero copy/layout treatments A–D. C shipped; the rest are kept as the record of what was rejected and why. |
+| `hero-type-lab.html` | Display face (Outfit / Geist / Satoshi) × line-2 highlight (solid / static gradient / animated). **Resolved: Satoshi + solid.** Kept as the record. |
 
 No build step, but **it must be served over http** — Live Server is fine.
 Opening `index.html` from the filesystem leaves it unstyled.
@@ -119,6 +120,10 @@ so the dark wordmark and toggle would be invisible).
 | 8 | Hero content + design; fold into `index.html` | 01, 00 | ☑ 4 treatments in `hero-copy-lab.html`; **C "Terms"** chosen and folded in. Theme toggle now ships. |
 | 8b | Hero copy pass 2 | 01 | ☑ Headline → the contrast line; subhead names the audience; "See the proof"; Proposal row dropped |
 | 8c | Hero copy pass 3 | 01 | ☑ DS §7.2 badge replaces the mono eyebrow and carries the audience; lead cut to two sentences; **terms rail removed** |
+| 9 | Display face + line-2 treatment | all | ☑ `hero-type-lab.html`; **Outfit → Satoshi**, line 2 stays solid |
+| 9b | Lead rewritten to carry the risk reversal | 01 | ☑ Three sentences; mobile rebalanced around it |
+| 10 | Lead refactored: drop the aggressive and the negative, lead on speed | 01 | ☑ Two sentences; agentic AI named as mechanism, not identity |
+| 11 | Full 60-word lead, split as deck + body | 01 | ◐ Desktop good; **mobile CTA now 162px below the fold** — open decision |
 
 ---
 
@@ -131,8 +136,13 @@ back to the contrast line, which carries more:
 
 > `● For founders & business leaders`
 > **The problem isn't ideas. / It's shipping.**
-> Defined problems in, deployed software out. Interloid is a senior engineering
-> team working in your accounts and on your repos.
+> **Defined problems in. Deployed software out.**
+> Interloid combines senior engineering expertise with modern AI and agentic
+> workflows to accelerate every stage of development. We build, test, and ship
+> continuously, delivering working software every week as a demo and maintaining
+> clarity throughout the process. Bugs, product changes, and potential issues are
+> surfaced and addressed as they arise — not discovered at the end of a sprint
+> or review cycle.
 > `Book a free 30-min consult` · `See the proof`
 
 Round 8's note said the hero could not say *who it is for* without inventing
@@ -202,6 +212,138 @@ blending — the two can never fight over who set the theme.
 **Dark mode is verified for the hero only.** Sections 02–08 were spot-checked
 section-by-section and hold up because they are token-based, but that is not an
 audit — see HANDOFF §6.
+
+---
+
+## 4c. Round 9 — display face and the persuading lead
+
+**Satoshi replaces Outfit** (Fontshare), chosen in `hero-type-lab.html` against
+Outfit and Geist. Geist was rejected on a specific ground: it reads as a heavier
+**Inter**, which is the body face, so it collapses the display/body contrast the
+page currently gets for free. Satoshi keeps Outfit's warmth with far less
+ubiquity — Outfit is the default startup display face and was signalling energy
+where the pitch is judgment.
+
+Two consequences that are easy to trip over:
+
+- **Satoshi has no 600.** It ships 300/400/500/700/900. The page asks for
+  `font-semibold` on the display face in 8 places, all mobile-menu links; CSS
+  font matching resolves those up to 700 and it is invisible at that size. Do
+  not invent a 600.
+- **Satoshi is wider than Outfit.** At `lg:text-7xl` the H1's line 1 overflowed
+  the `max-w-3xl` column and wrapped as "The problem isn't / ideas.", splitting
+  one idea and orphaning the noun. The H1 is now 64px at `lg`. The two-tone
+  silhouette — one long neutral line over one short accent line — is the shape
+  the whole page uses, so the size gave way, not the shape.
+- **A second font origin** is now on the critical path (`api.fontshare.com` +
+  `cdn.fontshare.com`, both preconnected). That is a DNS+TLS handshake against
+  a 364ms FCP budget (HANDOFF §8). Self-host both faces in the Next.js port.
+
+**Line 2 stays solid.** The lab measured a real collision and it is *unfixed*:
+the solid headline colour and the primary CTA background return the identical
+computed value, in **both** themes (light `--brand` == `--primary`; dark both
+resolve to `--accent`). The static gradient was the fix for it and was not
+taken, so the two heaviest coloured objects in the hero remain the same colour.
+Deliberate, not overlooked. Note `--accent` is not an escape hatch here: at
+display size on `--secondary` it measures **2.83:1**, under the 3:1 large-text
+floor.
+
+**The lead now carries the risk reversal.** Three sentences, against DS §7.2's
+"one or two" — deliberate, because 8c removed the terms rail and this paragraph
+is the only thing left in the hero that answers "why should I trust you". What
+answers that for a founder is risk reversal, not adjectives: sentence 1 the
+outcome, 2 how it stays visible while it happens, 3 what happens if it goes
+wrong. Every claim is on HANDOFF §7's allowed list.
+
+That cost mobile room, and the band paid for it: `padding-top` went 40vh → 36vh
+→ **28vh** across three copy passes, and `hero-logo.js` now caps the mark's
+SCALE against the band as well as the frame — otherwise the mark keeps its size
+as the band shrinks and slides up behind the nav.
+
+---
+
+## 4d. Round 10 — what the lead stopped saying, and why
+
+Two of round 9's clauses were cut on the user's read, and both reads were right:
+
+- **"inside your accounts and on your repos" was aggressive.** It framed the
+  arrangement as us getting into their infrastructure rather than them keeping
+  control. Process (§05) already says "in your repos and your accounts from
+  commit one", where the same fact reads as reassurance rather than a boast.
+- **"either side can leave on 30 days' notice" was negative.** It plants a
+  failure scenario in the first five seconds. Risk reversal converts late, not
+  in the opening line; it stands on the CTA slab (§07) and in Why Interloid.
+
+What replaced them is speed, with a mechanism named: *agentic AI in the loop*.
+
+**The word order is the whole decision, and it must not drift.** "Senior
+engineers with agentic AI in the loop" — never "AI-driven team", never
+"AI-first". The site is sold end to end on seniority; to this buyer an AI-led
+hero reads *cheap, automated, junior-equivalent*, which is precisely the fear
+the rest of the page exists to answer. The AI has to read as leverage FOR senior
+people. Positioned that way it adds speed without spending the trust.
+
+Two standing cautions:
+
+1. **This is only shippable if it is how Interloid actually works.** It is a
+   method claim, not a numeric one, so HANDOFF §7 does not demand a source —
+   but §7's whole point is not asserting what you cannot defend in a sales call.
+2. **"AI" now appears in two senses on the page** — how we build (hero) and
+   what we sell (§02 "AI integration"). Keep them distinct; muddling them makes
+   both weaker.
+
+Note "a working demo every week" is the §7 allowed phrasing. "Ships weekly"
+would claim production releases and is not on the list.
+
+At 32 words the lead is back inside DS §7.2's "one or two sentences", and the
+mark's mobile band went 28vh → 36vh with the room that freed.
+
+---
+
+## 4e. Round 11 — the deck, and an open mobile decision
+
+The lead is now 60 words, so it is **two elements, not one paragraph**: a bold
+**deck** carrying the thesis, and a body paragraph carrying the detail. A single
+60-word block is a wall with no entry point. The deck also keeps DS §3.2's "lead
+is text-xl" satisfied, with the supporting copy one step down at text-lg.
+
+The deck is set in **Inter, not the display face** — Satoshi has no 600, so
+`font-semibold` there resolves to 700 and fights the 900 H1 immediately above.
+
+Two edits to the supplied copy, both mechanical: `-` → em dash for consistency
+with the rest of the page, and "as demo" → "as a demo". Note that "as a demo"
+is load-bearing, not filler — "delivering working software every week" on its
+own claims weekly *production releases*, which is not on HANDOFF §7's list.
+"Weekly working demo" is.
+
+### The open decision: mobile
+
+Desktop is comfortable (CTA bottom 765 of 900). **Mobile is not: the CTA now
+finishes 162px below an 844px fold**, and this one cannot be shaved out of the
+margins the way rounds 9 and 10 were. The arithmetic:
+
+| | px |
+| --- | --- |
+| CTA bottom at 390×844 | 1006 |
+| Overshoot | **162** |
+| Mark's band today | 304 (36vh) |
+| Band that would clear the fold | 142 (16.8vh) |
+| Band floor before the mark collides with the nav | **271 (32.2vh)** |
+
+So clearing the fold does not just mean a smaller band — it means going *below*
+the point where the mark runs into the transparent nav, so the mark would have
+to shrink by roughly half and its centring ratios be re-tuned as well.
+
+Three ways out, none of them free — **user's call, nothing chosen yet**:
+
+1. **Accept it.** Mark, H1 and deck are all above the fold, and the deck is the
+   whole pitch in six words. One scroll reaches the CTA. Costs some mobile
+   conversion; costs nothing else.
+2. **Halve the mark on mobile** and re-tune the ratios so everything fits above
+   the fold. Keeps every word and the CTA; spends the brand moment that took
+   two sessions to build.
+3. **Show sentences 1–2 on mobile, all three at `sm:` and up.** Keeps the mark
+   and the fold; costs content parity between mobile and desktop.
 
 ---
 

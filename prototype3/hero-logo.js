@@ -209,14 +209,17 @@ async function boot() {
           FRAME.h — that lands it relative to the section, not the visible
           band. Read the section's own padding-top (the band the CSS reserves)
           and centre the mark inside it, so the two can never drift apart. */
-    SCALE = Math.min(FRAME.w * .26, FRAME.h * .19);
-    HOME_X = 0;
-    /* Centred at 58% of the band, not 50%: the nav is transparent at rest and
-       occupies the first ~70px, so a mark centred in the band sits behind the
-       wordmark. Pushing it down clears the nav and still leaves a gap above
-       the eyebrow. */
+    /* The band is the section's own padding-top, read from the DOM so the CSS
+       reservation and the mark can never drift apart. SCALE is capped against
+       it as well as against the frame: when hero copy grows the band shrinks
+       to pay for it, and without this cap the mark stays full size and slides
+       up behind the nav. Centred at 62% of the band, not 50% — the nav is
+       transparent at rest and owns the first ~70px. */
     const band = parseFloat(getComputedStyle(hero).paddingTop) || h * .36;
-    HOME_Y = ((h / 2 - band * .58) / h) * FRAME.h;
+    const bandWorld = (band / h) * FRAME.h;
+    SCALE = Math.min(FRAME.w * .26, FRAME.h * .19, bandWorld * .34);
+    HOME_X = 0;
+    HOME_Y = ((h / 2 - band * .62) / h) * FRAME.h;
   };
   resize();
   addEventListener('resize', resize);
