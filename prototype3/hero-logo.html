@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interloid — Hero: particles resolve into the mark</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="theme.css">
+
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--background); --color-foreground: var(--foreground);
+    --color-card: var(--card); --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary); --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent); --color-accent-strong: var(--accent-strong);
+    --color-border: var(--border); --color-ring: var(--ring);
+    --color-ink: var(--ink); --color-ink-deep: var(--ink-deep);
+    --color-ink-foreground: var(--ink-foreground);
+    --color-brand: var(--brand); --color-brand-light: var(--brand-light);
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  }
+</style>
+
+<style>
+  canvas { display: block; width: 100%; height: 100%; }
+  .stage { position: absolute; inset: 0; z-index: 0; }
+  .stage canvas { opacity: 0; transition: opacity 1s ease-out; }
+  .stage.ready canvas { opacity: 1; }
+
+  /* ---- Dark (default) ---------------------------------------------------- */
+  #hero { background: var(--ink-deep); }
+  .fallback {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(55% 50% at 74% 45%, color-mix(in oklab, var(--brand) 40%, transparent), transparent 70%),
+      radial-gradient(40% 40% at 86% 55%, color-mix(in oklab, var(--accent) 34%, transparent), transparent 70%),
+      var(--ink-deep);
+  }
+  /* The scrim is what protects the copy. On dark it barely has to work. */
+  .scrim {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(90deg, var(--ink-deep) 0%,
+      color-mix(in oklab, var(--ink-deep) 88%, transparent) 34%,
+      color-mix(in oklab, var(--ink-deep) 40%, transparent) 52%, transparent 68%);
+  }
+
+  /* ---- Light --------------------------------------------------------------
+     Light is the readability problem: dark particles on a pale ground compete
+     with dark text. Three defences, not one — a wider and more opaque scrim,
+     a dimmer cloud, and the mark pushed further right. ---------------------- */
+  html.light #hero { background: var(--secondary); }
+  html.light .fallback {
+    background:
+      radial-gradient(55% 50% at 78% 45%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 70%),
+      var(--secondary);
+  }
+  html.light .scrim {
+    background: linear-gradient(90deg, var(--secondary) 0%,
+      var(--secondary) 30%,
+      color-mix(in oklab, var(--secondary) 82%, transparent) 46%,
+      color-mix(in oklab, var(--secondary) 30%, transparent) 62%, transparent 76%);
+  }
+  html.light .t-strong { color: var(--foreground); }
+  html.light .t-accent { color: var(--brand); }
+  html.light .t-body   { color: var(--muted-foreground); }
+  html.light .t-meta   { color: var(--muted-foreground); }
+  html.light .chip     { background: var(--card); border-color: var(--border); color: var(--muted-foreground); }
+  html.light .btn-1    { background: var(--primary); color: var(--primary-foreground); }
+  html.light .btn-2    { background: var(--card); border-color: var(--border); color: var(--foreground); }
+
+  .t-strong { color: #fff; }
+  .t-accent { color: var(--accent); }
+  .t-body   { color: color-mix(in oklab, var(--ink-foreground) 88%, transparent); }
+  .t-meta   { color: color-mix(in oklab, var(--ink-foreground) 55%, transparent); }
+  .chip     { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); color: var(--ink-foreground); }
+  .btn-1    { background: var(--accent); color: #fff; box-shadow: 0 0 50px -12px var(--accent); }
+  .btn-2    { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.15); color: #fff; }
+
+  .rise { opacity: 0; transform: translateY(16px); animation: rise .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay: var(--d,0ms); }
+  @keyframes rise { to { opacity: 1; transform: none } }
+
+  :focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ink-deep), 0 0 0 4px var(--accent); }
+  html.light :focus-visible { box-shadow: 0 0 0 2px var(--secondary), 0 0 0 4px var(--ring); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,*::before,*::after { animation: none !important; transition-duration: .01ms !important }
+    .rise { opacity: 1; transform: none }
+  }
+</style>
+</head>
+
+<body class="font-sans antialiased">
+
+<div class="fixed left-1/2 top-4 z-100 flex -translate-x-1/2 items-center gap-1 rounded-full border border-white/10 bg-white/10 p-1 shadow-lg backdrop-blur">
+  <button data-theme="dark"  class="th rounded-full px-4 py-2 text-sm font-semibold">Dark</button>
+  <button data-theme="light" class="th rounded-full px-4 py-2 text-sm font-semibold">Light</button>
+</div>
+
+<section id="hero" class="relative flex min-h-screen items-center overflow-hidden px-6 lg:px-16">
+  <div class="fallback"></div>
+  <div class="stage"><canvas></canvas></div>
+  <div class="scrim"></div>
+
+  <div class="relative z-10 mx-auto w-full max-w-[1400px]">
+    <div class="max-w-2xl">
+      <p class="chip rise mb-7 inline-flex items-center gap-2.5 rounded-full border px-4 py-2 text-sm font-medium backdrop-blur" style="--d:60ms">
+        <span class="size-2 rounded-full bg-accent"></span>Senior product engineering
+      </p>
+
+      <h1 class="rise mb-7 font-display text-5xl font-black leading-[1.02] tracking-tight md:text-6xl lg:text-7xl" style="--d:160ms">
+        <span class="t-strong">The problem isn&rsquo;t ideas.</span><br><span class="t-accent">It&rsquo;s shipping.</span>
+      </h1>
+
+      <p class="t-body rise mb-10 max-w-xl text-xl leading-relaxed" style="--d:260ms">
+        Interloid takes defined problems to deployed software &mdash; in your accounts,
+        on your repos, with a working demo every week.
+      </p>
+
+      <div class="rise flex flex-wrap items-center gap-4" style="--d:360ms">
+        <a href="#" class="btn-1 group inline-flex h-14 items-center gap-2 rounded-full px-9 text-lg font-bold transition-transform hover:scale-[1.03] active:scale-95">
+          Book a free 30-min consult
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="#" class="btn-2 inline-flex h-14 items-center rounded-full border px-8 text-lg font-medium backdrop-blur transition-colors">See how we work</a>
+      </div>
+
+      <p class="t-meta rise mt-12 font-mono text-[11px] uppercase tracking-[.2em]" style="--d:460ms">
+        <span id="state">Scattered</span> &middot; particles resolve into the Interloid mark
+      </p>
+    </div>
+  </div>
+</section>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module" src="hero-logo.js"></script>
+</body>
+</html>
