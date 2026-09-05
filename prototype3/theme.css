@@ -98,4 +98,6 @@
 
 @keyframes gradient { 0% { background-position: 0% } 50% { background-position: 100% } 100% { background-position: 0% } }
 @keyframes marquee  { from { transform: translateX(0) } to { transform: translateX(-33.333%) } }
-@keyframes orb      { 0%, 100% { transform: scale(1); opacity: 1 } 50% { transform: scale(1.12); opacity: .7 } }
+/* opacity only: `transform` is owned by the pointer/scroll parallax (§7.2).
+   Animating transform here would replace the whole property and cancel it. */
+@keyframes orb      { 0%, 100% { opacity: .95 } 50% { opacity: .6 } }

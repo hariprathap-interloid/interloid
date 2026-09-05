@@ -128,7 +128,21 @@
           0 0 0 4px var(--accent);
       }
 
-      /* Placeholder outliner — every prototype ships one (HANDOFF §8). */
+      /* DS §9.10 shine sweep — reserved for the single most important CTA. */
+  @keyframes shine { 0% { opacity: 0; left: -100% } 20% { opacity: .45 } 100% { opacity: 0; left: 100% } }
+  .shine::after {
+    content: ""; position: absolute; top: -50%; left: -100%;
+    width: 55%; height: 200%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+    transform: rotate(30deg); animation: shine 5s 1.5s infinite;
+    pointer-events: none;
+  }
+  .shine > * { position: relative; z-index: 1; }
+
+  @keyframes cue { 0%, 100% { transform: translate(-50%, 0) } 50% { transform: translate(-50%, 6px) } }
+  .scroll-cue { animation: cue 2.4s ease-in-out infinite; }
+
+  /* Placeholder outliner — every prototype ships one (HANDOFF §8). */
       body.show-ph [data-placeholder] {
         outline: 2px dashed #e11d48;
         outline-offset: 4px;
@@ -401,20 +415,30 @@
         id="home"
         class="relative flex min-h-screen items-center justify-center overflow-hidden bg-secondary pt-20"
       >
-        <!-- §2.5 ambient orbs, now in the brand's own hues rather than a generic
-       rainbow — this is most of why the page no longer reads as blank white. -->
+        <!-- §2.6 dot grid, radially masked so it fades out at the edges -->
         <div
-          class="pointer-events-none absolute inset-0 z-0"
+          class="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(var(--border)_1.5px,transparent_1.5px)] bg-[size:26px_26px] [mask-image:radial-gradient(ellipse_65%_60%_at_50%_45%,#000_10%,transparent_100%)]"
+          aria-hidden="true"
+        ></div>
+
+        <!-- §2.5 ambient orbs. Positioned with left/top, never transform:
+             transform belongs to the pointer/scroll parallax (§7.2). -->
+        <div
+          id="orbs"
+          class="pointer-events-none absolute inset-0 z-[1] overflow-hidden"
           aria-hidden="true"
         >
           <div
-            class="absolute left-1/2 top-1/2 size-[440px] -translate-x-[70%] -translate-y-[75%] rounded-full bg-brand/25 blur-[120px] animate-orb"
+            data-orb="1"
+            class="absolute left-[6%] top-[8%] size-[440px] rounded-full bg-brand/35 blur-[110px] animate-orb"
           ></div>
           <div
-            class="absolute left-1/2 top-1/2 size-[540px] -translate-x-[20%] -translate-y-[40%] rounded-full bg-accent/25 blur-[120px] animate-orb [animation-delay:2s]"
+            data-orb="2"
+            class="absolute left-[46%] top-[20%] size-[560px] rounded-full bg-accent/30 blur-[120px] animate-orb [animation-delay:2s]"
           ></div>
           <div
-            class="absolute left-1/2 top-1/2 size-[400px] -translate-x-[85%] -translate-y-[5%] rounded-full bg-brand-light/20 blur-[120px] animate-orb [animation-delay:4s]"
+            data-orb="3"
+            class="absolute left-[18%] top-[50%] size-[420px] rounded-full bg-brand-light/30 blur-[110px] animate-orb [animation-delay:4s]"
           ></div>
         </div>
 
@@ -447,12 +471,12 @@
           <h1
             data-reveal
             style="--delay: 100ms"
-            class="mb-8 font-display text-6xl font-black tracking-tight md:text-8xl lg:text-9xl"
+            class="mb-8 font-display text-5xl font-black leading-[1.02] tracking-tight md:text-6xl lg:text-7xl xl:text-8xl"
           >
-            <span class="block text-foreground">The problem</span>
+            <span class="block text-foreground">The problem isn't ideas.</span>
             <span
               class="block bg-gradient-to-r from-brand via-accent to-brand-light bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient"
-              >isn't ideas.</span
+              >It's shipping.</span
             >
           </h1>
 
@@ -461,9 +485,9 @@
             style="--delay: 200ms"
             class="mx-auto mb-12 max-w-3xl text-xl leading-relaxed text-muted-foreground"
           >
-            It's shipping. Interloid takes defined problems to deployed software
-            — in your accounts, on your repos, with a working demo every week.
-            No vendor relationship to manage.
+            Interloid takes defined problems to deployed software — in your
+            accounts, on your repos, with a working demo every week. No vendor
+            relationship to manage.
           </p>
 
           <div
@@ -473,7 +497,7 @@
           >
             <a
               href="#contact"
-              class="active:scale-95 group inline-flex h-14 items-center gap-2 rounded-full bg-primary px-10 text-lg font-medium text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:bg-brand-light hover:shadow-2xl hover:shadow-primary/40"
+              class="shine active:scale-95 group relative overflow-hidden inline-flex h-14 items-center gap-2 rounded-full bg-primary px-10 text-lg font-medium text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:bg-brand-light hover:shadow-2xl hover:shadow-primary/40"
             >
               Book a free 30-min consult
               <svg
@@ -510,7 +534,34 @@
               </svg>
             </a>
           </div>
+
+          <div
+            data-reveal
+            style="--delay: 400ms"
+            class="mt-10 flex flex-wrap items-center justify-center gap-3"
+          >
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"
+              ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent-strong" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You own 100% of the code</span
+            >
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"
+              ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent-strong" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Written proposal in 48 hours</span
+            >
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-sm font-medium text-foreground backdrop-blur-sm"
+              ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-accent-strong" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>30-day notice, either way</span
+            >
+          </div>
         </div>
+
+        <a
+          href="#services"
+          aria-label="Scroll to what we build"
+          class="scroll-cue absolute bottom-8 left-1/2 z-20 -translate-x-1/2 grid size-11 place-items-center rounded-full border border-border bg-card/70 text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:border-primary hover:text-primary"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </a>
 
         <div
           class="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-32 bg-gradient-to-t from-secondary to-transparent"

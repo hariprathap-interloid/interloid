@@ -123,6 +123,44 @@
   }
 
   /* ==========================================================================
+   HERO ORB PARALLAX — §7.2. Each orb's transform is driven imperatively from
+   pointer position and scroll offset. Displacement stays under 200px and the
+   depth factors differ per orb so they separate as the cursor moves.
+   ========================================================================== */
+const orbs = $$('[data-orb]');
+if (orbs.length && !REDUCED) {
+  const DEPTH = { 1: 60, 2: 110, 3: 85 };          /* px of travel per orb */
+  let px = 0, py = 0, sy = 0, queued = false;
+
+  const paint = () => {
+    queued = false;
+    orbs.forEach(el => {
+      const d = DEPTH[el.dataset.orb] || 70;
+      /* scroll drifts the orbs up more slowly than the page, so the hero
+         gains depth as it leaves rather than moving as one flat plane */
+      const y = py * d + sy * (d / 220);
+      el.style.transform = `translate3d(${(px * d).toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+    });
+  };
+  const queue = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
+
+  const hero = $('#home');
+  hero.addEventListener('pointermove', (e) => {
+    const r = hero.getBoundingClientRect();
+    px = (e.clientX - r.left) / r.width  - 0.5;    /* -0.5 … 0.5 */
+    py = (e.clientY - r.top)  / r.height - 0.5;
+    queue();
+  });
+  hero.addEventListener('pointerleave', () => { px = 0; py = 0; queue(); });
+  addEventListener('scroll', () => {
+    if (window.scrollY > window.innerHeight) return;   /* hero is off-screen */
+    sy = window.scrollY;
+    queue();
+  }, { passive: true });
+  paint();
+}
+
+/* ==========================================================================
    SERVICES — §8.6 selector rows + §8.4 feature panel.
    §2.3: one hue per category, reused wherever that category appears.
    ========================================================================== */
